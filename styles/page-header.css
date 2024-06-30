@@ -1,0 +1,19 @@
+.PageHeader {
+  padding: 0.75em 1em;
+  background-color: var(--primary-color);
+  color: rgba(255 255 255 / 80%);
+  border-bottom: var(--default-border);
+  text-align: center;
+  display: flex;
+  flex-direction: var(--root-adaptive-flex-direction);
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em 1em;
+}
+.PageHeader .Version {
+  opacity: 0.5;
+  font-size: 90%;
+}
+.PageHeader .PageTitle {
+  font-size: 120%;
+}

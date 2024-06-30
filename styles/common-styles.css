@@ -1,0 +1,8 @@
+a {
+  color: var(--primary-color);
+}
+
+*[disabled] {
+  opacity: .5;
+  pointer-events: none;
+}
