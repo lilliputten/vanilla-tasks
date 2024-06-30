@@ -12,7 +12,7 @@
   overflow: var(--layout-overflow);
   display: flex;
   flex-direction: column;
-  min-width: 200px;
+  min-width: 250px;
 }
 .PageColumn#First {
   border-bottom: var(--default-border);
@@ -36,18 +36,12 @@
     flex-direction: column;
   }
   .PageColumn#First {
-    /* width: 300px; */
-    width: 40%;
+    width: 25%;
     resize: horizontal;
     border-right: var(--default-border);
     border-bottom: 0;
   }
   .PageColumn#Second {
     flex: 1;
-  }
-}
-@media (width >= 600px) {
-  .PageColumn#First {
-    width: 25%;
   }
 }
