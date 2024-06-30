@@ -3,7 +3,7 @@
 import * as CommonHelpers from './CommonHelpers.js';
 import { InitChunks } from './InitChunks.js';
 
-const cssStyleUrl = '/assets/css/common-notify.css';
+const cssStyleUrl = '/styles/common-notify.css';
 
 // Icon shapes (move to constants?)...
 const icons = {

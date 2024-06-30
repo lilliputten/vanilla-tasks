@@ -1,0 +1,39 @@
+:root {
+  /* Primary color */
+  --primary-color: #339af0;
+  --primary-color-rgb: 51 154 240; /* rgb representation of the primary color */
+  --secondary-color: #ffa550;
+
+  --default-background-color: #fff;
+  --default-background-color-dark: #1a1b1e;
+
+  --default-text-color: #333;
+  --default-text-color-on-dark: #ddd;
+
+  --default-link-color: #003d9d;
+  --neutral-color: #888;
+
+  /* Animations */
+  --common-transition-time: 150ms;
+  --common-animation-time: 250ms;
+  --common-effect-time: 500ms;
+
+  /* Main colors */
+  --common-error-color: #b00; /* aka 187 0 0 */
+  --common-warn-color: #c90; /* #960; */
+  --common-success-color: #0c3 ; /* #181; */
+
+  /* Combo colors */
+  --border-color: rgba(0 0 0 / 10%);
+  --default-border: 1px solid var(--border-color);
+
+  /** Adaptive parameters */
+  --root-adaptive-flex-direction: column;
+  --root-overflow: auto;
+  --layout-overflow: visible;
+  @media (width >= 480px) {
+    --root-adaptive-flex-direction: row;
+    --root-overflow: hidden;
+    --layout-overflow: hidden;
+  }
+}

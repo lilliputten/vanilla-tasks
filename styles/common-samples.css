@@ -1,0 +1,9 @@
+/* Basic layout */
+.common-hidden {
+  display: none;
+}
+
+.container {
+  /* Re-limit max width of column: allow it to be wider */
+  max-width: 1200px;
+}

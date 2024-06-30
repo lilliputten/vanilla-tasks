@@ -1,0 +1,25 @@
+.PageFooter {
+  text-align: center;
+  padding: 1em;
+  gap: 0.5em 1em;
+  background-color: rgba(0 0 0 / 3%);
+  border-top: var(--default-border);
+  display: flex;
+  flex-direction: var(--root-adaptive-flex-direction);
+  justify-content: space-between;
+  align-items: center;
+  font-size: 90%;
+}
+.PageFooter a:not(:hover) {
+  text-decoration: none;
+}
+.PageFooter .SocialList {
+  list-style-type: none;
+  display: flex;
+  gap: 1em;
+  margin: 0;
+  padding: 0;
+}
+.PageFooter .SocialListItem {
+  white-space: nowrap;
+}

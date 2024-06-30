@@ -1,230 +1,154 @@
 <!doctype html>
 <!--
-@changed 2024.06.21, 03:49
-Version: 0.0.7
-Last changes timestamp: 2024.06.23 00:19 +0500
+@changed 2024.06.30, 17:42
+Version: 0.0.0
+Last changes timestamp: 2024.06.30 18:42 +0500
 -->
-<html lang="en" data-page="main" data-layout="main">
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      Lilliputten &amp; Noble
-      
-    </title>
-    <meta name="color-scheme" content="dark light">
-    <meta name="description" content="Hello, my name is Igor and I&apos;m a front-end developer.">
-    <meta name="keywords" content="lilliputten">
-    <meta name="generator" content="Eleventy">
-    
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-
-
-    
-  
-
-
-
-
-  
-
-
-<meta property="og:url" content="https://lilliputten.com/">
-<meta property="og:title" content="Lilliputten &amp; Noble">
-<meta property="og:description" content="Hello, my name is Igor and I&apos;m a front-end developer.">
-<meta property="og:image" content="https://lilliputten.com/static/images/logo/og/og.jpg">
-<meta property="og:type" content="website">
-
-<meta name="title" content="Lilliputten &amp; Noble">
-
-    <link rel="alternate" href="https://lilliputten.com/feed/rss.xml" type="application/rss+xml" title="Lilliputten &amp; Noble">
-
-    <link rel="webmention" href="https://webmention.io/lilliputten.com/webmention">
-<link rel="pingback" href="https://webmention.io/lilliputten.com/xmlrpc">
-
-    <link rel="author" href="https://lilliputten.com/humans.txt">
-    
-
-
-
-
-
-  <link href="/static/vendor/webfonts/roboto/300.css" rel="stylesheet" type="text/css">
-  <link href="/static/vendor/webfonts/roboto/400.css" rel="stylesheet" type="text/css">
-  <link href="/static/vendor/webfonts/roboto/500.css" rel="stylesheet" type="text/css">
-  <link href="/static/vendor/webfonts/roboto/700.css" rel="stylesheet" type="text/css">
-
-
-
-
-<link href="/static/vendor/bootstrap-5.3.2/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
-<link href="/static/vendor/bootstrap-icons-1.11.3/font/bootstrap-icons.css" rel="stylesheet" type="text/css">
-
-
-<link href="/static/vendor/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet" type="text/css">
-
-
-<link rel="stylesheet" href="/compiled-assets/styles.css">
-
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanilla tasks list manager</title>
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Vanilla tasks list manager" />
+    <meta name="keywords" content="Vanilla, tasks, tasks list, manager" />
+    <link rel="icon" href="favicon.ico" type="image/svg+xml" />
+    <meta property="og:url" content="https://vanilla-tasks-list-mgr.lilliputten.com/" />
+    <meta property="og:title" content="Vanilla tasks list manager" />
+    <meta property="og:description" content="Vanilla tasks list manager sample application" />
+    <meta property="og:image" content="/static/images/logo/og/og.jpg" />
+    <meta property="og:type" content="website" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"
+      integrity="sha512-+L4yy6FRcDGbXJ9mPG8MT/3UCDzwR9gPeyFNMCtInsol++5m3bk2bXWKdZjvybmohrAsn3Ua5x8gfLnbE1YkOg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="./styles/common-variables.css" />
+    <link rel="stylesheet" href="./styles/normalize.css" />
+    <link rel="stylesheet" href="./styles/common-styles.css" />
+    <link rel="stylesheet" href="./styles/common-loader.css" />
+    <link rel="stylesheet" href="./styles/page-root.css" />
+    <link rel="stylesheet" href="./styles/page-layout.css" />
+    <link rel="stylesheet" href="./styles/page-header.css" />
+    <link rel="stylesheet" href="./styles/page-footer.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
     </script>
   </head>
-  <body class="Page page__body">
-    
-    
-<div class="PageVisual" id="PageVisual">
-  <canvas class="VisualAnimation" id="VisualAnimation"></canvas>
-</div>
+  <body class="Page">
+    <nav class="PageHeader">
+      <div class="PageTitle">Vanilla tasks list manager</div>
+      <div class="PageAttributes">
+        <span class="Version">
+          <!-- NOTE: The value is substituting automatically -->
+          Version: 0.0.0
+        </span>
+      </div>
+    </nav>
+    <main id="PageLayout" class="PageLayout">
+      <div class="PageColumn" id="First">
+        <div class="PageColumnHeader Toolbar" id="ListsToolbar">
+          <div class="ToolbarTitle">
+            Lists
+          </div>
+          <div class="ToolbarActions">
+            <button id="AddList"><i class="fa fa-plus"></i> Add list</button>
+          </div>
+        </div>
+        <div class="PageColumnContent">
+          <p>Left column text 1</p>
+          <p>Left column text 2</p>
+          <!--
+          -->
+          <p>Left column text 3</p>
+          <p>Left column text 4</p>
+          <p>Left column text 5</p>
+          <p>Left column text 6</p>
+          <p>Left column text 7</p>
+          <p>Left column text 8</p>
+          <p>Left column text 9</p>
+          <p>Left column text 10</p>
+          <p>Left column text 11</p>
+          <p>Left column text 12</p>
+          <p>Left column text 13</p>
+          <p>Left column text 14</p>
+          <p>Left column text 15</p>
+          <p>Left column text 16</p>
+          <p>Left column text 17</p>
+          <p>Left column text 18</p>
+          <p>Left column text 19</p>
+          <p>Left column text 20</p>
+          <p>Left column text 21</p>
+          <p>Left column text 22</p>
+          <p>Left column text 23</p>
+          <p>Left column text 24</p>
+          <p>Left column text 25</p>
+          <p>Left column text 26</p>
+          <p>Left column text 27</p>
+          <p>Left column text 28</p>
+          <p>Left column text 29</p>
+          <p>Left column text 30</p>
+          <p>Left column text 31</p>
+        </div>
+      </div>
+      <div class="PageColumn" id="Second">
+        <div class="PageColumnHeader">PageColumnHeader</div>
+        <div class="PageColumnContent">
+          <p>Right column text</p>
+        </div>
+      </div>
+    </main>
+    <footer class="PageFooter">
+      <div class="FooterCopyright">
+        © 2024 <span class="delimiter">/</span>
+        <a href="https://lilliputten.com/">Lilliputten &amp; Noble</a>
+      </div>
+      <ul class="SocialList">
+        <li class="SocialListItem">
+          <a
+            href="https://github.com/lilliputten"
+            rel="me noopener"
+            class="SocialListLink linkAsText"
+            id="Github"
+            target="_blank"
+            ><i class="fa fa-github"></i> GitHub</a
+          >
+        </li>
+        <li class="SocialListItem">
+          <a
+            href="https://linkedin.com/in/lilliputten"
+            class="SocialListLink linkAsText"
+            id="Linkedin"
+            target="_blank"
+            rel="noopener"
+            ><i class="fa fa-linkedin-square"></i> LinkedIn</a
+          >
+        </li>
+      </ul>
+    </footer>
+    <!-- Start page scripts -->
+    <script type="module">
+      // @ts-check
 
+      // Core module
+      import { StartApp } from './scripts/StartApp.js';
 
-<nav id="PageHeader" class="PageHeader navbar fixed-top navbar-dark navbar-expand-md onRed">
-  <div class="PageHeaderWrapper maxWidthContainer_ container_">
-    <div class="PageHeaderBrand gap-1">
-      <button id="toggleNavigation" aria-controls="navbarNavigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed" data-bs-target="#navbarNavigation" data-bs-toggle="collapse" type="button">
-        <span class="navbar-toggler-icon"> </span>
-      </button>
-      <div class="PageHeaderLogo">
-  <a href="/" class="Logo"><!--div
-      class="Logo"
-      src="/static/images/logo/full/ll-logo-wx.svg"
-      height="auto"
-      width="200"
-      alt="Lilliputten &amp; Noble"
-  /--></a>
-</div>
+      const layoutNode = document.getElementById('PageLayout');
 
-    </div>
-    <div class="PageHeaderNavigation navbar-collapse collapse" id="navbarNavigation">
-      <ul class="PageMenu navbar-nav">
-  <li class="nav-item"><a class="nav-link" href="/about/">About</a></li>
-  <li class="nav-item"><a class="nav-link" href="/projects/">Projects</a></li>
-  <li class="nav-item"><a class="nav-link" href="/contacts/">Contacts</a></li>
-</ul>
+      /** Global variables...
+       * @type {TSharedParams}
+       */
+      const sharedParams = {
+        // Current configuration parameters...
+        layoutNode,
+      };
 
-      <ul class="PageHeaderToolbar">
-  <li>
-    <a href="https://github.com/lilliputten/lilliputten-11ty-site/blob/main/./src/pages/index.md" target="_blank" title="Edit page on github" rel="noopener"><i class="bi bi-pencil"></i></a>
-  </li>
-  <li>
-    <a href onclick="window.toggleTheme(); return false" title="Toggle color theme"><i class="bi bi-brightness-high-fill theme-dark"></i><i class="bi bi-moon-stars-fill theme-light"></i></a>
-  </li>
-</ul>
-
-    </div>
-  </div>
-</nav>
-
-<main class="PageContentLayout page__content">
-  
-  
-<article class="Article MainPageContent">
-  <svg class="MainPageLogo" baseProfile="tiny" version="1.1" viewBox="0 0 184.3 42.5" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-  <path class="key" d="m43.6 29.6s-1.3-0.6-1.4-0.8c-0.3-0.4-0.3-1-0.3-1.5v-3.1-3.7c0-0.7 0.2-2-0.9-1.4-0.1 0-2.4 1.2-2.4 1.1 0 0.1 1.2 0.1 1.4 0.2 0.8 0.4 0.5 1.7 0.5 2.5v3.8c0 1 0.1 2.2-0.9 2.6-2 0.9-1.8-2.4-1.8-3.5v-7.8-3.3c0-0.3 0.1-1.6-0.2-1.8-0.3-0.1-0.7 0.3-0.9 0.4-0.4 0.3-0.9 0.5-1.4 0.7-0.6 0.2-1.2 0.3-0.2 0.3 1.1 0 1.3 0.5 1.3 1.5v7.2 3.5c0 0.7 0.1 1.6-0.3 2.3-0.6 1-1.9 0.8-2.4-0.2-0.3-0.6-0.2-1.4-0.2-2v-7.5c0-1.8 0.1-3.6 0-5.3 0-0.9-0.3-1-1-0.5-0.1 0.1-2.3 1.2-2.3 1.1 0 0.1 1.2 0.1 1.4 0.2 0.4 0.2 0.5 0.5 0.5 0.9 0.2 2.1 0 4.4 0 6.5 0 1.9 0.1 3.8 0 5.7 0 0.9-0.7 2.4-1.8 1.8-0.9-0.5-0.9-1.6-0.9-2.5v-6.9c0-0.3 0.1-0.8-0.1-1-0.3-0.2-0.5 0.1-0.7 0.2-0.5 0.3-1 0.7-1.6 0.9-0.5 0.2-1.2 0.3-0.3 0.3 0.7 0 1.2 0.1 1.4 0.8 0.2 0.9 0 2 0 2.9v3.3c0 0.5 0 1-0.3 1.4-0.1 0.2-1.5 0.9-1.5 0.9-0.1-0.3 17.3-0.3 17.3-0.2zm-18.1-4c-0.5 0-0.9 1.2-1.1 1.5-0.4 0.7-0.9 1.3-1.6 1.7-1 0.6-2.1 0.6-3.1 0.5-0.7 0-1.4-0.2-2.1-0.4-0.3-0.1-0.9-0.2-1.1-0.4-0.1-0.2 0-0.9 0-1.1v-10.2-1.3c0-0.5 0.1-1 0.5-1.4 0.2-0.2 0.5-0.4 0.8-0.5 0.2-0.1 0.7 0 0.8-0.2-0.2-0.2-1 0-1.3 0-0.6 0-1.2 0.1-1.7 0.1-0.6 0-1.2 0-1.7-0.1-0.3 0-1.1-0.2-1.3 0 0.4 0.3 1.1 0.2 1.5 0.6 0.3 0.3 0.4 0.6 0.5 1 0.1 0.5 0.1 1 0.1 1.5v4.9s0 3.3 0 4.9c0 0.5 0 1-0.1 1.5-0.1 0.4-0.2 0.7-0.5 1-0.4 0.4-1.2 0.3-1.5 0.6 0.1 0.1 0.8 0 0.9 0h1.9 4.9c1 0 2.1-0.1 3.1 0.1 0.9 0.2 1.7 0.7 1.9-0.6-0.1-0.6 0.7-3.7 0.2-3.7zm3-8.7c1.4 0 1.3-2.1 0-2.1s-1.4 2.1 0 2.1zm12.5 0c1.4 0 1.3-2.1 0-2.1s-1.3 2.1 0 2.1zm45.3 11.1c0-0.4-1.9 0.8-2.1 0.9-1 0.4-2.1 0.6-3.1 0.3-1.8-0.4-2.9-2.1-3.1-3.8 0-0.3-0.2-1.8 0-2 0.2-0.1 0.8 0 1 0h4.1 1.6c0.2 0 0.7 0.1 0.9-0.1 0.5-0.4 0-1.6-0.3-2-0.5-0.9-1.4-1.6-2.4-1.9-4-1.3-7.6 3-6.7 6.8 0.5 2.1 2.3 3.6 4.5 3.9 1.3 0.1 2.5-0.2 3.7-0.7 0.3-0.2 1.9-0.8 1.9-1.4zm-8.3-5c0.2-1.7 1.3-3.7 3.3-3.7 0.9 0 1.7 0.5 2.2 1.4 0.3 0.6 0.7 1.8 0.1 2.4-0.5 0.5-2.1 0.2-2.7 0.2h-2.9v-0.3zm20.2 6.5c-1.4-0.4-1.4-1.6-1.4-2.9v-4.4c0-1.4-0.2-2.9-1.8-3.1-2-0.3-4.2 0.9-5.9 1.7 0-0.4 0.2-1.6-0.3-1.8-0.5 0-1.5 0.9-1.8 1s-1.1 0.2-1.2 0.4c-0.2 0.2 0.3 0.1 0.4 0.1 0.4 0 0.8 0 1.1 0.2 0.4 0.3 0.3 0.8 0.3 1.3v4.6c0 0.5 0.1 1.1-0.1 1.6-0.1 0.4-0.3 0.7-0.7 0.9-0.1 0.1-1 0.3-1 0.4h4.9c0-0.1-0.9-0.4-1-0.4-0.5-0.4-0.7-0.9-0.7-1.5v-1.5-2.9c0-0.4-0.2-1.5 0-1.9 0.2-0.5 1.8-0.8 2.3-0.9 1-0.3 2.9-0.9 3.7 0.1 0.4 0.5 0.4 1.3 0.4 2v2.7 2.3c0 0.5-0.1 1.1-0.5 1.5-0.1 0.1-1.2 0.6-1.2 0.6h4.9c-0.2-0.1-0.3-0.1-0.4-0.1zm-48.1-10.3c-1.5 0-2.9 0.7-4.1 1.5 0-0.4 0.2-1.8-0.3-1.9-0.2 0-2.9 1.7-3 1.4 0 0.1 0.7 0 0.8 0 0.6 0.1 1 0.2 1.1 0.8 0.1 0.3 0 0.6 0 0.9v10.2 1.2c0 0.5-0.1 1.1-0.5 1.5-0.1 0.1-1.2 0.5-1.2 0.6h4.9s-1.3-0.7-1.5-0.9c-0.3-0.5-0.3-1.1-0.3-1.7v-3.3c3.1 0.8 6.6-0.4 7.9-3.5 1.1-2.8-0.4-6.8-3.8-6.8zm-0.9 10.2c-1 0-2.8-0.6-3.2-1.6-0.1-0.3 0-0.7 0-1v-4.7c0-0.3-0.1-1 0-1.2 0.3-0.6 2.2-0.8 2.8-0.8 2.2 0 3.7 1.9 4 3.9 0.4 2.3-0.7 5.4-3.6 5.4zm27.4-1c-0.2 0-0.5 0.4-0.6 0.5-0.3 0.2-0.7 0.4-1.1 0.4-0.8 0-1.3-0.5-1.4-1.2-0.1-0.5 0-1.1 0-1.7v-6c0-0.7 0-0.6 0.8-0.6 0.4 0 1 0.1 1.4 0 0.3-0.1 0.7-0.1 0.3-0.4-0.2-0.1-1 0-1.2 0s-1 0.1-1.2 0c-0.2-0.2 0-2 0-2.4 0-0.3 0.2-2-0.3-2s-0.5 1.1-0.5 1.4c-0.2 0.9-0.6 1.7-1.3 2.3-0.4 0.3-0.8 0.6-1.3 0.6-0.2 0-0.9 0.1-1-0.1-0.1-0.1 0-0.9 0-1v-1.7c0-0.3 0.1-1.9-0.5-1.5-0.4 0.3-0.4 1.6-0.5 2.1-0.3 0.8-0.8 1.4-1.5 1.8-0.3 0.2-1.5 0.5-0.9 0.8 0.2 0.1 1 0 1.3 0 0.8 0 0.8-0.1 0.8 0.7v6.5c0 0.7 0 1.5 0.4 2.2 1.1 1.5 3.3 0.7 4.2-0.5 0.5 1.1 1.5 1.6 2.6 1.3 0.5-0.1 1-0.4 1.4-0.8-0.2 0.1 0.5-0.7 0.1-0.7zm-4.6 0c-0.5 0.3-0.8 0.8-1.5 0.9-0.8 0.1-1.4-0.3-1.6-1.1-0.1-0.5 0-1.1 0-1.6v-5.8c0-0.4-0.1-0.9 0.1-1s1 0 1.2 0c0.4 0 1-0.1 1.4 0 0.5 0.1 0.3 0.2 0.3 0.8v2.8 3.2c0.1 0.4 0.3 1.7 0.1 1.8zm-7.6-0.4v-5.5-1.9c0-0.7 0.2-1.2-0.6-1.2-0.5 0-1.1 0.2-1.6 0.3-0.2 0-0.9 0-1.1 0.2 0 0.1 1.1 0.3 1.3 0.4 0.4 0.2 0.5 0.6 0.6 1 0.1 0.6 0 1.3 0 2v3c0 0.4 0.1 1 0 1.3-0.3 0.5-1.3 0.8-1.7 1-0.7 0.3-1.5 0.6-2.3 0.6-1.4 0-2-0.9-2.1-2.2-0.1-1.5 0-3.1 0-4.6v-2c0-0.9 0-1.1-1-0.9-0.4 0.1-2 0-2.3 0.4 0 0.1 0.9 0.2 1 0.3 0.5 0.2 0.7 0.4 0.8 0.9 0.1 0.3 0 0.7 0 1.1v4.4c0 1.3 0 2.7 1.4 3.3 2.1 0.9 4.5-0.8 6.1-2 0 0.7-0.2 1.9 0.6 2.1 0.2 0.1 2.7-0.6 2.7-0.6-0.2-0.2-0.9-0.1-1.2-0.2-0.4-0.3-0.6-0.7-0.6-1.2z"/>
-  <path class="red" d="m115.7 5.4c-2.2-1.6-5.3 1.3-6.1 3.2-0.4 1-0.5 2.6-1.9 2.2-0.9-0.3-2.2-1.3-1.6-2.3 0.2-0.5 1-0.8 0.2-1.1-1.4-0.6-1.7 1.1-1.5 2.1 0.3 1 0.9 1.8 1.8 2.3 0.6 0.3 2.1 0.2 2.4 1s-1.4 0.9-2 1c-1 0.3-2.1 0.5-3.1 0.9-2.3 0.9-4.2 2.5-5 4.9-0.7 2.1-0.8 4.6 0.5 6.4 1.5 2.2 3.8 3.3 6.3 3.4 1.3 0.1 2.7 0.1 4-0.4 0.9-0.3 2.7-1.2 2.5 0.5-0.1 0.9-0.5 1.7-0.8 2.6-0.4 1.4-0.9 2.8-1.3 4.2-0.3 1-0.8 2.1-0.9 3.1-0.1 1.2 0.8-0.2 1-0.6 0.9-1.6 1.3-3.4 1.9-5.2 0.5-1.7 1.1-3.4 1.6-5.1 0.2-0.6 0.9-2.3-0.4-2.2-0.3 0-0.6 0.3-0.9 0.4-0.7 0.3-1.5 0.7-2.2 1-4.1 1.5-10 0.2-10.7-4.8-0.4-2.7 1.2-5.7 3.7-6.8 1.5-0.7 3-1.4 4.7-1.4 1.6 0 3.2 0.5 4.7 0.7 0.5 0.1 1.3 0.2 1.1-0.7-0.1-0.5-0.9-0.8-1.4-1s-1.3-0.3-1.6-0.7 0-1.1 0.3-1.5c0.4-0.5 1.2-0.8 1.7-1.2 0.6-0.4 1.2-0.9 1.7-1.5 0.6-0.6 2.5-2.5 1.3-3.4zm-1.4 2.7c-0.6 0.9-1.6 1.7-2.6 2.1-1.5 0.6-1.3-1-0.8-1.9 0.6-1 1.6-2 2.8-2.1 1.5-0.2 1.2 1 0.6 1.9z" fill="#CC2200"/>
-  <path class="key" d="m122.9 15.6c-0.6-0.3-1.1 2.4-1.2 2.8-0.4 1.2-0.8 2.4-1.3 3.6-0.9 2.1-2.1 4.2-3.5 6 0-1.1 0.4-2.1 0.6-3.2-0.9 0.2-1 0.6-1.3 1.5-0.2 1-0.5 2.1-0.5 3s0.7 1.2 1.2 0.4c0.7-0.9 1.2-2 1.8-3 1.3-2.2 2.5-4.5 3.4-7 0.2-0.2 1.7-3.7 0.8-4.1zm49 14.9c-0.9-0.2-1.8-0.3-2.6-0.7-1.3-0.8 0-1.1 0.7-1.7 0.8-0.7 1.5-1.6 1.4-2.7-0.1-1.2-1.3-1.3-2.2-1.2-1 0.1-2 0.6-2.5 1.5-0.3 0.5-0.3 1.1-0.3 1.6 0 0.2 0.1 0.8 0 1-0.8 0.7-1.2-1.1-1.7-1.2s-0.6 0.5-0.7 0.8c-0.3 0.6-0.9 0.6-1.6 0.3-0.8-0.3-1.6-0.9-2-1.7-0.2-0.4-0.4-1-0.4-1.4 0.1-0.6 0.9-1.3 1.3-1.7 1.3-1.5 2.4-3.3 3.2-5.1 0.3-0.8 0.8-1.7 0.7-2.6 0-1.3-1.3-1.6-2.2-0.8-0.8 0.7-1.5 1.8-2 2.7-0.7 1.1-1.4 2.3-1.7 3.5-0.3 1.1 0 2.4-0.5 3.4-0.4 0.9-1.5 1.4-2.3 1.8-1.5 0.7-4.4 2.2-6.1 1.7-0.4-0.1-0.7-0.4-1.1-0.1-0.5 0.4-0.1 0.7 0.1 1.1 0.7 1.1-0.3 1.9-1.5 1.8-0.7-0.1-2.2-1.1-1.9-2.1 0.2-0.7 1.9-0.9 2.5-1.1 2.1-0.9 3.8-2.7 5.2-4.5 1.5-1.8 3-4 3.6-6.2 0.2-0.8 0.4-2.1-0.3-2.8-0.8-0.8-2.1-0.4-3 0-2 0.9-3.5 2.8-4.8 4.4-1.5 1.9-2.9 3.8-3.8 6.1-0.3 0.7-0.4 1.3-0.5 2-0.1 0.3-0.1 0.8-0.3 1.1-0.4 0.4-1 0.4-1.5 0.4-0.2 0-0.6 0.1-0.8 0-0.4-0.1-0.3 0.1-0.5-0.3-0.1-0.4 0.2-1.1 0.1-1.5s-0.2-0.8-0.5-1.1c-0.8-0.6-2.2-0.1-2.9 0.3-0.9 0.5-1.6 1.3-1.8 2.4-0.1 0.9 0 1.4-1 1.4s-2.3-0.2-2.8-1.2c-0.6-1.1 0.2-2.6 0.7-3.5 1.2-2.6 2.3-4.9 2.6-7.8 0.2-2.3-0.1-4.9-1.6-6.7-1.6-1.8-4.2-2.3-6.5-2.1-5.1 0.6-7.5 5.7-9.3 9.8-0.2 0.6-2.6 6.2-1.7 6.4 0.6 0.2 1.2-2.6 1.3-3 0.3-1 0.6-2 1.1-3 2-4.6 4.6-9.5 10.3-9.3 2.4 0.1 4.5 1.3 5.1 3.8 0.6 2.4 0.4 5.1-0.4 7.5s-2.6 4.4-2.7 7c-0.1 2.2 1.6 3 3.6 3 0.6 0 1.3-0.1 1.9-0.1 0.5 0 1.1 0.2 1.6 0.1 0.8-0.1 1.1-0.7 1.8-1 0.5-0.2 1.1-0.2 1.6-0.2 0.6-0.1 1.2-0.2 1.8-0.2 0.9 0.1 1 1.3 1.6 1.9 0.7 0.8 1.7 1.2 2.8 1s1.5-0.8 1.8-1.8c0.4-1.1 1.1-1 2.1-1.3 1.3-0.4 2.6-0.8 3.8-1.5 0.5-0.3 1-0.6 1.5-1 0.4-0.3 0.7-0.6 1.1-0.3s0.5 1.1 0.8 1.5c0.3 0.5 0.7 0.9 1.2 1.2 1 0.6 2.2 0.5 3.3 0.4 0.6 0 1.3 0.1 1.9 0.2 0.7 0 1 0.3 1.6 0.7 0.9 0.7 2 1.2 3.2 1.2 0.3 0 0.6 0 0.9-0.3 0.4 0.2 0.4-0.2 0.2-0.2zm-30.8-3.5c-0.1 0.2-0.4 0.2-0.5 0.4-0.3 0.3-0.3 0.6-0.6 0.9-0.4 0.5-1.8 1.5-2.2 0.5-0.3-0.8 0.5-1.7 1.1-2.1 0.4-0.4 2.6-0.9 2.2 0.3zm4.7 0.7c-0.3-0.2 0.3-1.7 0.3-2 0.3-0.9 0.6-1.7 1.1-2.5 0.9-1.5 1.9-3 2.9-4.3 0.7-0.9 5.1-5.8 6.4-3.4 0.5 0.9-0.4 2.4-0.9 3.2-0.8 1.4-1.6 2.7-2.6 4s-2.2 2.6-3.5 3.5c-0.6 0.4-1.3 0.7-2 1-0.1 0-1.4 0.7-1.7 0.5zm14.1-4.6c0.1-1.6 0.7-3 1.5-4.4 0.3-0.6 0.6-1.2 1-1.7 0.2-0.3 1.1-1.5 1.5-1.4 0.9 0.2-1 3.9-1.2 4.3-0.5 0.8-1 1.6-1.6 2.3-0.2 0.4-1.3 1.9-1.2 0.9zm8.2 4.8c-0.8 0.2-0.9-1-0.7-1.6 0.3-0.7 1-1.2 1.8-1.1 2.4 0.1 0.1 2.5-1.1 2.7z"/>
-</svg>
-
-  <div class="MainPageDescription">
-    
-    <p>Hello! My name is Igor, and I&#x2019;m a front-end and full-stack developer with nearly a decade of experience. I specialize in crafting dynamic web applications using JavaScript (mostly with TypeScript and React), Python, and related technologies.</p>
-<p>Dive into <a href="/about/">my story</a>, explore the various <a href="/projects/">projects</a> I&#x2019;ve brought to life,
-and don&#x2019;t hesitate to <a href="/contacts/">reach out to me</a> if you have any questions or suggestions.</p>
-<p>Let&#x2019;s build something amazing together!</p>
-
-  </div>
-</article>
-
-
-
-</main>
-<footer class="PageFooter">
-  <div class="FooterContainer">
-    <div class="FooterCopyright">
-      &#xa9; 2024 <span class="delimiter">/</span>
-      <a href="/">Lilliputten &amp; Noble</a>
-    </div>
-    
-    <ul class="SocialList">
-      <li class="SocialListItem">
-        <a href="https://github.com/lilliputten" rel="me noopener" class="SocialListLink linkAsText" id="Github" target="_blank"><i class="bi bi-github"></i> GitHub</a>
-      </li>
-      <li class="SocialListItem">
-        <a href="https://linkedin.com/in/lilliputten" class="SocialListLink linkAsText" id="Linkedin" target="_blank" rel="noopener"><i class="bi bi-linkedin"></i> LinkedIn</a>
-      </li>
-      
-    </ul>
-  </div>
-  
-</footer>
-
-
-
-    
-<script>
-  /* eslint-disable no-var */
-// @ts-check
-/// <reference path="../scripts/@types/THTMLNode.d.ts" />
-
-(function updateThemeWrapper() {
-  function updateTheme() {
-    var body = window.document.body;
-    var html = /** @type THTMLNode | undefined */ (body && body.parentNode);
-    var theme = (window.localStorage && window.localStorage.getItem('theme')) || 'light';
-    if (theme && html) {
-      if (html.setAttribute) {
-        html.setAttribute('data-theme', theme);
-      } else if (html.dataset) {
-        html.dataset.theme = theme;
-      }
-    }
-  }
-
-  var body = window.document.body;
-  var html = body && body.parentNode;
-
-  if (html) {
-    // console.log('[inline-root-scripts] Update theme immediately');
-    updateTheme();
-  } else {
-    // console.log('[inline-root-scripts] Update theme via load event handler');
-    window.addEventListener('load', updateTheme);
-  }
-})();
-
-</script>
-
-
-    
-
-
-
-<script src="/static/vendor/bootstrap-5.3.2/dist/js/bootstrap.js" type="text/javascript"></script>
-
-<script src="/static/vendor/three.js-r128/three.js" type="text/javascript"></script>
-
-<script src="/static/vendor/simplex-noise-2.4.0/simplex-noise.js" type="text/javascript"></script>
-
-<script src="/static/vendor/chroma-js-2.0.3/chroma.js" type="text/javascript"></script>
-
-
-
-  <script>
-    window.isDev = true;
-  </script>
-
-
-
-  <script>
-    window.isIndex = true;
-  </script>
-
-
-
-<script type="text/javascript" src="/compiled-assets/scripts.js"></script>
-
-
-
+      // Export to global scope (to access from generated html code handlers).
+      window.app = new StartApp(sharedParams);
+    </script>
   </body>
 </html>

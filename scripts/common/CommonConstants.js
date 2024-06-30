@@ -2,7 +2,7 @@
 
 const { host } = window.location;
 
-export const isDev = host === 'localhost:5000';
+export const isDev = host === 'localhost:3000';
 
 export const isProd = !isDev;
 

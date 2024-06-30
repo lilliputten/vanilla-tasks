@@ -1,0 +1,49 @@
+.PageLayout {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: var(--layout-overflow);
+  width: 100%;
+}
+.PageColumn {
+  position: relative;
+  width: 100%;
+  overflow: var(--layout-overflow);
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+.PageColumn#First {
+  border-bottom: var(--default-border);
+}
+.PageColumnHeader {
+  padding: .5em 1em;
+  background-color: rgba(var(--primary-color-rgb) / 25%);
+  border-top: var(--default-border);
+  border-bottom: var(--default-border);
+  display: flex;
+}
+.PageColumnContent {
+  flex: 1;
+  /* Scrollable container */
+  overflow: auto;
+}
+@media (min-width: 500px) {
+  .PageLayout {
+    flex-direction: row;
+  }
+  .PageColumn {
+    display: flex;
+    flex-direction: column;
+  }
+  .PageColumn#First {
+    width: 300px;
+    resize: horizontal;
+    border-right: var(--default-border);
+    border-bottom: 0px;
+  }
+  .PageColumn#Second {
+    flex: 1;
+  }
+}

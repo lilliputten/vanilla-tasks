@@ -33,6 +33,8 @@ rules:
   rule-empty-line-before: null
   at-rule-empty-line-before: null
   comment-empty-line-before: null
+  custom-property-empty-line-before: null
+  selector-class-pattern: null
   declaration-block-no-redundant-longhand-properties: null
   no-descending-specificity: null # Got false-positive warnings for independent rules order
   selector-pseudo-class-no-unknown: # https://stylelint.io/user-guide/rules/list/selector-pseudo-class-no-unknown/
