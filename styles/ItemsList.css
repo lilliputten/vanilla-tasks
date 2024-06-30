@@ -30,10 +30,12 @@
   background-color: rgba(var(--primary-color-rgb) / 40%);
 }
 .ItemsList .Title {
+  flex: 1;
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.25em 0.5em;
 }
@@ -42,8 +44,18 @@
   opacity: 0.3;
 }
 .ItemsList .Item .StatusIcon {
-  border-color: rgba(var(--primary-color-rgb) / 50%);
+  /* border-color: rgba(var(--primary-color-rgb) / 50%); */
+  border-radius: 5px;
 }
+.ItemsList .Item.Completed .StatusIcon {
+  /* border-color: var(--common-success-color); */
+  color: var(--common-success-color);
+}
+.ItemsList .Item:not(.Completed) .StatusIcon {
+  /* border-color: var(--common-error-color); */
+  color: var(--common-error-color);
+}
+.ItemsList .Item.Completed .Status:not(.Completed),
 .ItemsList .Item:not(.Completed) .Status.Completed {
   display: none;
 }

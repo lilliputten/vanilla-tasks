@@ -38,7 +38,7 @@
     "typescript": "^5.1.6"
   },
   "scripts": {
-    "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
+    "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(unchanged)' || true",
     "stylelint": "echo --Lint styles-- && stylelint styles/**/*.{css,scss,less}",
     "stylelint-fix": "echo --Lint styles-- && stylelint styles/**/*.{css,scss,less} --fix",
     "lint": "echo --Lint sources-- && eslint scripts --ext js",

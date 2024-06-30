@@ -8,7 +8,6 @@
   flex-direction: var(--root-adaptive-flex-direction);
   justify-content: space-between;
   align-items: center;
-  font-size: 90%;
 }
 .PageFooter a:not(:hover) {
   text-decoration: none;

@@ -10,10 +10,3 @@
   align-items: center;
   gap: 0.5em 1em;
 }
-.PageHeader .Version {
-  opacity: 0.5;
-  font-size: 90%;
-}
-.PageHeader .PageTitle {
-  font-size: 120%;
-}
