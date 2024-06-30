@@ -26,20 +26,20 @@
   /* Scrollable container */
   overflow: auto;
 }
-@media (width < 500px) {
+@media (width < 480px) {
   .PageColumn {
     /* Override custom user widths on mobile layout! */
     width: 100% !important;
   }
 }
-@media (width >= 500px) {
+@media (width >= 480px) {
   .PageLayout {
     flex-direction: row;
   }
   .PageColumn {
     display: flex;
     flex-direction: column;
-    min-width: 250px;
+    min-width: 240px;
   }
   .PageColumn#First {
     width: 25%;
