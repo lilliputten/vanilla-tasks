@@ -18,7 +18,7 @@
   border-bottom: var(--default-border);
 }
 .PageColumnHeader {
-  background-color: rgba(var(--primary-color-rgb) / 25%);
+  background-color: rgba(var(--primary-color-rgb) / 35%);
   border-top: var(--default-border);
   border-bottom: var(--default-border);
 }
@@ -27,7 +27,7 @@
   /* Scrollable container */
   overflow: auto;
 }
-@media (min-width: 500px) {
+@media (width >= 500px) {
   .PageLayout {
     flex-direction: row;
   }
@@ -40,13 +40,13 @@
     width: 40%;
     resize: horizontal;
     border-right: var(--default-border);
-    border-bottom: 0px;
+    border-bottom: 0;
   }
   .PageColumn#Second {
     flex: 1;
   }
 }
-@media (min-width: 600px) {
+@media (width >= 600px) {
   .PageColumn#First {
     width: 25%;
   }

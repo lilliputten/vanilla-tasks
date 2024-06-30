@@ -1,0 +1,54 @@
+.ActionButton {
+  -webkit-appearance: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 3px;
+  padding: 0.25em 0.5em;
+  opacity: 0.75;
+  transition: all var(--common-transition-time);
+  height: var(--form-item-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  gap: 0.5em;
+  border: 1px solid transparent;
+}
+.ActionButton.IconButton {
+  width: var(--form-item-size);
+}
+.ActionButton:not(.IconButton) i {
+  opacity: 0.5;
+}
+.ActionButton:active,
+.ActionButton:hover {
+  opacity: 1;
+}
+
+/* Themes... */
+
+/* ThemePrimary */
+.ActionButton.ThemePrimary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+.ActionButton.ThemePrimary:hover {
+  box-shadow: 0 0 3px 2px rgba(var(--primary-color-rgb) / 50%);
+}
+.ActionButton.ThemePrimary:active {
+  box-shadow: 0 0 0px 2px rgba(var(--primary-color-rgb) / 100%);
+}
+
+/* ThemeLight */
+.ActionButton.ThemeLight {
+  background-color: transparent;
+  color: var(--primary-color);
+}
+.ActionButton.ThemeLight:hover {
+  background-color: rgba(var(--primary-color-rgb) / 10%);
+  box-shadow: 0 0 0 1px rgba(var(--primary-color-rgb) / 20%);
+}
+.ActionButton.ThemeLight:active {
+  background-color: rgba(var(--primary-color-rgb) / 30%);
+  box-shadow: 0 0 0px 3px rgba(var(--primary-color-rgb) / 30%);
+}

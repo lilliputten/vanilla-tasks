@@ -25,7 +25,7 @@ Last changes timestamp: 2024.06.30 18:42 +0500
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- Custom styles -->
+    <!-- Styles -->
     <link rel="stylesheet" href="./styles/common-variables.css" />
     <link rel="stylesheet" href="./styles/normalize.css" />
     <link rel="stylesheet" href="./styles/common-styles.css" />
@@ -35,12 +35,15 @@ Last changes timestamp: 2024.06.30 18:42 +0500
     <link rel="stylesheet" href="./styles/page-header.css" />
     <link rel="stylesheet" href="./styles/page-footer.css" />
     <link rel="stylesheet" href="./styles/Toolbar.css" />
+    <link rel="stylesheet" href="./styles/ItemsList.css" />
+    <link rel="stylesheet" href="./styles/ActionButton.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
     </script>
   </head>
   <body class="Page">
+    <!-- Page header -->
     <nav class="PageHeader">
       <div class="PageTitle">Vanilla tasks list manager</div>
       <div class="PageAttributes">
@@ -50,66 +53,144 @@ Last changes timestamp: 2024.06.30 18:42 +0500
         </span>
       </div>
     </nav>
+    <!-- Main content -->
     <main id="PageLayout" class="PageLayout">
+      <!-- Left column -->
       <div class="PageColumn" id="First">
+        <!-- Left column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">
-            Lists
-          </div>
+          <div class="ToolbarTitle">Lists</div>
           <div class="ToolbarActions">
-            <button id="AddList"><i class="fa fa-plus"></i> Add list</button>
+            <button class="ActionButton ThemePrimary" id="AddList">
+              <i class="fa fa-plus"></i> Add list
+            </button>
           </div>
         </div>
-        <div class="PageColumnContent">
-          <p>Left column text 1</p>
-          <p>Left column text 2</p>
-          <!--
-          -->
-          <p>Left column text 3</p>
-          <p>Left column text 4</p>
-          <p>Left column text 5</p>
-          <p>Left column text 6</p>
-          <p>Left column text 7</p>
-          <p>Left column text 8</p>
-          <p>Left column text 9</p>
-          <p>Left column text 10</p>
-          <p>Left column text 11</p>
-          <p>Left column text 12</p>
-          <p>Left column text 13</p>
-          <p>Left column text 14</p>
-          <p>Left column text 15</p>
-          <p>Left column text 16</p>
-          <p>Left column text 17</p>
-          <p>Left column text 18</p>
-          <p>Left column text 19</p>
-          <p>Left column text 20</p>
-          <p>Left column text 21</p>
-          <p>Left column text 22</p>
-          <p>Left column text 23</p>
-          <p>Left column text 24</p>
-          <p>Left column text 25</p>
-          <p>Left column text 26</p>
-          <p>Left column text 27</p>
-          <p>Left column text 28</p>
-          <p>Left column text 29</p>
-          <p>Left column text 30</p>
-          <p>Left column text 31</p>
+        <!-- Left column content/list -->
+        <div class="PageColumnContent ItemsList" id="TasksLists">
+          <!-- List begin -->
+          <!-- Sample items/template -->
+          <div class="Item Active" id="TaskListId">
+            <div class="Title">Card View</div>
+            <div class="Actions">
+              <!-- Edit -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="EditTaskListName"
+                title="Edit task list name"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+              <!-- Remove -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="RemoveTasksList"
+                title="Remove tasks list"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="Item Active Current" id="TaskListId">
+            <div class="Title">Card View Long text title name extra</div>
+            <div class="Actions">
+              <!-- Edit -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="EditTaskListName"
+                title="Edit task list name"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+              <!-- Remove -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="RemoveTasksList"
+                title="Remove tasks list"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <!-- List end -->
         </div>
       </div>
+      <!-- Right column -->
       <div class="PageColumn" id="Second">
+        <!-- Right column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">
-            Tasks
-          </div>
+          <div class="ToolbarTitle">Tasks</div>
           <div class="ToolbarActions">
-            <button id="AddTask"><i class="fa fa-plus"></i> Add task</button>
+            <button class="ActionButton ThemePrimary" id="AddTask">
+              <i class="fa fa-plus"></i> Add task
+            </button>
           </div>
         </div>
-        <div class="PageColumnContent">
-          <p>Right column text</p>
+        <!-- Right column content/list -->
+        <div class="PageColumnContent ItemsList" id="TaskItems">
+          <!-- List begin -->
+          <!-- Sample items/template -->
+          <div class="Item Completed_" id="TaskListId">
+            <button
+              class="StatusIcon ActionButton IconButton ThemeLight"
+              id="Complete"
+              title="Completed"
+            >
+              <i class="Status Completed fa fa-check"></i>
+            </button>
+            <div class="Title">Task name</div>
+            <div class="Actions">
+              <!-- Edit -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="EditTaskListName"
+                title="Edit task list name"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+              <!-- Remove -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="RemoveTasksList"
+                title="Remove task item"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="Item Completed" id="TaskListId">
+            <button
+              class="StatusIcon ActionButton IconButton ThemeLight"
+              id="Complete"
+              title="Completed"
+            >
+              <i class="Status Completed fa fa-check"></i>
+            </button>
+            <div class="Title">Task name</div>
+            <div class="Actions">
+              <!-- Edit -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="EditTaskListName"
+                title="Edit task list name"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+              <!-- Remove -->
+              <button
+                class="ActionButton IconButton ThemeLight"
+                id="RemoveTasksList"
+                title="Remove task item"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <!-- List end -->
         </div>
       </div>
     </main>
+    <!-- Page footer -->
     <footer class="PageFooter">
       <div class="FooterCopyright">
         © 2024 <span class="delimiter">/</span>

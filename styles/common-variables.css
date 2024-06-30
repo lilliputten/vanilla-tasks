@@ -13,6 +13,9 @@
   --default-link-color: #003d9d;
   --neutral-color: #888;
 
+  /* Sizes */
+  --form-item-size: 2em;
+
   /* Animations */
   --common-transition-time: 150ms;
   --common-animation-time: 250ms;
@@ -21,11 +24,13 @@
   /* Main colors */
   --common-error-color: #b00; /* aka 187 0 0 */
   --common-warn-color: #c90; /* #960; */
-  --common-success-color: #0c3 ; /* #181; */
+  --common-success-color: #0c3; /* #181; */
 
   /* Combo colors */
-  --border-color: rgba(0 0 0 / 10%);
-  --default-border: 1px solid var(--border-color);
+  --default-border-color: rgba(0 0 0 / 10%);
+  --default-border: 1px solid var(--default-border-color);
+  --light-border-color: rgba(0 0 0 / 5%);
+  --light-border: 1px solid var(--light-border-color);
 
   /** Adaptive parameters */
   --root-adaptive-flex-direction: column;

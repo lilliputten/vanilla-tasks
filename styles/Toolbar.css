@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: .5em 1em;
+  gap: 0.5em 1em;
   padding: 0.5em 1em;
 }
 .Toolbar[disabled] {
@@ -12,31 +12,11 @@
   flex: 1;
   font-weight: bold;
   color: var(--primary-color);
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .Toolbar .ToolbarActions {
   display: flex;
   flex-wrap: wrap;
-  gap: .25em;
-}
-.Toolbar button {
-  -webkit-appearance: none;
-  background-color: var(--primary-color);
-  border: none;
-  color: #fff;
-  box-shadow: none;
-  border-radius: 3px;
-  padding: .25em .5em;
-  opacity: .75;
-  transition: all var(--common-transition-time);
-}
-.Toolbar button i {
-  opacity: .5;
-}
-.Toolbar button:hover {
-  opacity: 1;
-  box-shadow: 0 0 3px 2px rgba(var(--primary-color-rgb) / 50%);
-}
-.Toolbar button:active {
-  opacity: 1;
-  box-shadow: 0 0 0px 2px rgba(var(--primary-color-rgb) / 100%);
+  gap: 0.25em;
 }

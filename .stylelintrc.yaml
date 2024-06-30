@@ -36,6 +36,7 @@ rules:
   custom-property-empty-line-before: null
   selector-class-pattern: null
   declaration-block-no-redundant-longhand-properties: null
+  selector-id-pattern: null
   no-descending-specificity: null # Got false-positive warnings for independent rules order
   selector-pseudo-class-no-unknown: # https://stylelint.io/user-guide/rules/list/selector-pseudo-class-no-unknown/
     - true

@@ -1,0 +1,55 @@
+.ItemsList {
+  /* padding: 1em 0; */
+}
+.ItemsList .Item {
+  padding: 0.5em 1em;
+  /* Adjust padding for right light icon button */
+  /* padding-right: .5em; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  /* flex-wrap: wrap; */
+  transition: all var(--common-transition-time);
+  border-bottom: var(--light-border);
+}
+.ItemsList .Item.Active {
+  cursor: pointer;
+}
+.ItemsList .Item.Active:hover {
+  background-color: rgba(var(--primary-color-rgb) / 20%);
+}
+.ItemsList .Item.Active:active {
+  background-color: rgba(var(--primary-color-rgb) / 40%);
+  box-shadow: 0 0 3px 2px rgba(var(--primary-color-rgb) / 50%);
+}
+.ItemsList .Item.Current {
+  background-color: rgba(var(--primary-color-rgb) / 10%);
+}
+.ItemsList .Item.Active.Current:hover {
+  background-color: rgba(var(--primary-color-rgb) / 25%);
+}
+.ItemsList .Item.Active.Current:active {
+  background-color: rgba(var(--primary-color-rgb) / 40%);
+}
+.ItemsList .Title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0.5em 0;
+}
+.ItemsList .Item.Completed .Title {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+.ItemsList .Item .StatusIcon {
+  border-color: rgba(var(--primary-color-rgb) / 50%);
+}
+.ItemsList .Item:not(.Completed) .Status.Completed {
+  display: none;
+}
+
+/* Actions */
+.ItemsList .Actions {
+  display: flex;
+  gap: 0.25em;
+}
