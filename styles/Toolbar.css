@@ -6,7 +6,11 @@
   gap: 0.5em 1em;
   padding: 0.5em 1em;
 }
-.Toolbar[disabled] {
+@media (width < 300px) {
+  .Toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 .Toolbar .ToolbarTitle {
   flex: 1;
@@ -15,11 +19,12 @@
   text-overflow: ellipsis;
   overflow: hidden;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.25em 0.5em;
 }
 .Toolbar .ToolbarActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25em;
+  gap: 0.1em 0.25em;
 }

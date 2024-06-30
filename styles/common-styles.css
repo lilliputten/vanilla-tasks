@@ -10,3 +10,10 @@ a {
 .Info {
   opacity: 0.35;
 }
+.Small {
+  font-size: 90%;
+}
+.Large {
+  font-size: 125%;
+}
+
