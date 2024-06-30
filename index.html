@@ -59,10 +59,14 @@ Last changes timestamp: 2024.06.30 22:34 +0500
       <div class="PageColumn" id="First">
         <!-- Left column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Lists</div>
+          <div class="ToolbarTitle">Task Lists</div>
           <div class="ToolbarActions">
-            <button class="ActionButton ThemePrimary" id="AddList">
-              <i class="fa fa-plus"></i> Add list
+            <button
+              class="ActionButton IconButton ThemePrimary"
+              id="AddTasksList"
+              title="Add tasks list"
+            >
+              <i class="fa fa-plus"></i>
             </button>
           </div>
         </div>
@@ -71,11 +75,11 @@ Last changes timestamp: 2024.06.30 22:34 +0500
           <!-- List begin -->
           <!-- Sample items/template -->
           <div class="Item Active" id="TaskListId">
-            <div class="Title">Card View <span class="Info">(1/5)</span></div>
+            <div class="Title">Card View <span class="Info Small">(1/5)</span></div>
             <div class="Actions">
               <!-- Edit -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="EditTaskListName"
                 title="Edit task list name"
               >
@@ -83,7 +87,7 @@ Last changes timestamp: 2024.06.30 22:34 +0500
               </button>
               <!-- Remove -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="RemoveTasksList"
                 title="Remove tasks list"
               >
@@ -92,11 +96,13 @@ Last changes timestamp: 2024.06.30 22:34 +0500
             </div>
           </div>
           <div class="Item Active Current" id="TaskListId">
-            <div class="Title">Card View Long text title name extra <span class="Info">(1/5)</span></div>
+            <div class="Title">
+              Card View Long text title name extra <span class="Info Small">(1/5)</span>
+            </div>
             <div class="Actions">
               <!-- Edit -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="EditTaskListName"
                 title="Edit task list name"
               >
@@ -104,7 +110,7 @@ Last changes timestamp: 2024.06.30 22:34 +0500
               </button>
               <!-- Remove -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="RemoveTasksList"
                 title="Remove tasks list"
               >
@@ -119,8 +125,15 @@ Last changes timestamp: 2024.06.30 22:34 +0500
       <div class="PageColumn" id="Second">
         <!-- Right column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Tasks <span class="Info">(1/5)</span></div>
+          <div class="ToolbarTitle">Tasks <span class="Info Small">(1/5)</span></div>
           <div class="ToolbarActions">
+            <button
+              class="ActionButton IconButton ThemePrimary"
+              id="RemoveTasksList"
+              title="Remove tasks list"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
             <button class="ActionButton ThemePrimary" id="AddTask">
               <i class="fa fa-plus"></i> Add task
             </button>
@@ -131,18 +144,15 @@ Last changes timestamp: 2024.06.30 22:34 +0500
           <!-- List begin -->
           <!-- Sample items/template -->
           <div class="Item Completed_" id="TaskListId">
-            <button
-              class="StatusIcon ActionButton IconButton ThemeLight"
-              id="Complete"
-              title="Completed"
-            >
-              <i class="Status Completed fa fa-check"></i>
+            <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete">
+              <i class="Status Default fa fa-hourglass-o" title="Pending"></i>
+              <i class="Status Completed fa fa-check" title="Completed"></i>
             </button>
             <div class="Title">Task name</div>
             <div class="Actions">
               <!-- Edit -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="EditTaskListName"
                 title="Edit task list name"
               >
@@ -150,7 +160,7 @@ Last changes timestamp: 2024.06.30 22:34 +0500
               </button>
               <!-- Remove -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="RemoveTasksList"
                 title="Remove task item"
               >
@@ -159,18 +169,15 @@ Last changes timestamp: 2024.06.30 22:34 +0500
             </div>
           </div>
           <div class="Item Completed" id="TaskListId">
-            <button
-              class="StatusIcon ActionButton IconButton ThemeLight"
-              id="Complete"
-              title="Completed"
-            >
-              <i class="Status Completed fa fa-check"></i>
+            <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete">
+              <i class="Status Default fa fa-hourglass-o" title="Pending"></i>
+              <i class="Status Completed fa fa-check" title="Completed"></i>
             </button>
             <div class="Title">Task name</div>
             <div class="Actions">
               <!-- Edit -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="EditTaskListName"
                 title="Edit task list name"
               >
@@ -178,7 +185,7 @@ Last changes timestamp: 2024.06.30 22:34 +0500
               </button>
               <!-- Remove -->
               <button
-                class="ActionButton IconButton ThemeLight"
+                class="ActionButton IconButton NoIconFade ThemeLight"
                 id="RemoveTasksList"
                 title="Remove task item"
               >
@@ -194,7 +201,7 @@ Last changes timestamp: 2024.06.30 22:34 +0500
     <footer class="PageFooter">
       <div class="FooterCopyright">
         © 2024 <span class="delimiter">/</span>
-        <a href="https://lilliputten.com/">Lilliputten &amp; Noble</a>
+        <a href="https://lilliputten.com/" target="_blank">Lilliputten & Noble</a>
       </div>
       <ul class="SocialList">
         <li class="SocialListItem">

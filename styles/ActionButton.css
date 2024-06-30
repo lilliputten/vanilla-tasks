@@ -14,11 +14,14 @@
   gap: 0.5em;
   border: 1px solid transparent;
 }
+.ActionButton i {
+  transition: all var(--common-transition-time);
+}
 .ActionButton.IconButton {
   width: var(--form-item-size);
 }
-.ActionButton:not(.IconButton) i {
-  opacity: 0.5;
+.ActionButton:not(.NoIconFade):not(:hover):not(:active) i {
+  opacity: 0.6;
 }
 .ActionButton:active,
 .ActionButton:hover {
