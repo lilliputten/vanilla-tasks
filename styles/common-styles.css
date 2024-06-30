@@ -1,5 +1,8 @@
 a {
-  /* color: var(--default-link-color); */
   color: var(--primary-color);
-  /* color: var(--primary-color-dark2); */
+}
+
+*[disabled] {
+  opacity: .5;
+  pointer-events: none;
 }

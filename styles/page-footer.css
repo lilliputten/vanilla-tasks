@@ -1,6 +1,6 @@
 .PageFooter {
   text-align: center;
-  padding: 1em;
+  padding: .5em 1em;
   gap: 0.5em 1em;
   background-color: rgba(0 0 0 / 3%);
   border-top: var(--default-border);

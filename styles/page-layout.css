@@ -18,11 +18,9 @@
   border-bottom: var(--default-border);
 }
 .PageColumnHeader {
-  padding: .5em 1em;
   background-color: rgba(var(--primary-color-rgb) / 25%);
   border-top: var(--default-border);
   border-bottom: var(--default-border);
-  display: flex;
 }
 .PageColumnContent {
   flex: 1;
@@ -38,12 +36,18 @@
     flex-direction: column;
   }
   .PageColumn#First {
-    width: 300px;
+    /* width: 300px; */
+    width: 40%;
     resize: horizontal;
     border-right: var(--default-border);
     border-bottom: 0px;
   }
   .PageColumn#Second {
     flex: 1;
+  }
+}
+@media (min-width: 600px) {
+  .PageColumn#First {
+    width: 25%;
   }
 }

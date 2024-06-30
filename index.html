@@ -34,6 +34,7 @@ Last changes timestamp: 2024.06.30 18:42 +0500
     <link rel="stylesheet" href="./styles/page-layout.css" />
     <link rel="stylesheet" href="./styles/page-header.css" />
     <link rel="stylesheet" href="./styles/page-footer.css" />
+    <link rel="stylesheet" href="./styles/Toolbar.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
@@ -96,7 +97,14 @@ Last changes timestamp: 2024.06.30 18:42 +0500
         </div>
       </div>
       <div class="PageColumn" id="Second">
-        <div class="PageColumnHeader">PageColumnHeader</div>
+        <div class="PageColumnHeader Toolbar" id="ListsToolbar">
+          <div class="ToolbarTitle">
+            Tasks
+          </div>
+          <div class="ToolbarActions">
+            <button id="AddTask"><i class="fa fa-plus"></i> Add task</button>
+          </div>
+        </div>
         <div class="PageColumnContent">
           <p>Right column text</p>
         </div>
