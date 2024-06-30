@@ -44,16 +44,15 @@
   opacity: 0.3;
 }
 .ItemsList .Item .StatusIcon {
-  border-color: rgba(var(--primary-color-rgb) / 50%);
+  /* border-color: rgba(var(--primary-color-rgb) / 50%); */
   border-radius: 5px;
 }
 .ItemsList .Item.Completed .StatusIcon {
-  /* border-color: rgba(0 0 0 / 10%); */
-  border-color: var(--common-success-color);
+  /* border-color: var(--common-success-color); */
   color: var(--common-success-color);
 }
 .ItemsList .Item:not(.Completed) .StatusIcon {
-  border-color: var(--common-error-color);
+  /* border-color: var(--common-error-color); */
   color: var(--common-error-color);
 }
 .ItemsList .Item.Completed .Status:not(.Completed),
