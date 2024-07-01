@@ -4,7 +4,7 @@ import { useDebug } from './common/CommonConstants.js';
 // import { commonNotify } from './common/CommonNotify.js';
 // import { commonModal } from './common/CommonModal.js';
 
-export class StartApp {
+export class AppClass {
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
@@ -20,7 +20,7 @@ export class StartApp {
     const { layoutNode } = sharedParams;
 
     // eslint-disable-next-line no-console
-    console.log('[StartApp] Ok', {
+    console.log('[AppClass] Ok', {
       useDebug,
       layoutNode,
       callbacks,

@@ -220,7 +220,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
       // @ts-check
 
       // Core module
-      import { StartApp } from './scripts/StartApp.js';
+      import { AppClass } from './scripts/AppClass.js';
 
       const layoutNode = document.getElementById('PageLayout');
 
@@ -233,7 +233,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
       };
 
       // Export to global scope (to access from generated html code handlers).
-      window.app = new StartApp(sharedParams);
+      window.app = new AppClass(sharedParams);
     </script>
   </body>
 </html>
