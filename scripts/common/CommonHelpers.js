@@ -97,22 +97,6 @@ export function getErrorText(error) {
   return error;
 }
 
-/** sortByAmountProperty -- Sort by numeric amount propery helper
- * @param {TDataRecord} a
- * @param {TDataRecord} b
- * @return {-1 | 0 | 1}
- */
-export function sortByAmountProperty(a, b) {
-  if (a.amount < b.amount) {
-    // Reversed because want ascending order
-    return -1;
-  }
-  if (a.amount > b.amount) {
-    return 1;
-  }
-  return 0;
-}
-
 /** quoteHtmlAttr -- quote all invalid characters for html
  * @param {string} str
  * @param {boolean} [preserveCR]

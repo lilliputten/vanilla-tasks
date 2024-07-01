@@ -19,6 +19,7 @@ export class StartApp {
 
     const { layoutNode } = sharedParams;
 
+    // eslint-disable-next-line no-console
     console.log('[StartApp] Ok', {
       useDebug,
       layoutNode,
