@@ -1,0 +1,23 @@
+.InputForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.InputText {
+  box-shadow: none;
+  padding: 0 0.5em;
+  box-sizing: border-box;
+  border-radius: var(--form-item-radius);
+  transition: all var(--common-transition-time);
+  height: var(--form-item-size);
+  /* box-shadow: 0 0 0 1px var(--primary-color); */
+  /* box-shadow: 0 0 0 1px rgba(var(--primary-color-rgb) / 50%); */
+  outline: 1px solid var(--primary-color);
+  border: none;
+}
+.InputText:focus {
+  /* outline: 2px var(--primary-color); */
+  /* box-shadow: 0 0 0 1px var(--primary-color); */
+  box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb) / 20%);
+}

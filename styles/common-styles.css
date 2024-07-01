@@ -10,9 +10,16 @@ a {
 .Info {
   opacity: 0.35;
 }
+.InfoWrapper {
+  text-align: center;
+  padding: 1em;
+}
 .Small {
   font-size: 90%;
 }
 .Large {
   font-size: 125%;
+}
+.FullWidth {
+  width: 100%;
 }

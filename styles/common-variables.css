@@ -15,6 +15,7 @@
 
   /* Sizes */
   --form-item-size: 2em;
+  --form-item-radius: 4px;
 
   /* Animations */
   --common-transition-time: 150ms;

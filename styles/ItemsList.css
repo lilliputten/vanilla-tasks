@@ -34,7 +34,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0;
-  display: flex;
+  display: inline-block; // Required for `ellipsis` clipping mode
   align-items: center;
   flex-wrap: wrap;
   gap: 0.25em 0.5em;

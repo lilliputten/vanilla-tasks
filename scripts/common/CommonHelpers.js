@@ -133,7 +133,7 @@ export function htmlToElement(html) {
   return /** @type HTMLElement */ (content.firstChild);
 }
 
-/**
+/** htmlToElements -- Convert text html representation to HTMLCollection object
  * @param {string|string[]} html
  * @return {HTMLCollection}
  */

@@ -35,8 +35,10 @@ Last changes timestamp: 2024.07.01 13:56 +0500
     <link rel="stylesheet" href="./styles/page-header.css" />
     <link rel="stylesheet" href="./styles/page-footer.css" />
     <link rel="stylesheet" href="./styles/Toolbar.css" />
+    <link rel="stylesheet" href="./styles/Actions.css" />
     <link rel="stylesheet" href="./styles/ItemsList.css" />
     <link rel="stylesheet" href="./styles/ActionButton.css" />
+    <link rel="stylesheet" href="./styles/Inputs.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
@@ -58,12 +60,14 @@ Last changes timestamp: 2024.07.01 13:56 +0500
       <!-- Left column -->
       <div class="PageColumn" id="First">
         <!-- Left column header/toolbar -->
-        <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Projects</div>
+        <div class="PageColumnHeader Toolbar" id="ProjectsToolbar">
+          <div class="ToolbarTitle">
+            <span class="TitleText">Projects</span>
+          </div>
           <div class="ToolbarActions">
             <button
               class="ActionButton IconButton ThemePrimary"
-              id="AddProject"
+              action-id="onAddProjectAction"
               title="Add Project"
             >
               <i class="fa fa-plus"></i>
@@ -72,61 +76,19 @@ Last changes timestamp: 2024.07.01 13:56 +0500
         </div>
         <!-- Left column content/list -->
         <div class="PageColumnContent ItemsList" id="ProjectsList">
-          <!-- List begin -->
-          <!-- Sample items/template -->
-          <div class="Project Item Active" id="ProjectId">
-            <div class="Title">Card View <span class="Info Small">(1/5)</span></div>
-            <div class="Actions">
-              <!-- Edit -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditProjectName"
-                title="Edit Project Name"
-              >
-                <i class="fa fa-pencil"></i>
-              </button>
-              <!-- Remove -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveProject"
-                title="Remove Project"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="Project Item Active Current" id="ProjectId">
-            <div class="Title">
-              Card View Long text title name extra <span class="Info Small">(1/5)</span>
-            </div>
-            <div class="Actions">
-              <!-- Edit -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditProjectName"
-                title="Edit Project Name"
-              >
-                <i class="fa fa-pencil"></i>
-              </button>
-              <!-- Remove -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveProject"
-                title="Remove Project"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <!-- List end -->
+          <!-- Projects list placeholder -->
         </div>
       </div>
       <!-- Right column -->
       <div class="PageColumn" id="Second">
         <!-- Right column header/toolbar -->
-        <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Tasks <span class="Info Small">(1/5)</span></div>
+        <div class="PageColumnHeader Toolbar" id="TasksToolbar">
+          <div class="ToolbarTitle">
+            <span class="TitleText">Tasks</span>
+            <span class="Info Small">(1/5)</span>
+          </div>
           <div class="ToolbarActions">
+            <!--
             <button
               class="ActionButton IconButton ThemePrimary"
               id="RemoveProject"
@@ -134,6 +96,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
             >
               <i class="fa fa-trash"></i>
             </button>
+            -->
             <button class="ActionButton ThemePrimary" id="AddTask">
               <i class="fa fa-plus"></i> Add task
             </button>
@@ -218,12 +181,9 @@ Last changes timestamp: 2024.07.01 13:56 +0500
     <!-- Start page scripts -->
     <script type="module">
       // @ts-check
-
       // Core module
       import { AppClass } from './scripts/AppClass.js';
-
       const layoutNode = document.getElementById('PageLayout');
-
       /** Global variables...
        * @type {TSharedParams}
        */
@@ -231,7 +191,6 @@ Last changes timestamp: 2024.07.01 13:56 +0500
         // Current configuration parameters...
         layoutNode,
       };
-
       // Export to global scope (to access from generated html code handlers).
       window.app = new AppClass(sharedParams);
     </script>
