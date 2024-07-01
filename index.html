@@ -59,43 +59,43 @@ Last changes timestamp: 2024.07.01 13:28 +0500
       <div class="PageColumn" id="First">
         <!-- Left column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Task Lists</div>
+          <div class="ToolbarTitle">Projects</div>
           <div class="ToolbarActions">
             <button
               class="ActionButton IconButton ThemePrimary"
-              id="AddTasksList"
-              title="Add tasks list"
+              id="AddProject"
+              title="Add Project"
             >
               <i class="fa fa-plus"></i>
             </button>
           </div>
         </div>
         <!-- Left column content/list -->
-        <div class="PageColumnContent ItemsList" id="TasksLists">
+        <div class="PageColumnContent ItemsList" id="ProjectsList">
           <!-- List begin -->
           <!-- Sample items/template -->
-          <div class="Item Active" id="TaskListId">
+          <div class="Project Item Active" id="ProjectId">
             <div class="Title">Card View <span class="Info Small">(1/5)</span></div>
             <div class="Actions">
               <!-- Edit -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditTaskListName"
-                title="Edit task list name"
+                id="EditProjectName"
+                title="Edit Project Name"
               >
                 <i class="fa fa-pencil"></i>
               </button>
               <!-- Remove -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveTasksList"
-                title="Remove tasks list"
+                id="RemoveProject"
+                title="Remove Project"
               >
                 <i class="fa fa-trash"></i>
               </button>
             </div>
           </div>
-          <div class="Item Active Current" id="TaskListId">
+          <div class="Project Item Active Current" id="ProjectId">
             <div class="Title">
               Card View Long text title name extra <span class="Info Small">(1/5)</span>
             </div>
@@ -103,16 +103,16 @@ Last changes timestamp: 2024.07.01 13:28 +0500
               <!-- Edit -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditTaskListName"
-                title="Edit task list name"
+                id="EditProjectName"
+                title="Edit Project Name"
               >
                 <i class="fa fa-pencil"></i>
               </button>
               <!-- Remove -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveTasksList"
-                title="Remove tasks list"
+                id="RemoveProject"
+                title="Remove Project"
               >
                 <i class="fa fa-trash"></i>
               </button>
@@ -129,8 +129,8 @@ Last changes timestamp: 2024.07.01 13:28 +0500
           <div class="ToolbarActions">
             <button
               class="ActionButton IconButton ThemePrimary"
-              id="RemoveTasksList"
-              title="Remove tasks list"
+              id="RemoveProject"
+              title="Remove Project"
             >
               <i class="fa fa-trash"></i>
             </button>
@@ -140,10 +140,10 @@ Last changes timestamp: 2024.07.01 13:28 +0500
           </div>
         </div>
         <!-- Right column content/list -->
-        <div class="PageColumnContent ItemsList" id="TaskItems">
+        <div class="PageColumnContent ItemsList" id="Tasks">
           <!-- List begin -->
           <!-- Sample items/template -->
-          <div class="Item Completed_" id="TaskListId">
+          <div class="Task Item Completed_" id="TaskId">
             <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete">
               <i class="Status Default fa fa-clock-o" title="Pending"></i>
               <i class="Status Completed fa fa-check" title="Completed"></i>
@@ -153,22 +153,22 @@ Last changes timestamp: 2024.07.01 13:28 +0500
               <!-- Edit -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditTaskListName"
-                title="Edit task list name"
+                id="EditTaskName"
+                title="Edit Task Name"
               >
                 <i class="fa fa-pencil"></i>
               </button>
               <!-- Remove -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveTasksList"
-                title="Remove task item"
+                id="RemoveTask"
+                title="Remove Task"
               >
                 <i class="fa fa-trash"></i>
               </button>
             </div>
           </div>
-          <div class="Item Completed" id="TaskListId">
+          <div class="Task Item Completed" id="TaskId">
             <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete">
               <i class="Status Default fa fa-clock-o" title="Pending"></i>
               <i class="Status Completed fa fa-check" title="Completed"></i>
@@ -178,16 +178,16 @@ Last changes timestamp: 2024.07.01 13:28 +0500
               <!-- Edit -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditTaskListName"
-                title="Edit task list name"
+                id="EditTaskName"
+                title="Edit Task Name"
               >
                 <i class="fa fa-pencil"></i>
               </button>
               <!-- Remove -->
               <button
                 class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveTasksList"
-                title="Remove task item"
+                id="RemoveTask"
+                title="Remove Task"
               >
                 <i class="fa fa-trash"></i>
               </button>
@@ -206,22 +206,11 @@ Last changes timestamp: 2024.07.01 13:28 +0500
       <ul class="SocialList">
         <li class="SocialListItem">
           <a
-            href="https://github.com/lilliputten"
-            rel="me noopener"
+            href="https://github.com/lilliputten/vanilla-tasks"
             class="SocialListLink linkAsText"
             id="Github"
             target="_blank"
             ><i class="fa fa-github"></i> GitHub</a
-          >
-        </li>
-        <li class="SocialListItem">
-          <a
-            href="https://linkedin.com/in/lilliputten"
-            class="SocialListLink linkAsText"
-            id="Linkedin"
-            target="_blank"
-            rel="noopener"
-            ><i class="fa fa-linkedin-square"></i> LinkedIn</a
           >
         </li>
       </ul>
