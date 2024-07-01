@@ -9,7 +9,7 @@
 DIST_BRANCH="publish" # Production build -> html-app-build
 
 # TODO: Use the repo from `.git/config`?
-DIST_REPO="git@github.com:lilliputten/vanilla-tasks-list-mgr.git"
+DIST_REPO="git@github.com:lilliputten/vanilla-tasks.git"
 SRC_TAG_PREFIX="v" # "v" for default tags like "v.X.Y.Z"
 
 PUBLISH_FOLDER="$DIST_BRANCH"

@@ -69,6 +69,7 @@ UPDATE_FILE() {
       | sed "s/^\(-* *Version:\) .*$/\1 $VERSION/" \
       | sed "s/^\(-* *Last changes timestamp:\) .*$/\1 $TIMESTAMP/" \
       | sed "s/^\(-* *Last changes timetag:\) .*$/\1 $TIMETAG/" \
+      | sed "s/\(v\.\).\+ \/ .\+$/\1$VERSION \/ $TIMESTAMP/" \
     > $FILE || exit 1
   fi
   rm $FILE.bak || exit 1
