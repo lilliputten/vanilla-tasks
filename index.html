@@ -39,6 +39,8 @@ Last changes timestamp: 2024.07.01 13:56 +0500
     <link rel="stylesheet" href="./styles/ItemsList.css" />
     <link rel="stylesheet" href="./styles/ActionButton.css" />
     <link rel="stylesheet" href="./styles/Inputs.css" />
+    <link rel="stylesheet" href="./styles/ProjectsList.css" />
+    <link rel="stylesheet" href="./styles/TasksList.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
@@ -58,7 +60,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
     <!-- Main content -->
     <main id="PageLayout" class="PageLayout">
       <!-- Left column -->
-      <div class="PageColumn" id="First">
+      <div class="PageColumn" id="ProjectsSection">
         <!-- Left column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="ProjectsToolbar">
           <div class="ToolbarTitle">
@@ -80,7 +82,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
         </div>
       </div>
       <!-- Right column -->
-      <div class="PageColumn" id="Second">
+      <div class="PageColumn" id="TasksSection">
         <!-- Right column header/toolbar -->
         <div class="PageColumnHeader Toolbar" id="TasksToolbar">
           <div class="ToolbarTitle">
@@ -103,7 +105,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
           </div>
         </div>
         <!-- Right column content/list -->
-        <div class="PageColumnContent ItemsList" id="Tasks">
+        <div class="PageColumnContent ItemsList" id="TasksList">
           <!-- List begin -->
           <!-- Sample items/template -->
           <div class="Task Item Completed_" id="TaskId">

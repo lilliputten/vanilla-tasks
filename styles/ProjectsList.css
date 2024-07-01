@@ -1,0 +1,3 @@
+#ProjectsSection:not(.Empty) .EmptyMessage {
+  display: none;
+}

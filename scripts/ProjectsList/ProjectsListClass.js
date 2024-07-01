@@ -52,6 +52,9 @@ export class ProjectsListClass {
   layoutNode = undefined;
 
   /** @type {HTMLElement} */
+  sectionNode = undefined;
+
+  /** @type {HTMLElement} */
   listNode = undefined;
 
   /** Projects
@@ -118,6 +121,16 @@ export class ProjectsListClass {
   initDomNodes(sharedParams) {
     const { layoutNode } = sharedParams;
 
+    const sectionNode = /** @type {HTMLElement} */ (layoutNode.querySelector('#ProjectsSection'));
+    if (!sectionNode) {
+      const error = new Error(`Not found projects section dom node`);
+      // eslint-disable-next-line no-console
+      console.warn('[ProjectsSectionClass:initDomNodes]', error);
+      commonNotify.showError(error);
+      throw error;
+    }
+    this.sectionNode = sectionNode;
+
     const listNode = /** @type {HTMLElement} */ (layoutNode.querySelector('#ProjectsList'));
     if (!listNode) {
       const error = new Error(`Not found projects list dom node`);
@@ -141,20 +154,33 @@ export class ProjectsListClass {
 
   // Action helpers...
 
+  updateStatus() {
+    const { projects, sectionNode } = this;
+    const isEmpty = !Array.isArray(projects) || !projects.length;
+    sectionNode.classList.toggle('Empty', isEmpty);
+    this.updateTasksToolbarTitleForCurrentProject();
+  }
+
   updateTasksToolbarTitleForCurrentProject() {
     if (!showProjectInRightToolbar) {
       return;
     }
     const { currentProjectId, layoutNode } = this;
+    const tasksSectionNode = layoutNode.querySelector('#TasksSection');
+    const titleNode = layoutNode.querySelector('#TasksToolbar > .ToolbarTitle > .TitleText');
+    const infoNode = layoutNode.querySelector('#TasksToolbar > .ToolbarTitle > .Info');
     const project = this.projects.find(({ id }) => id === currentProjectId);
-    if (project) {
+    const hasProject = !!project;
+    if (hasProject) {
       const { name, tasks } = project;
       const tasksStatsStr = TaskHelpers.getTasksStatsStr(tasks);
-      const titleNode = layoutNode.querySelector('#TasksToolbar > .ToolbarTitle > .TitleText');
-      const infoNode = layoutNode.querySelector('#TasksToolbar > .ToolbarTitle > .Info');
       titleNode.innerHTML = name;
       infoNode.innerHTML = tasksStatsStr ? `(${tasksStatsStr})` : '';
+    } else {
+      titleNode.innerHTML = '<span class="Info">No selected project</span>';
+      infoNode.innerHTML = '';
     }
+    tasksSectionNode.classList.toggle('NoProject', !hasProject);
   }
 
   /** @param {TProjectId | undefined} projectId */
@@ -186,7 +212,7 @@ export class ProjectsListClass {
       nextCurrentNode.classList.toggle('Current', true);
     }
     // Show project tasks
-    this.updateTasksToolbarTitleForCurrentProject();
+    this.updateStatus();
   }
 
   /**
@@ -237,7 +263,7 @@ export class ProjectsListClass {
         // Set the new title for the dom node...
         projectNode.querySelector('.TitleText').innerHTML = name;
         // Update the name of the right panel if it's for the current project...
-        this.updateTasksToolbarTitleForCurrentProject();
+        this.updateStatus();
       })
       .catch(NOOP);
   }
@@ -259,8 +285,6 @@ export class ProjectsListClass {
         }
         projectNode.remove();
         this.setCurrentProject(undefined);
-        // Update the name of the right panel if it's for the current project...
-        this.updateTasksToolbarTitleForCurrentProject();
       })
       .catch(NOOP);
   }
@@ -368,10 +392,11 @@ export class ProjectsListClass {
    * @param {TProject[]} projects
    */
   renderProjectsContent(projects) {
-    if (!Array.isArray(projects) || !projects.length) {
-      return '<div class="Info InfoWrapper">No projects to display</div>';
+    let items = ['<div class="Info InfoWrapper EmptyMessage">No projects to display</div>'];
+    if (Array.isArray(projects) && projects.length) {
+      items = items.concat(projects.map(this.renderProjectItem.bind(this)));
     }
-    return projects.map(this.renderProjectItem.bind(this)).join('\n');
+    return items.join('\n');
   }
 
   /**
@@ -388,5 +413,6 @@ export class ProjectsListClass {
    */
   renderProjects() {
     this.renderProjectsToNode(this.listNode, this.projects);
+    this.updateStatus();
   }
 }

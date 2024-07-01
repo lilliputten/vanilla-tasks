@@ -5,6 +5,8 @@
   flex-wrap: wrap;
   gap: 0.5em 1em;
   padding: 0.5em 1em;
+  /* Minimal height for form element */
+  min-height: var(--form-item-size);
 }
 @media (width < 300px) {
   .Toolbar {
