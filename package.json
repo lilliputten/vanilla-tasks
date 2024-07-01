@@ -1,5 +1,5 @@
 {
-  "name": "vanilla-tasks-list-mgr",
+  "name": "vanilla-tasks",
   "version": "0.0.1",
   "timetag": "240701-0019",
   "timestamp": "2024.07.01 00:19 +0500",
@@ -8,13 +8,13 @@
   "main": "index.html",
   "author": "lilliputten@gmail.com",
   "license": "MIT",
-  "homepage": "https://vanilla-tasks-list-mgr.lilliputten.com/",
+  "homepage": "https://vanilla-tasks.lilliputten.com/",
   "repository": {
     "type": "git",
-    "url": "git@github.com:lilliputten/vanilla-tasks-list-mgr.git"
+    "url": "git@github.com:lilliputten/vanilla-tasks.git"
   },
   "bugs": {
-    "url": "git@github.com:lilliputten/vanilla-tasks-list-mgr.git/issues"
+    "url": "git@github.com:lilliputten/vanilla-tasks.git/issues"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.9",
