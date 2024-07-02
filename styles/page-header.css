@@ -17,6 +17,11 @@
   flex-wrap: wrap;
   gap: 0.25em 1em;
 }
+.PageHeader .PageTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
 @media (width < 700px) {
   .PageHeader .Timestamp {
     display: none;
