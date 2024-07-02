@@ -201,7 +201,7 @@ export function confirmationModal(id, title, text) {
 export function updateActionHandlers(parentNode, callbacks) {
   const selectors = actionTypes.map((id) => `[${id}-action-id]`).join(', ');
   const actionNodes = Array.from(parentNode.querySelectorAll(selectors));
-  if (parentNode.getAttribute('action-id')) {
+  if (parentNode.matches(selectors)) {
     actionNodes.unshift(parentNode);
   }
   actionNodes.forEach((actionNode) => {
