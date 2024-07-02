@@ -16,8 +16,35 @@
   outline: 1px solid var(--primary-color);
   border: none;
 }
+.InputText:hover {
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb) / 20%);
+  /* outline: 1px solid rgba(var(--primary-color-rgb) / 20%); */
+}
 .InputText:focus {
   /* outline: 2px var(--primary-color); */
   /* box-shadow: 0 0 0 1px var(--primary-color); */
   box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb) / 20%);
+}
+
+.GhostInput {
+  outline: 1px solid rgba(var(--primary-color-rgb) / 0%);
+}
+.GhostInput:not(:focus, :active) {
+  background: none;
+}
+.GhostInput:not(:hover, :focus, :active) {
+  border: none;
+  box-shadow: none;
+  /* outline: none; */
+}
+.GhostInput:hover {
+  outline: 1px solid rgba(var(--primary-color-rgb) / 20%);
+  background-color: rgba(255 255 255 / 20%);
+}
+.GhostInput:focus {
+  outline: 1px solid rgba(var(--primary-color-rgb) / 100%);
+  background-color: #fff;
+}
+.GhostInput:active,
+.GhostInput:focus {
 }

@@ -165,6 +165,7 @@ body.has-modal {
 
 /* The Close Button */
 .common-modal-wrapper .common-modal-header > .close {
+  user-select: none;
   color: #666;
   opacity: 0.5;
   top: 19px;

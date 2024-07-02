@@ -22,8 +22,13 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 0.25em 0.5em;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.Toolbar .TitleText {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .Toolbar .ToolbarActions {
   display: flex;

@@ -1,49 +1,56 @@
 // @ts-check
 
-import { useDebug } from '../common/CommonConstants.js';
-import * as CommonHelpers from '../common/CommonHelpers.js';
-import * as TaskHelpers from '../common/TaskHelpers.js';
-import { commonNotify } from '../common/CommonNotify.js';
+import { useDebug } from '../../common/CommonConstants.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
+
+import * as AppHelpers from '../AppHelpers.js';
+import * as AppConstants from '../AppConstants.js';
 
 import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 
-/** @type {TProject[]} */
-const demoProjects = [
-  // {
-  //   id: 'project-1',
-  //   name: 'Project 1',
-  //   tasks: [
-  //     {
-  //       id: 'task-11',
-  //       name: 'Task 11',
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: 'project-2',
-  //   name: 'Project 2',
-  //   tasks: [
-  //     {
-  //       id: 'task-21',
-  //       name: 'Task 21',
-  //     },
-  //     {
-  //       id: 'task-22',
-  //       name: 'Task 22',
-  //     },
-  //   ],
-  // },
-];
+import { TasksListClass } from '../TasksList/TasksListClass.js';
+
+/* // Demo projects data...
+ * [>* @type {TProject[]} <]
+ * const demoProjects = [
+ *   {
+ *     id: 'project-1',
+ *     name: 'Project 1 ExtraLongProjectNamerStringForTest',
+ *     tasks: [
+ *       {
+ *         id: 'task-11',
+ *         name: 'Task 11',
+ *       },
+ *     ],
+ *   },
+ *   {
+ *     id: 'project-2',
+ *     name: 'Project 2',
+ *     tasks: [
+ *       {
+ *         id: 'task-21',
+ *         name: 'Task 21',
+ *       },
+ *       {
+ *         id: 'task-22',
+ *         name: 'Task 22',
+ *       },
+ *     ],
+ *   },
+ * ];
+ */
 
 const NOOP = () => {};
-
-const showProjectInRightToolbar = true;
 
 export class ProjectsListClass {
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {TasksListClass} */
+  tasksList = undefined;
 
   /** @type {HTMLElement} */
   toolbarNode = undefined;
@@ -85,8 +92,14 @@ export class ProjectsListClass {
 
     this.layoutNode = layoutNode;
 
-    // DEBUG!
-    this.projects = demoProjects;
+    /* // DEBUG!
+     * this.projects = demoProjects;
+     */
+
+    this.loadProjects();
+    this.selectFirstProject();
+
+    // Set default project
 
     // eslint-disable-next-line no-console
     console.log('[ProjectsListClass] Ok', {
@@ -98,19 +111,21 @@ export class ProjectsListClass {
     // TODO: Init state
 
     // Init handler callbacks...
+    callbacks.onTasksChanged = this.onTasksChanged.bind(this);
+    callbacks.onUpdateTextInputProjectName = this.onUpdateTextInputProjectName.bind(this);
     callbacks.onEditProjectNameAction = this.onEditProjectNameAction.bind(this);
     callbacks.onRemoveProjectAction = this.onRemoveProjectAction.bind(this);
     callbacks.onProjectItemClickAction = this.onProjectItemClickAction.bind(this);
     callbacks.onAddProjectAction = this.onAddProjectAction.bind(this);
 
+    this.tasksList = new TasksListClass(sharedParams);
+    this.tasksList.setTasksChangedCallback(callbacks.onTasksChanged);
+
     this.renderProjects();
+    this.updateCurrentProject();
 
     // Init toolbar handlers...
-    TaskHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
-
-    /* // DEMO: Test common modal
-     * this.testModal();
-     */
+    AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
   }
 
   // Init...
@@ -158,29 +173,15 @@ export class ProjectsListClass {
     const { projects, sectionNode } = this;
     const isEmpty = !Array.isArray(projects) || !projects.length;
     sectionNode.classList.toggle('Empty', isEmpty);
-    this.updateTasksToolbarTitleForCurrentProject();
+    this.tasksList.updateStatus();
   }
 
-  updateTasksToolbarTitleForCurrentProject() {
-    if (!showProjectInRightToolbar) {
-      return;
-    }
-    const { currentProjectId, layoutNode } = this;
-    const tasksSectionNode = layoutNode.querySelector('#TasksSection');
-    const titleNode = layoutNode.querySelector('#TasksToolbar > .ToolbarTitle > .TitleText');
-    const infoNode = layoutNode.querySelector('#TasksToolbar > .ToolbarTitle > .Info');
+  updateCurrentProject() {
+    const { currentProjectId } = this;
     const project = this.projects.find(({ id }) => id === currentProjectId);
-    const hasProject = !!project;
-    if (hasProject) {
-      const { name, tasks } = project;
-      const tasksStatsStr = TaskHelpers.getTasksStatsStr(tasks);
-      titleNode.innerHTML = name;
-      infoNode.innerHTML = tasksStatsStr ? `(${tasksStatsStr})` : '';
-    } else {
-      titleNode.innerHTML = '<span class="Info">No selected project</span>';
-      infoNode.innerHTML = '';
-    }
-    tasksSectionNode.classList.toggle('NoProject', !hasProject);
+    this.tasksList.setProject(project);
+    // Show project tasks
+    this.updateStatus();
   }
 
   /** @param {TProjectId | undefined} projectId */
@@ -211,8 +212,7 @@ export class ProjectsListClass {
     if (nextCurrentNode) {
       nextCurrentNode.classList.toggle('Current', true);
     }
-    // Show project tasks
-    this.updateStatus();
+    this.updateCurrentProject();
   }
 
   /**
@@ -243,7 +243,75 @@ export class ProjectsListClass {
     return projectId;
   }
 
+  /**
+   * @param {TProjectId} projectId
+   * @param {string} name
+   */
+  setProjectName(projectId, name) {
+    const project = this.projects.find(({ id }) => id === projectId);
+    project.name = name;
+    project.updated = Date.now();
+    this.tasksList.setProjectName(name);
+    this.updateStatus();
+    this.saveProjects();
+  }
+
+  selectFirstProject() {
+    // Set default project
+    const { projects } = this;
+    if (Array.isArray(projects) && projects.length) {
+      this.currentProjectId = projects[0].id;
+    } else {
+      this.currentProjectId = undefined;
+    }
+  }
+
+  loadProjects() {
+    if (window.localStorage) {
+      const { projectsStorageId } = AppConstants;
+      const projectsJson = window.localStorage.getItem(projectsStorageId);
+      const projects = projectsJson ? JSON.parse(projectsJson) : [];
+      this.projects = projects;
+    }
+  }
+
+  saveProjects() {
+    if (window.localStorage) {
+      const { projectsStorageId } = AppConstants;
+      const projectsJson = JSON.stringify(this.projects);
+      window.localStorage.setItem(projectsStorageId, projectsJson);
+    }
+  }
+
   // Actions...
+
+  /**
+   * @param {TProjectId} projectId
+   * @param {TTask[]} _tasks
+   */
+  onTasksChanged(projectId, _tasks) {
+    /* // DEBUG
+     * const project = this.projects.find(({ id }) => id === projectId);
+     * console.log('[ProjectsListClass:onTasksChanged]', {
+     *   projectId,
+     *   // tasks,
+     *   project,
+     * });
+     */
+    this.updateProjectItemTitle(projectId);
+    this.saveProjects();
+  }
+
+  /** @param {Event} event */
+  onUpdateTextInputProjectName(event) {
+    event.preventDefault();
+    const node = /** @type {HTMLInputElement} */ (event.currentTarget);
+    const name = node.value;
+    const projectNode = node.closest('.Project.Item');
+    const projectId = projectNode.id;
+    // Store data...
+    this.setProjectName(projectId, name);
+  }
 
   /** @param {PointerEvent} event */
   onEditProjectNameAction(event) {
@@ -255,15 +323,18 @@ export class ProjectsListClass {
       // ???
       return;
     }
-    TaskHelpers.editTextValueModal('projectName', 'Edit Project Name', 'Project Name', project.name)
+    AppHelpers.editTextValueModal('projectName', 'Edit Project Name', 'Project Name', project.name)
       .then((name) => {
-        // Store data...
-        project.name = name;
-        project.updated = Date.now();
+        const titleText = projectNode.querySelector('.TitleText');
         // Set the new title for the dom node...
-        projectNode.querySelector('.TitleText').innerHTML = name;
-        // Update the name of the right panel if it's for the current project...
-        this.updateStatus();
+        if (titleText.tagName === 'INPUT') {
+          const inputText = /** @type {HTMLInputElement} */ (titleText);
+          inputText.value = name;
+        } else {
+          titleText.innerHTML = name;
+        }
+        // Save data...
+        this.setProjectName(projectId, name);
       })
       .catch(NOOP);
   }
@@ -273,7 +344,7 @@ export class ProjectsListClass {
     event.preventDefault();
     const projectNode = ProjectsListHelpers.getEventProjectNode(event);
     const projectId = projectNode.id;
-    TaskHelpers.confirmationModal(
+    AppHelpers.confirmationModal(
       'removeProject',
       'Remove project?',
       'Are you sure to delete the project?',
@@ -285,30 +356,13 @@ export class ProjectsListClass {
         }
         projectNode.remove();
         this.setCurrentProject(undefined);
+        this.saveProjects();
       })
       .catch(NOOP);
   }
 
-  /** Select project
-   * @param {PointerEvent} event
-   */
-  onProjectItemClickAction(event) {
-    const { currentProjectId } = this;
-    const projectId = ProjectsListHelpers.getEventProjectId(event);
-    // TODO: Check if projectId has been defined?
-    if (!projectId || projectId === currentProjectId) {
-      return;
-    }
-    /* console.log('[ProjectsListClass:onProjectItemClickAction]', {
-     *   projectId,
-     *   event,
-     * });
-     */
-    this.setCurrentProject(projectId);
-  }
-
   onAddProjectAction() {
-    TaskHelpers.editTextValueModal('projectName', 'New Project Name', 'Project Name', '')
+    AppHelpers.editTextValueModal('projectName', 'New Project Name', 'Project Name', '')
       .then((name) => {
         const currTimestamp = Date.now();
         const projectId = this.getUniqProjectId();
@@ -332,28 +386,66 @@ export class ProjectsListClass {
          * });
          */
         this.listNode.append(projectNode);
-        TaskHelpers.updateActionHandlers(projectNode, this.callbacks);
+        AppHelpers.updateActionHandlers(projectNode, this.callbacks);
         this.setCurrentProject(projectId);
+        this.saveProjects();
       })
       .catch(NOOP);
   }
 
+  /** Select project
+   * @param {PointerEvent} event
+   */
+  onProjectItemClickAction(event) {
+    const { currentProjectId } = this;
+    const projectId = ProjectsListHelpers.getEventProjectId(event);
+    // TODO: Check if projectId has been defined?
+    if (!projectId || projectId === currentProjectId) {
+      return;
+    }
+    /* console.log('[ProjectsListClass:onProjectItemClickAction]', {
+     *   projectId,
+     *   event,
+     * });
+     */
+    this.setCurrentProject(projectId);
+  }
+
   // Render...
+
+  /** @param {TProject} project */
+  getProjectTitleContent(project) {
+    const { name, tasks } = project;
+    const tasksStatsStr = AppHelpers.getTasksStatsStr(tasks);
+    const title = [
+      /* // NOTE: It's possible to use inputs or just text nodes (with `GhostInput` here and `WithTextInput` for title nodes)
+       * `<input class="TitleText InputText FullWidth GhostInput" value="${CommonHelpers.quoteHtmlAttr(name)}" change-action-id="onUpdateTextInputProjectName" />`,
+       */
+      `<span class="TitleText">${name}</span>`,
+      tasksStatsStr && `<span class="Info Small">(${tasksStatsStr})</span>`,
+    ]
+      .filter(Boolean)
+      .join(' ');
+    return title;
+  }
+
+  /** @param {TProjectId} projectId */
+  updateProjectItemTitle(projectId) {
+    const { sectionNode } = this;
+    const project = this.projects.find(({ id }) => id === projectId);
+    const titleContent = this.getProjectTitleContent(project);
+    const node = sectionNode.querySelector(`.Project.Item[id="${projectId}"] > .Title`);
+    node.innerHTML = titleContent;
+  }
 
   /**
    * @param {TProject} project
    * @return string
    */
   renderProjectItem(project) {
-    const { id, name, tasks } = project;
+    const { id } = project;
     const isCurrent = id === this.currentProjectId;
-    const tasksStatsStr = TaskHelpers.getTasksStatsStr(tasks);
-    const title = [
-      `<span class="TitleText">${name}</span>`,
-      tasksStatsStr && `<span class="Info Small">(${tasksStatsStr})</span>`,
-    ]
-      .filter(Boolean)
-      .join(' ');
+    const titleContent = this.getProjectTitleContent(project);
     const className = [
       // prettier-ignore
       'Project',
@@ -364,24 +456,24 @@ export class ProjectsListClass {
       .filter(Boolean)
       .join(' ');
     return `
-<div class="${className}" id="${id}" action-id="onProjectItemClickAction">
-  <div class="Title">${title}</div>
+<div class="${className}" id="${id}" click-action-id="onProjectItemClickAction">
+  <div class="Title -WithTextInput">${titleContent}</div>
   <div class="Actions">
     <!-- Edit -->
     <button
       class="ActionButton IconButton NoIconFade ThemeLight"
-      action-id="onEditProjectNameAction"
+      click-action-id="onEditProjectNameAction"
       title="Edit Project Name"
     >
-      <i class="fa fa-pencil"></i>
+      <span class="icon fa fa-pencil"></span>
     </button>
     <!-- Remove -->
     <button
       class="ActionButton IconButton NoIconFade ThemeLight"
-      action-id="onRemoveProjectAction"
+      click-action-id="onRemoveProjectAction"
       title="Remove Project"
     >
-      <i class="fa fa-trash"></i>
+      <span class="icon fa fa-trash"></span>
     </button>
   </div>
 </div>
@@ -406,7 +498,7 @@ export class ProjectsListClass {
   renderProjectsToNode(node, projects) {
     const content = this.renderProjectsContent(projects);
     CommonHelpers.updateNodeContent(node, content);
-    TaskHelpers.updateActionHandlers(node, this.callbacks);
+    AppHelpers.updateActionHandlers(node, this.callbacks);
   }
 
   /** Render all the projects to the list node

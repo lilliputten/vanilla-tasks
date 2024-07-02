@@ -7,6 +7,7 @@ const cssStyleUrl = '/styles/common-notify.css';
 
 // Icon shapes (move to constants?)...
 const icons = {
+  // TODO: Replace with unicode symbols
   success: 'fa-check',
   error: 'fa-warning',
   warn: 'fa-bell',

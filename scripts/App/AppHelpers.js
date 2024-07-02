@@ -1,7 +1,10 @@
 // @ts-check
 
-// import * as CommonHelpers from './CommonHelpers.js';
-import { commonModal } from './CommonModal.js';
+import * as CommonHelpers from '../common/CommonHelpers.js';
+import { commonModal } from '../common/CommonModal.js';
+
+// All possible action ids for `updateActionHandlers` (TODO: Move to constants)
+const actionTypes = ['click', 'change'];
 
 /**
  * @param {TTask[]} tasks
@@ -34,25 +37,25 @@ export function getTasksStatsStr(tasks) {
  * @param {string} name - Current name
  */
 function getEditTextValueFormContent(id, paramName, name) {
-  name = name.replace(/"/g, '&quot;');
+  const quotedName = CommonHelpers.quoteHtmlAttr(name); // .replace(/"/g, '&quot;');
   const content = `
 <form class="InputForm" id="form" form-id="${id}">
   <div>
-    <input class="InputText FullWidth" value="${name}" placeholder="${paramName}" id="textInput" />
+    <input class="InputText FullWidth" value="${quotedName}" placeholder="${paramName}" id="textInput" />
   </div>
   <div class="Actions">
     <button
       class="ActionButton ThemePrimary"
       id="onSaveAction"
     >
-      <i class="fa fa-check"></i>
+      <i class="icon fa fa-check"></i>
       Save
     </button>
     <button
       class="ActionButton ThemePrimary"
       id="onCancelAction"
     >
-      <i class="fa fa-cross"></i>
+      <i class="icon fa fa-times"></i>
       Cancel
     </button>
   </div>
@@ -128,14 +131,14 @@ function getConfirmationFormContent(id, _title, text) {
       class="ActionButton ThemePrimary"
       id="onYesAction"
     >
-      <i class="fa fa-check"></i>
+      <span class="icon fa fa-check"></span>
       Yes
     </button>
     <button
       class="ActionButton ThemePrimary"
       id="onCancelAction"
     >
-      <i class="fa fa-cross"></i>
+      <span class="icon fa fa-times"></span>
       Cancel
     </button>
   </div>
@@ -196,25 +199,33 @@ export function confirmationModal(id, title, text) {
  * @param {TSharedHandlers} callbacks;
  */
 export function updateActionHandlers(parentNode, callbacks) {
-  const actionNodes = Array.from(parentNode.querySelectorAll('[action-id]'));
+  const selectors = actionTypes.map((id) => `[${id}-action-id]`).join(', ');
+  const actionNodes = Array.from(parentNode.querySelectorAll(selectors));
   if (parentNode.getAttribute('action-id')) {
     actionNodes.unshift(parentNode);
   }
   actionNodes.forEach((actionNode) => {
-    const actionId = actionNode.getAttribute('action-id');
-    const action = actionId && callbacks[actionId];
-    if (!action) {
-      const error = new Error(`Not found action for id "${actionId}"`);
-      // eslint-disable-next-line no-console
-      console.warn('[ProjectsListHelpers:updateActionHandlers]', error, {
-        actionNode,
-        parentNode,
-      });
-      return;
-    }
-    // Just for case: remove previous listener
-    actionNode.removeEventListener('click', action);
-    // Add listener...
-    actionNode.addEventListener('click', action);
+    // const foundActions = [];
+    actionTypes.forEach((actionType) => {
+      const actionId = actionNode.getAttribute(actionType + '-action-id');
+      if (!actionId) {
+        // Do nothing
+        return;
+      }
+      const action = actionId && callbacks[actionId];
+      if (!action) {
+        const error = new Error(`Not found action for id "${actionId}"`);
+        // eslint-disable-next-line no-console
+        console.warn('[ProjectsListHelpers:updateActionHandlers]', error, {
+          actionNode,
+          parentNode,
+        });
+        return;
+      }
+      // Just for case: remove previous listener
+      actionNode.removeEventListener(actionType, action);
+      // Add listener...
+      actionNode.addEventListener(actionType, action);
+    });
   });
 }
