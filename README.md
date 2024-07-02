@@ -1,6 +1,6 @@
 <!--
 @since 2024.06.30, 12:00
-@changed 2024.07.02, 13:59
+@changed 2024.07.02, 18:02
 -->
 
 # Vanilla tasks list manager
@@ -20,13 +20,13 @@ The actual version is deployed to:
 
 An extra information is available on:
 
-- https://lilliputten.com/articles/vanilla-tasks-manager
+- https://lilliputten.com/projects/2024/vanilla-tasks-manager
 
 ## Used technologies
 
 This project uses only vanilla css and (almost; see below) vanilla javascript.
 
-There used [modern es modules support](https://www.sitepoint.com/using-es-modules/) in browser. It's not a good sulution from the point of view of performance, but as it's a demo application, it could be ok.
+There used [modern es modules support](https://www.sitepoint.com/using-es-modules/) in browser. It's not a good solution from the point of view of performance, but as it's a demo application, it could be ok.
 
 Only one 3rd-party resource was used: font-awesome icons library (v.4.5.0).
 
