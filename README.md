@@ -20,7 +20,7 @@ The actual version is deployed to:
 
 An extra information is available on:
 
-- https://lilliputten.com/articles/vanilla-tasks-mgr
+- https://lilliputten.com/articles/vanilla-tasks-manager
 
 ## Used technologies
 
