@@ -1,0 +1,7 @@
+/* TEAM */
+    Author: Igor Lilliputten
+    Contact: igor [at] lilliputten.com
+
+/* SITE */
+    Language: English
+    Doctype: HTML5
