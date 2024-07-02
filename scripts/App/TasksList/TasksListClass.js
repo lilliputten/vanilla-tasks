@@ -1,6 +1,5 @@
 // @ts-check
 
-import { useDebug } from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
@@ -65,12 +64,12 @@ export class TasksListClass {
 
     this.layoutNode = layoutNode;
 
-    // eslint-disable-next-line no-console
-    console.log('[TasksListClass] Ok', {
-      useDebug,
-      layoutNode,
-      callbacks,
-    });
+    /* console.log('[TasksListClass] Ok', {
+     *   useDebug,
+     *   layoutNode,
+     *   callbacks,
+     * });
+     */
 
     // TODO: Init state
 

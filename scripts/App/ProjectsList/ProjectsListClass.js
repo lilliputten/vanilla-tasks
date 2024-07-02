@@ -1,6 +1,5 @@
 // @ts-check
 
-import { useDebug } from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
@@ -101,12 +100,12 @@ export class ProjectsListClass {
 
     // Set default project
 
-    // eslint-disable-next-line no-console
-    console.log('[ProjectsListClass] Ok', {
-      useDebug,
-      layoutNode,
-      callbacks,
-    });
+    /* console.log('[ProjectsListClass] Ok', {
+     *   useDebug,
+     *   layoutNode,
+     *   callbacks,
+     * });
+     */
 
     // TODO: Init state
 

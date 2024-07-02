@@ -1,1 +1,1 @@
-export const projectsStorageId = 'app:projects';
+export const projectsStorageId = 'projects';
