@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
 @changed 2024.06.30, 17:42
-Version: 0.0.2
-Last changes timestamp: 2024.07.01 13:56 +0500
+Version: 0.0.3
+Last changes timestamp: 2024.07.02 15:10 +0500
 -->
 <html lang="en">
   <head>
@@ -35,8 +35,12 @@ Last changes timestamp: 2024.07.01 13:56 +0500
     <link rel="stylesheet" href="./styles/page-header.css" />
     <link rel="stylesheet" href="./styles/page-footer.css" />
     <link rel="stylesheet" href="./styles/Toolbar.css" />
+    <link rel="stylesheet" href="./styles/Actions.css" />
     <link rel="stylesheet" href="./styles/ItemsList.css" />
     <link rel="stylesheet" href="./styles/ActionButton.css" />
+    <link rel="stylesheet" href="./styles/Inputs.css" />
+    <link rel="stylesheet" href="./styles/ProjectsList.css" />
+    <link rel="stylesheet" href="./styles/TasksList.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
@@ -49,151 +53,66 @@ Last changes timestamp: 2024.07.01 13:56 +0500
       <div class="PageAttributes Small Info">
         <span class="Version">
           <!-- NOTE: The value is substituting automatically -->
-          v.0.0.2 / 2024.07.01 13:56 +0500
+          v.0.0.3 / 2024.07.02 15:10 +0500
         </span>
       </div>
     </nav>
     <!-- Main content -->
     <main id="PageLayout" class="PageLayout">
       <!-- Left column -->
-      <div class="PageColumn" id="First">
+      <div class="PageColumn Empty" id="ProjectsSection">
         <!-- Left column header/toolbar -->
-        <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Projects</div>
+        <div class="PageColumnHeader Toolbar" id="ProjectsToolbar">
+          <div class="ToolbarTitle">
+            <span class="TitleText">Projects</span>
+          </div>
           <div class="ToolbarActions">
             <button
               class="ActionButton IconButton ThemePrimary"
-              id="AddProject"
+              click-action-id="onAddProjectAction"
               title="Add Project"
             >
-              <i class="fa fa-plus"></i>
+              <span class="icon fa fa-plus"></span>
             </button>
           </div>
         </div>
         <!-- Left column content/list -->
         <div class="PageColumnContent ItemsList" id="ProjectsList">
-          <!-- List begin -->
-          <!-- Sample items/template -->
-          <div class="Project Item Active" id="ProjectId">
-            <div class="Title">Card View <span class="Info Small">(1/5)</span></div>
-            <div class="Actions">
-              <!-- Edit -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditProjectName"
-                title="Edit Project Name"
-              >
-                <i class="fa fa-pencil"></i>
-              </button>
-              <!-- Remove -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveProject"
-                title="Remove Project"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="Project Item Active Current" id="ProjectId">
-            <div class="Title">
-              Card View Long text title name extra <span class="Info Small">(1/5)</span>
-            </div>
-            <div class="Actions">
-              <!-- Edit -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditProjectName"
-                title="Edit Project Name"
-              >
-                <i class="fa fa-pencil"></i>
-              </button>
-              <!-- Remove -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveProject"
-                title="Remove Project"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <!-- List end -->
+          <!-- Projects list placeholder -->
         </div>
       </div>
       <!-- Right column -->
-      <div class="PageColumn" id="Second">
+      <div class="PageColumn NoProject Empty" id="TasksSection">
         <!-- Right column header/toolbar -->
-        <div class="PageColumnHeader Toolbar" id="ListsToolbar">
-          <div class="ToolbarTitle">Tasks <span class="Info Small">(1/5)</span></div>
+        <div class="PageColumnHeader Toolbar" id="TasksToolbar">
+          <div class="ToolbarTitle">
+            <span class="TitleText">Tasks</span>
+            <span class="Info Small">(1/5)</span>
+          </div>
           <div class="ToolbarActions">
+            <!--
             <button
               class="ActionButton IconButton ThemePrimary"
               id="RemoveProject"
               title="Remove Project"
             >
-              <i class="fa fa-trash"></i>
+              <i class="icon fa fa-trash"></i>
             </button>
-            <button class="ActionButton ThemePrimary" id="AddTask">
-              <i class="fa fa-plus"></i> Add task
+            -->
+            <button
+              class="ActionButton ThemePrimary"
+              id="AddTask"
+              click-action-id="onAddTaskAction"
+            >
+              <i class="icon fa fa-plus"></i>
+              Add task
             </button>
           </div>
         </div>
         <!-- Right column content/list -->
-        <div class="PageColumnContent ItemsList" id="Tasks">
-          <!-- List begin -->
-          <!-- Sample items/template -->
-          <div class="Task Item Completed_" id="TaskId">
-            <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete">
-              <i class="Status Default fa fa-clock-o" title="Pending"></i>
-              <i class="Status Completed fa fa-check" title="Completed"></i>
-            </button>
-            <div class="Title">Task name</div>
-            <div class="Actions">
-              <!-- Edit -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditTaskName"
-                title="Edit Task Name"
-              >
-                <i class="fa fa-pencil"></i>
-              </button>
-              <!-- Remove -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveTask"
-                title="Remove Task"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="Task Item Completed" id="TaskId">
-            <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete">
-              <i class="Status Default fa fa-clock-o" title="Pending"></i>
-              <i class="Status Completed fa fa-check" title="Completed"></i>
-            </button>
-            <div class="Title">Task name</div>
-            <div class="Actions">
-              <!-- Edit -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="EditTaskName"
-                title="Edit Task Name"
-              >
-                <i class="fa fa-pencil"></i>
-              </button>
-              <!-- Remove -->
-              <button
-                class="ActionButton IconButton NoIconFade ThemeLight"
-                id="RemoveTask"
-                title="Remove Task"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <!-- List end -->
+        <div class="PageColumnContent ItemsList" id="TasksList">
+          <!-- Tasks list placeholder -->
+          <div class="Info InfoWrapper EmptyMessage">No tasks to display</div>
         </div>
       </div>
     </main>
@@ -210,7 +129,7 @@ Last changes timestamp: 2024.07.01 13:56 +0500
             class="SocialListLink linkAsText"
             id="Github"
             target="_blank"
-            ><i class="fa fa-github"></i> GitHub</a
+            ><i class="icon fa fa-github"></i> GitHub</a
           >
         </li>
       </ul>
@@ -218,12 +137,9 @@ Last changes timestamp: 2024.07.01 13:56 +0500
     <!-- Start page scripts -->
     <script type="module">
       // @ts-check
-
       // Core module
-      import { StartApp } from './scripts/StartApp.js';
-
+      import { AppClass } from './scripts/App/AppClass.js';
       const layoutNode = document.getElementById('PageLayout');
-
       /** Global variables...
        * @type {TSharedParams}
        */
@@ -231,9 +147,8 @@ Last changes timestamp: 2024.07.01 13:56 +0500
         // Current configuration parameters...
         layoutNode,
       };
-
       // Export to global scope (to access from generated html code handlers).
-      window.app = new StartApp(sharedParams);
+      window.app = new AppClass(sharedParams);
     </script>
   </body>
 </html>

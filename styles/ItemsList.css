@@ -31,13 +31,25 @@
 }
 .ItemsList .Title {
   flex: 1;
+  padding: 0.5em 0;
+  align-items: center;
+  display: flex;
+  gap: 0.25em 0.5em;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding: 0.5em 0;
-  display: flex;
-  align-items: center;
+}
+.ItemsList .Title:not(.WithTextInput) {
   flex-wrap: wrap;
-  gap: 0.25em 0.5em;
+}
+.ItemsList .WithTextInput .GhostInput {
+  /* Make enough room for activee outlines */
+  margin: 4px;
+}
+.ItemsList .Title .TitleText {
+  /* flex: 1; */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block; /* Required for `ellipsis` clipping mode */
 }
 .ItemsList .Item.Completed .Title {
   text-decoration: line-through;

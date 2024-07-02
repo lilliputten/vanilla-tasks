@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
 }
-.PageColumn#First {
+.PageColumn#ProjectsSection {
   border-bottom: var(--default-border);
 }
 .PageColumnHeader {
@@ -41,13 +41,13 @@
     flex-direction: column;
     min-width: 240px;
   }
-  .PageColumn#First {
+  .PageColumn#ProjectsSection {
     width: 25%;
     resize: horizontal;
     border-right: var(--default-border);
     border-bottom: 0;
   }
-  .PageColumn#Second {
+  .PageColumn#TasksSection {
     flex: 1;
   }
 }

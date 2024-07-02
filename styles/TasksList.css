@@ -1,0 +1,6 @@
+#TasksSection:not(.Empty) .EmptyMessage {
+  display: none;
+}
+#TasksSection.NoProject #AddTask {
+  display: none;
+}

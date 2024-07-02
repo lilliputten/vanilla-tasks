@@ -16,6 +16,7 @@ yarn-error.log*
 .env.*
 
 # Temporariy, swap & ignored files
+*.log
 /log*.txt
 /config-local.*
 /*.session

@@ -1,0 +1,5 @@
+.Actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1em 0.25em;
+}

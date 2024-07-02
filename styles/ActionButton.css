@@ -1,7 +1,8 @@
 .ActionButton {
   /* -webkit-appearance: none; */
+  user-select: none;
   box-shadow: none;
-  border-radius: 3px;
+  border-radius: var(--form-item-radius);
   padding: 0.25em 0.5em;
   opacity: 0.75;
   transition: all var(--common-transition-time);
@@ -13,13 +14,14 @@
   gap: 0.5em;
   border: 1px solid transparent;
 }
-.ActionButton i {
+.ActionButton .icon {
   transition: all var(--common-transition-time);
+  font-style: normal;
 }
 .ActionButton.IconButton {
   width: var(--form-item-size);
 }
-.ActionButton:not(.NoIconFade, :hover, :active) i {
+.ActionButton:not(.NoIconFade, :hover, :active) .icon {
   opacity: 0.6;
 }
 .ActionButton:active,
