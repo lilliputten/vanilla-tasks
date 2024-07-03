@@ -2,7 +2,10 @@
   /* padding: 1em 0; */
 }
 .ItemsList .Item {
-  padding: 0.5em 1em;
+  --item-v-padding: 0.5em;
+
+  position: relative;
+  padding: var(--item-v-padding) 1em;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -76,4 +79,56 @@
 .ItemsList .Actions {
   display: flex;
   gap: 0.25em;
+}
+
+/* Dragging */
+.ItemsList.Dragging {
+  /* border: 1px dashed green; */
+  --drag-gap: 1.5em;
+  --drag-indicate-color1: rgba(var(--primary-color-rgb) / 50%);
+  --drag-indicate-color2: rgba(var(--primary-color-rgb) / 40%);
+}
+.ItemsList.Dragging .Item.DragFrom {
+  border: 1px dashed var(--primary-color);
+  background-color: rgba(var(--primary-color-rgb) / 20%);
+  opacity: 0.25;
+}
+.ItemsList.Dragging .Item.DragTo {
+  /* border: 1px dashed red; */
+}
+.ItemsList.Dragging .Item::before,
+.ItemsList.Dragging .Item::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: all var(--common-transition-time);
+  content: '';
+}
+.ItemsList.Dragging .Item::before {
+  top: 0;
+}
+.ItemsList.Dragging .Item::after {
+  bottom: 0;
+}
+.ItemsList.Dragging .Item.DragTo.DragBefore {
+  padding-top: calc(var(--item-v-padding) + var(--drag-gap));
+}
+.ItemsList.Dragging .Item.DragTo.DragAfter {
+  padding-bottom: calc(var(--item-v-padding) + var(--drag-gap));
+}
+.ItemsList.Dragging .Item.DragTo.DragAfter::after,
+.ItemsList.Dragging .Item.DragTo.DragBefore::before {
+  height: var(--drag-gap);
+}
+.ItemsList.Dragging .Item.DragFrom,
+.ItemsList.Dragging .Item.DragTo.DragAfter::after,
+.ItemsList.Dragging .Item.DragTo.DragBefore::before {
+  /* Diagonal stripes background */
+  background: repeating-linear-gradient(
+    45deg,
+    var(--drag-indicate-color2),
+    var(--drag-indicate-color2) 10px,
+    var(--drag-indicate-color1) 10px,
+    var(--drag-indicate-color1) 20px
+  );
 }

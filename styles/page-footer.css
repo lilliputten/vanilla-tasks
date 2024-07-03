@@ -12,6 +12,18 @@
 .PageFooter a:not(:hover) {
   text-decoration: none;
 }
+.PageFooter .AppInfo {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5em 1em;
+}
+.PageFooter .PageAttributes {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.25em 1em;
+}
 .PageFooter .SocialList {
   list-style-type: none;
   display: flex;

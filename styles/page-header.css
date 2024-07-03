@@ -11,12 +11,6 @@
   align-items: center;
   gap: 0.5em 1em;
 }
-.PageHeader .PageAttributes {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.25em 1em;
-}
 .PageHeader .PageTitle {
   display: flex;
   align-items: center;

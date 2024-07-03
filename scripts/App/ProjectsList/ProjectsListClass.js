@@ -6,47 +6,24 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 import * as AppConstants from '../AppConstants.js';
 
-import * as ProjectsListHelpers from './ProjectsListHelpers.js';
+import { DragListItems } from '../DragListItems/DragListItems.js';
 
 import { TasksListClass } from '../TasksList/TasksListClass.js';
 
-/* // Demo projects data...
- * [>* @type {TProject[]} <]
- * const demoProjects = [
- *   {
- *     id: 'project-1',
- *     name: 'Project 1 ExtraLongProjectNamerStringForTest',
- *     tasks: [
- *       {
- *         id: 'task-11',
- *         name: 'Task 11',
- *       },
- *     ],
- *   },
- *   {
- *     id: 'project-2',
- *     name: 'Project 2',
- *     tasks: [
- *       {
- *         id: 'task-21',
- *         name: 'Task 21',
- *       },
- *       {
- *         id: 'task-22',
- *         name: 'Task 22',
- *       },
- *     ],
- *   },
- * ];
- */
+import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 
 const NOOP = () => {};
+
+const useDragListItems = true;
 
 export class ProjectsListClass {
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {DragListItems} */
+  dragListItems = undefined;
 
   /** @type {TasksListClass} */
   tasksList = undefined;
@@ -91,25 +68,17 @@ export class ProjectsListClass {
 
     this.layoutNode = layoutNode;
 
-    /* // DEBUG!
-     * this.projects = demoProjects;
-     */
-
+    // Load projects data...
     this.loadProjects();
-    this.selectFirstProject();
 
-    // Set default project
-
-    /* console.log('[ProjectsListClass] Ok', {
-     *   useDebug,
-     *   layoutNode,
-     *   callbacks,
-     * });
-     */
-
-    // TODO: Init state
+    // Set selected project...
+    this.loadCurrentProjectId();
+    if (!this.currentProjectId) {
+      this.selectFirstProject();
+    }
 
     // Init handler callbacks...
+    callbacks.onDragFinish = this.onDragFinish.bind(this);
     callbacks.onTasksChanged = this.onTasksChanged.bind(this);
     callbacks.onUpdateTextInputProjectName = this.onUpdateTextInputProjectName.bind(this);
     callbacks.onEditProjectNameAction = this.onEditProjectNameAction.bind(this);
@@ -125,6 +94,14 @@ export class ProjectsListClass {
 
     // Init toolbar handlers...
     AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
+
+    if (useDragListItems) {
+      this.dragListItems = new DragListItems({
+        dragId: 'Projects',
+        listNode: this.listNode,
+        onDragFinish: callbacks.onDragFinish,
+      });
+    }
   }
 
   // Init...
@@ -208,6 +185,7 @@ export class ProjectsListClass {
       item.classList.toggle('Current', false);
     });
     this.currentProjectId = projectId;
+    this.saveCurrentProjectId();
     if (nextCurrentNode) {
       nextCurrentNode.classList.toggle('Current', true);
     }
@@ -269,7 +247,8 @@ export class ProjectsListClass {
     if (window.localStorage) {
       const { projectsStorageId } = AppConstants;
       const projectsJson = window.localStorage.getItem(projectsStorageId);
-      const projects = projectsJson ? JSON.parse(projectsJson) : [];
+      // TODO: Do bulletproof json parsing (inside try/catch)?
+      const projects = projectsJson && projectsJson !== 'undefined' ? JSON.parse(projectsJson) : [];
       this.projects = projects;
     }
   }
@@ -282,21 +261,47 @@ export class ProjectsListClass {
     }
   }
 
+  loadCurrentProjectId() {
+    const { projects } = this;
+    const hasProjects = Array.isArray(projects) && projects.length;
+    if (window.localStorage && hasProjects) {
+      const { currentProjectIdStorageId } = AppConstants;
+      const currentProjectIdJson = window.localStorage.getItem(currentProjectIdStorageId);
+      // TODO: Do bulletproof json parsing (inside try/catch)?
+      const currentProjectId =
+        currentProjectIdJson && currentProjectIdJson !== 'undefined'
+          ? JSON.parse(currentProjectIdJson)
+          : undefined;
+      // Is it existed project id?
+      if (currentProjectId && projects.find(({ id }) => id === currentProjectId)) {
+        this.currentProjectId = currentProjectId;
+      }
+    }
+  }
+
+  saveCurrentProjectId() {
+    if (window.localStorage) {
+      const { currentProjectIdStorageId } = AppConstants;
+      const currentProjectIdJson = JSON.stringify(this.currentProjectId);
+      window.localStorage.setItem(currentProjectIdStorageId, currentProjectIdJson);
+    }
+  }
+
   // Actions...
+
+  /** Finish items order change */
+  onDragFinish() {
+    const { projects, dragListItems } = this;
+    dragListItems.commitMove(projects);
+    this.updateStatus();
+    this.saveProjects();
+  }
 
   /**
    * @param {TProjectId} projectId
    * @param {TTask[]} _tasks
    */
   onTasksChanged(projectId, _tasks) {
-    /* // DEBUG
-     * const project = this.projects.find(({ id }) => id === projectId);
-     * console.log('[ProjectsListClass:onTasksChanged]', {
-     *   projectId,
-     *   // tasks,
-     *   project,
-     * });
-     */
     this.updateProjectItemTitle(projectId);
     this.saveProjects();
   }
@@ -377,15 +382,9 @@ export class ProjectsListClass {
         const projectNodeTemplate = this.renderProjectItem(project);
         const projectNodeCollection = CommonHelpers.htmlToElements(projectNodeTemplate);
         const projectNode = /** @type {HTMLElement} */ (projectNodeCollection[0]);
-        /* console.log('[ProjectsListClass:onAddProjectAction]', {
-         *   project,
-         *   projectNodeTemplate,
-         *   projectNode,
-         *   name,
-         * });
-         */
         this.listNode.append(projectNode);
         AppHelpers.updateActionHandlers(projectNode, this.callbacks);
+        this.dragListItems?.updateDomNodes();
         this.setCurrentProject(projectId);
         this.saveProjects();
       })
@@ -402,11 +401,6 @@ export class ProjectsListClass {
     if (!projectId || projectId === currentProjectId) {
       return;
     }
-    /* console.log('[ProjectsListClass:onProjectItemClickAction]', {
-     *   projectId,
-     *   event,
-     * });
-     */
     this.setCurrentProject(projectId);
   }
 
@@ -454,8 +448,14 @@ export class ProjectsListClass {
     ]
       .filter(Boolean)
       .join(' ');
+    const attrs = [
+      // prettier-ignore
+      useDragListItems && 'draggable="true"',
+    ]
+      .filter(Boolean)
+      .join(' ');
     return `
-<div class="${className}" id="${id}" click-action-id="onProjectItemClickAction">
+<div class="${className}" id="${id}" click-action-id="onProjectItemClickAction"${attrs}>
   <div class="Title -WithTextInput">${titleContent}</div>
   <div class="Actions">
     <!-- Edit -->
@@ -505,5 +505,6 @@ export class ProjectsListClass {
   renderProjects() {
     this.renderProjectsToNode(this.listNode, this.projects);
     this.updateStatus();
+    this.dragListItems?.updateDomNodes();
   }
 }
