@@ -5,7 +5,7 @@
   background-color: rgba(0 0 0 / 3%);
   border-top: var(--default-border);
   display: flex;
-  flex-direction: var(--root-adaptive-flex-direction);
+  flex-direction: var(--footer-flex-direction);
   justify-content: space-between;
   align-items: center;
 }

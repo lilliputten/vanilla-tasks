@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
 @changed 2024.07.02, 17:02
-Version: 0.0.5
-Last changes timestamp: 2024.07.03 17:02 +0500
+Version: 0.0.6
+Last changes timestamp: 2024.07.03 21:17 +0500
 -->
 <html lang="en">
   <head>
@@ -58,10 +58,43 @@ Last changes timestamp: 2024.07.03 17:02 +0500
   </head>
   <body class="Page">
     <!-- Page header -->
-    <nav class="PageHeader">
+    <nav class="PageHeader" id="PageHeader">
       <div class="PageTitle Large">
         <img src="images/logo/logo-white.svg" width="24" height="24" alt="Logo" />
-        Vanilla tasks list manager
+        <span class="PageTitleText">Vanilla tasks list manager</span>
+      </div>
+      <div class="HamburgerMenu">
+        <button
+          class="ActionButton IconButton ThemePrimary"
+          id="Hamburger"
+          title="Toggle menu"
+          click-action-id="onMainMenuToggle"
+        >
+          <span class="fa fa-bars"></span>
+        </button>
+      </div>
+      <!--
+      -->
+      <div class="MainMenu" id="MainMenu">
+        <button
+          class="ActionButton ThemePrimary"
+          click-action-id="onDataExport"
+          title="Export and download tasks data as a local JSON file"
+          disabled
+        >
+          <span class="fa fa-download"></span>
+          Download
+        </button>
+        <button
+          class="ActionButton ThemePrimary"
+          click-action-id="onDataImport"
+          title="Upload and import tasks data from a local JSON file"
+          disabled
+        >
+          <span class="fa fa-upload"></span>
+          Upload
+        </button>
+        <!-- TODO: PWA installtation button, Issue #17 -->
       </div>
     </nav>
     <!-- Main content -->
@@ -135,7 +168,7 @@ Last changes timestamp: 2024.07.03 17:02 +0500
         <div class="PageAttributes Small Info">
           <span class="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.5 / 2024.07.03 17:02 +0500
+            v.0.0.6 / 2024.07.03 21:17 +0500
           </span>
         </div>
         <ul class="SocialList">
