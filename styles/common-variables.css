@@ -34,14 +34,24 @@
   --light-border: 1px solid var(--light-border-color);
 
   /** Adaptive parameters */
-  --root-adaptive-flex-direction: column;
+  --footer-flex-direction: column;
+  --root-adaptive-flex-direction: row;
   --root-overflow: auto;
   --layout-overflow: visible;
   --scrollable-overflow: visible;
+  --header-hamburger-display: flex;
+  /* --header-menu-position: fixed; */
+  --header-title-flex: 1;
+  --header-menu-width: 100%;
   @media (width >= 480px) {
-    --root-adaptive-flex-direction: row;
+    --footer-flex-direction: row;
+    /* --root-adaptive-flex-direction: row; */
     --root-overflow: hidden;
     --layout-overflow: hidden;
     --scrollable-overflow: auto;
+    --header-hamburger-display: none;
+    --header-menu-position: relative;
+    --header-title-flex: auto;
+    --header-menu-width: auto;
   }
 }

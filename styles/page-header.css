@@ -15,9 +15,35 @@
   display: flex;
   align-items: center;
   gap: 0.5em;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-@media (width < 700px) {
-  .PageHeader .Timestamp {
+.PageHeader .PageTitleText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.PageHeader .MainMenu {
+  position: var(--header-menu-position);
+  width: var(--header-menu-width);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: var(--footer-flex-direction);
+  gap: 0.25em 0.5em;
+}
+/** Mobile screens */
+@media (width < 480px) {
+  .PageHeader .MainMenu {
+    align-items: center;
+    padding: 0.25em;
+  }
+  .PageHeader:not(.MenuOpen) .MainMenu {
     display: none;
   }
+}
+.PageHeader .HamburgerMenu {
+  display: var(--header-hamburger-display);
 }

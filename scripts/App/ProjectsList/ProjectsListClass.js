@@ -61,12 +61,10 @@ export class ProjectsListClass {
   constructor(sharedParams) {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
+    const { layoutNode } = sharedParams;
+    this.layoutNode = layoutNode;
 
     this.initDomNodes(sharedParams);
-
-    const { layoutNode } = sharedParams;
-
-    this.layoutNode = layoutNode;
 
     // Load projects data...
     this.loadProjects();

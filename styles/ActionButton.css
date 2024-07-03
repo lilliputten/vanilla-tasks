@@ -14,6 +14,10 @@
   gap: 0.5em;
   border: 1px solid transparent;
 }
+.ActionButton[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .ActionButton .icon {
   transition: all var(--common-transition-time);
   font-style: normal;
