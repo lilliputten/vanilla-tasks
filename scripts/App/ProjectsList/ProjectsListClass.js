@@ -68,8 +68,14 @@ export class ProjectsListClass {
 
     this.layoutNode = layoutNode;
 
+    // Load projects data...
     this.loadProjects();
-    this.selectFirstProject();
+
+    // Set selected project...
+    this.loadCurrentProjectId();
+    if (!this.currentProjectId) {
+      this.selectFirstProject();
+    }
 
     // Init handler callbacks...
     callbacks.onDragFinish = this.onDragFinish.bind(this);
@@ -179,6 +185,7 @@ export class ProjectsListClass {
       item.classList.toggle('Current', false);
     });
     this.currentProjectId = projectId;
+    this.saveCurrentProjectId();
     if (nextCurrentNode) {
       nextCurrentNode.classList.toggle('Current', true);
     }
@@ -240,7 +247,8 @@ export class ProjectsListClass {
     if (window.localStorage) {
       const { projectsStorageId } = AppConstants;
       const projectsJson = window.localStorage.getItem(projectsStorageId);
-      const projects = projectsJson ? JSON.parse(projectsJson) : [];
+      // TODO: Do bulletproof json parsing (inside try/catch)?
+      const projects = projectsJson && projectsJson !== 'undefined' ? JSON.parse(projectsJson) : [];
       this.projects = projects;
     }
   }
@@ -250,6 +258,32 @@ export class ProjectsListClass {
       const { projectsStorageId } = AppConstants;
       const projectsJson = JSON.stringify(this.projects);
       window.localStorage.setItem(projectsStorageId, projectsJson);
+    }
+  }
+
+  loadCurrentProjectId() {
+    const { projects } = this;
+    const hasProjects = Array.isArray(projects) && projects.length;
+    if (window.localStorage && hasProjects) {
+      const { currentProjectIdStorageId } = AppConstants;
+      const currentProjectIdJson = window.localStorage.getItem(currentProjectIdStorageId);
+      // TODO: Do bulletproof json parsing (inside try/catch)?
+      const currentProjectId =
+        currentProjectIdJson && currentProjectIdJson !== 'undefined'
+          ? JSON.parse(currentProjectIdJson)
+          : undefined;
+      // Is it existed project id?
+      if (currentProjectId && projects.find(({ id }) => id === currentProjectId)) {
+        this.currentProjectId = currentProjectId;
+      }
+    }
+  }
+
+  saveCurrentProjectId() {
+    if (window.localStorage) {
+      const { currentProjectIdStorageId } = AppConstants;
+      const currentProjectIdJson = JSON.stringify(this.currentProjectId);
+      window.localStorage.setItem(currentProjectIdStorageId, currentProjectIdJson);
     }
   }
 
@@ -348,13 +382,6 @@ export class ProjectsListClass {
         const projectNodeTemplate = this.renderProjectItem(project);
         const projectNodeCollection = CommonHelpers.htmlToElements(projectNodeTemplate);
         const projectNode = /** @type {HTMLElement} */ (projectNodeCollection[0]);
-        /* console.log('[ProjectsListClass:onAddProjectAction]', {
-         *   project,
-         *   projectNodeTemplate,
-         *   projectNode,
-         *   name,
-         * });
-         */
         this.listNode.append(projectNode);
         AppHelpers.updateActionHandlers(projectNode, this.callbacks);
         this.dragListItems?.updateDomNodes();
@@ -374,11 +401,6 @@ export class ProjectsListClass {
     if (!projectId || projectId === currentProjectId) {
       return;
     }
-    /* console.log('[ProjectsListClass:onProjectItemClickAction]', {
-     *   projectId,
-     *   event,
-     * });
-     */
     this.setCurrentProject(projectId);
   }
 
