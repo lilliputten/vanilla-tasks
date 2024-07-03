@@ -1,6 +1,6 @@
 <!--
 @since 2024.06.30, 12:00
-@changed 2024.07.02, 18:02
+@changed 2024.07.03, 16:26
 -->
 
 # Vanilla tasks list manager
@@ -9,6 +9,15 @@
 - Last changes timestamp: 2024.07.02 17:01 +0500
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
+
+## Features
+
+- Inter-session data storing in the `localStorage`
+- Adaptive layout
+- ES6 JavaScript code
+- ES6 modules
+- Internal TypeScript support
+- Changing the order by dragging
 
 ## Resources
 

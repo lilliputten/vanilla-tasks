@@ -1,7 +1,5 @@
 type TTaskId = string;
-interface TTask {
-  id: TTaskId;
-  name: string;
+interface TTask extends TListItem {
   completed?: boolean;
   created?: TTimestamp;
   updated?: TTimestamp;

@@ -24,7 +24,7 @@
 .PageColumnContent {
   flex: 1;
   /* Scrollable container */
-  overflow: auto;
+  overflow: var(--scrollable-overflow);
 }
 @media (width < 480px) {
   .PageColumn {

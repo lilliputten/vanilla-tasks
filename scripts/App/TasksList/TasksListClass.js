@@ -5,9 +5,13 @@ import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as AppHelpers from '../AppHelpers.js';
 
+import { DragListItems } from '../DragListItems/DragListItems.js';
+
 import * as TasksListHelpers from './TasksListHelpers.js';
 
 const NOOP = () => {};
+
+const useDragListItems = true;
 
 const showTaskInfoToolbar = true;
 
@@ -16,6 +20,9 @@ export class TasksListClass {
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {DragListItems} */
+  dragListItems = undefined;
 
   /** @type {HTMLElement} */
   layoutNode = undefined;
@@ -64,25 +71,24 @@ export class TasksListClass {
 
     this.layoutNode = layoutNode;
 
-    /* console.log('[TasksListClass] Ok', {
-     *   useDebug,
-     *   layoutNode,
-     *   callbacks,
-     * });
-     */
-
-    // TODO: Init state
-
     // Init handler callbacks...
+    callbacks.onDragFinish = this.onDragFinish.bind(this);
     callbacks.onChangeTaskStatus = this.onChangeTaskStatus.bind(this);
     callbacks.onUpdateTextInputTaskName = this.onUpdateTextInputTaskName.bind(this);
     callbacks.onEditTaskNameAction = this.onEditTaskNameAction.bind(this);
     callbacks.onRemoveTaskAction = this.onRemoveTaskAction.bind(this);
     callbacks.onAddTaskAction = this.onAddTaskAction.bind(this);
-    // callbacks.onTaskItemClickAction = this.onTaskItemClickAction.bind(this);
 
     // Init toolbar handlers...
     AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
+
+    if (useDragListItems) {
+      this.dragListItems = new DragListItems({
+        dragId: 'Tasks',
+        listNode: this.listNode,
+        onDragFinish: callbacks.onDragFinish,
+      });
+    }
   }
 
   // Init...
@@ -254,6 +260,17 @@ export class TasksListClass {
 
   // Actions...
 
+  /** Finish items order change */
+  onDragFinish() {
+    const { tasks, dragListItems } = this;
+    dragListItems.commitMove(tasks);
+    this.updateStatus();
+    // Call tasks changed callback
+    if (this.tasksChangedCallback) {
+      this.tasksChangedCallback(this.projectId, this.tasks);
+    }
+  }
+
   /** @param {Event} event */
   onChangeTaskStatus(event) {
     event.preventDefault();
@@ -372,6 +389,7 @@ export class TasksListClass {
          */
         this.listNode.append(taskNode);
         AppHelpers.updateActionHandlers(taskNode, this.callbacks);
+        this.dragListItems?.updateDomNodes();
         this.setCurrentTask(taskId);
         // Call tasks changed callback
         if (this.tasksChangedCallback) {
@@ -410,8 +428,14 @@ export class TasksListClass {
     ]
       .filter(Boolean)
       .join(' ');
+    const attrs = [
+      // prettier-ignore
+      useDragListItems && 'draggable="true"',
+    ]
+      .filter(Boolean)
+      .join(' ');
     return `
-<div class="${className}" id="${id}" -click-action-id="onTaskItemClickAction">
+<div class="${className}" id="${id}" -click-action-id="onTaskItemClickAction"${attrs}>
   <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete" click-action-id="onChangeTaskStatus">
     <i class="Status Default fa fa-clock-o" title="Pending"></i>
     <i class="Status Completed fa fa-check" title="Completed"></i>
@@ -465,5 +489,6 @@ export class TasksListClass {
   renderTasks() {
     this.renderTasksToNode(this.listNode, this.tasks);
     this.updateStatus();
+    this.dragListItems?.updateDomNodes();
   }
 }

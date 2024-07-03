@@ -37,9 +37,11 @@
   --root-adaptive-flex-direction: column;
   --root-overflow: auto;
   --layout-overflow: visible;
+  --scrollable-overflow: visible;
   @media (width >= 480px) {
     --root-adaptive-flex-direction: row;
     --root-overflow: hidden;
     --layout-overflow: hidden;
+    --scrollable-overflow: auto;
   }
 }

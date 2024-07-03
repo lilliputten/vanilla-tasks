@@ -4,7 +4,7 @@ import * as CommonHelpers from '../common/CommonHelpers.js';
 import { commonModal } from '../common/CommonModal.js';
 
 // All possible action ids for `updateActionHandlers` (TODO: Move to constants)
-const actionTypes = ['click', 'change'];
+const defaultActionTypes = ['click', 'change'];
 
 /**
  * @param {TTask[]} tasks
@@ -197,15 +197,15 @@ export function confirmationModal(id, title, text) {
 /**
  * @param {HTMLElement} parentNode
  * @param {TSharedHandlers} callbacks;
+ * @param {string[]} actionTypes;
  */
-export function updateActionHandlers(parentNode, callbacks) {
+export function updateActionHandlers(parentNode, callbacks, actionTypes = defaultActionTypes) {
   const selectors = actionTypes.map((id) => `[${id}-action-id]`).join(', ');
   const actionNodes = Array.from(parentNode.querySelectorAll(selectors));
   if (parentNode.matches(selectors)) {
     actionNodes.unshift(parentNode);
   }
   actionNodes.forEach((actionNode) => {
-    // const foundActions = [];
     actionTypes.forEach((actionType) => {
       const actionId = actionNode.getAttribute(actionType + '-action-id');
       if (!actionId) {
