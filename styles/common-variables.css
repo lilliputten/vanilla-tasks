@@ -33,25 +33,28 @@
   --light-border-color: rgba(0 0 0 / 5%);
   --light-border: 1px solid var(--light-border-color);
 
+  /* Header */
+  --header-flex-direction: row;
+  --header-menu-position: relative;
+
   /** Adaptive parameters */
-  --footer-flex-direction: column;
-  --root-adaptive-flex-direction: row;
   --root-overflow: auto;
   --layout-overflow: visible;
   --scrollable-overflow: visible;
   --header-hamburger-display: flex;
-  /* --header-menu-position: fixed; */
-  --header-title-flex: 1;
+  --header-menu-flex-direction: column;
   --header-menu-width: 100%;
-  @media (width >= 480px) {
-    --footer-flex-direction: row;
-    /* --root-adaptive-flex-direction: row; */
+  --header-title-flex: 1;
+  --footer-flex-direction: column;
+  @media (width >= 540px) {
+    /* NOTE: See also adaptive fixes in `styles/page-header.css` */
     --root-overflow: hidden;
     --layout-overflow: hidden;
     --scrollable-overflow: auto;
     --header-hamburger-display: none;
-    --header-menu-position: relative;
-    --header-title-flex: auto;
+    --header-menu-flex-direction: row;
     --header-menu-width: auto;
+    --header-title-flex: auto;
+    --footer-flex-direction: row;
   }
 }

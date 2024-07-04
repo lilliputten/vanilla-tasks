@@ -5,7 +5,7 @@
   border-bottom: var(--default-border);
   text-align: center;
   display: flex;
-  flex-direction: var(--root-adaptive-flex-direction);
+  flex-direction: var(--header-flex-direction);
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
@@ -31,11 +31,15 @@
   padding: 0;
   list-style: none;
   display: flex;
-  flex-direction: var(--footer-flex-direction);
+  flex-direction: var(--header-menu-flex-direction);
   gap: 0.25em 0.5em;
 }
+.PageHeader .HamburgerMenu {
+  display: var(--header-hamburger-display);
+}
+
 /** Mobile screens */
-@media (width < 480px) {
+@media (width < 540px) {
   .PageHeader .MainMenu {
     align-items: center;
     padding: 0.25em;
@@ -43,7 +47,4 @@
   .PageHeader:not(.MenuOpen) .MainMenu {
     display: none;
   }
-}
-.PageHeader .HamburgerMenu {
-  display: var(--header-hamburger-display);
 }
