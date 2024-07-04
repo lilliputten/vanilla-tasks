@@ -8,6 +8,9 @@ export class DataStorageClass {
   /** @type {SimpleEvents} */
   events = new SimpleEvents('DataStorage');
 
+  /** @type {string} */
+  version;
+
   /** Projects
    * @type {TProject[]}
    */
@@ -20,6 +23,9 @@ export class DataStorageClass {
 
   /** @constructor */
   constructor() {
+    const versionNode = document.getElementById('Version');
+    this.version = versionNode.innerText;
+
     // this.events = new SimpleEvents('DataStorage');
     // Load projects data...
     this.loadProjects();

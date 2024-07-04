@@ -1,10 +1,24 @@
 // @ts-check
 
+// Import types only...
+/* eslint-disable no-unused-vars */
+// import { SimpleEvents } from '../../common/SimpleEvents.js';
+import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
+/* eslint-enable no-unused-vars */
+
+import { ImportExportClass } from '../ImportExport/ImportExportClass.js';
+
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as AppHelpers from '../AppHelpers.js';
 
 export class MainMenuClass {
+  /** @type {DataStorageClass} */
+  dataStorage;
+
+  /* @type {ImportExportClass} */
+  importExport;
+
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
@@ -14,10 +28,15 @@ export class MainMenuClass {
   headerNode;
 
   /** @constructor
-   * @param {TSharedParams} _sharedParams
+   * @param {TProjectsListClassParams} params
    */
-  constructor(_sharedParams) {
+  constructor(params) {
     const { callbacks } = this;
+
+    const { dataStorage } = params;
+    this.dataStorage = dataStorage;
+
+    this.importExport = new ImportExportClass(params);
 
     this.initDomNodes();
 
@@ -44,12 +63,7 @@ export class MainMenuClass {
   // Actions...
 
   onDataExport() {
-    const { headerNode } = this;
-    // eslint-disable-next-line no-console
-    console.log('[MainMenuClass:onDataExport]', {
-      headerNode,
-    });
-    // TODO!
+    this.importExport.exportData();
   }
 
   onDataImport() {
@@ -58,7 +72,7 @@ export class MainMenuClass {
     console.log('[MainMenuClass:onDataImport]', {
       headerNode,
     });
-    // TODO!
+    this.importExport.importData();
   }
 
   onMainMenuToggle() {

@@ -9,8 +9,6 @@ import { DragListItems } from '../DragListItems/DragListItems.js';
 
 import * as TasksListHelpers from './TasksListHelpers.js';
 
-const NOOP = () => {};
-
 const useDragListItems = true;
 
 const showTaskInfoToolbar = true;
@@ -325,7 +323,7 @@ export class TasksListClass {
         // Save data...
         this.setTaskName(taskId, name);
       })
-      .catch(NOOP);
+      .catch(CommonHelpers.NOOP);
   }
 
   /** @param {PointerEvent} event */
@@ -347,7 +345,7 @@ export class TasksListClass {
           this.tasksChangedCallback(this.projectId, this.tasks);
         }
       })
-      .catch(NOOP);
+      .catch(CommonHelpers.NOOP);
   }
 
   /* *** Select task
@@ -396,7 +394,7 @@ export class TasksListClass {
           this.tasksChangedCallback(this.projectId, this.tasks);
         }
       })
-      .catch(NOOP);
+      .catch(CommonHelpers.NOOP);
   }
 
   // Render...

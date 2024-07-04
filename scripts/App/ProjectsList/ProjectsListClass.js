@@ -1,6 +1,6 @@
 // @ts-check
 
-// Import only types...
+// Import types only...
 /* eslint-disable no-unused-vars */
 // import { SimpleEvents } from '../../common/SimpleEvents.js';
 import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
@@ -16,8 +16,6 @@ import { DragListItems } from '../DragListItems/DragListItems.js';
 import { TasksListClass } from '../TasksList/TasksListClass.js';
 
 import * as ProjectsListHelpers from './ProjectsListHelpers.js';
-
-const NOOP = () => {};
 
 const useDragListItems = true;
 
@@ -48,15 +46,6 @@ export class ProjectsListClass {
   /** @type {HTMLElement} */
   listNode = undefined;
 
-  // /** Projects
-  //  * @type {TProject[]}
-  //  */
-  // projects = undefined;
-  // /** Currently displayed project id
-  //  * @type {TProjectId | undefined}
-  //  */
-  // currentProjectId = undefined;
-
   uniqIdCounter = 1;
   projectIdPrefix = 'project-';
 
@@ -66,8 +55,8 @@ export class ProjectsListClass {
    * @param {TProjectsListClassParams} params
    */
   constructor(params) {
-    // Will be initialized in `handlers` instance...
     const { callbacks } = this;
+
     const { layoutNode, dataStorage } = params;
     this.layoutNode = layoutNode;
     this.dataStorage = dataStorage;
@@ -294,7 +283,7 @@ export class ProjectsListClass {
         // Save data...
         this.setProjectName(projectId, name);
       })
-      .catch(NOOP);
+      .catch(CommonHelpers.NOOP);
   }
 
   /** @param {PointerEvent} event */
@@ -318,7 +307,7 @@ export class ProjectsListClass {
         this.setCurrentProject(undefined);
         // this.saveProjects();
       })
-      .catch(NOOP);
+      .catch(CommonHelpers.NOOP);
   }
 
   onAddProjectAction() {
@@ -346,7 +335,7 @@ export class ProjectsListClass {
         this.setCurrentProject(projectId);
         // this.saveProjects();
       })
-      .catch(NOOP);
+      .catch(CommonHelpers.NOOP);
   }
 
   /** Select project

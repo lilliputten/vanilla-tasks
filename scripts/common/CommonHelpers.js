@@ -450,3 +450,5 @@ export function processMultipleRequestErrors(resList) {
       .filter(Boolean)
   );
 }
+
+export function NOOP() {}

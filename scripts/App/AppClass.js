@@ -24,14 +24,14 @@ export class AppClass {
 
     this.dataStorage = new DataStorageClass();
 
-    // Processes list component
-    this.mainMenu = new MainMenuClass(sharedParams);
-
     /** @type {TProjectsListClassParams} */
     const params = {
       ...sharedParams,
       dataStorage: this.dataStorage,
     };
+
+    // Main menu
+    this.mainMenu = new MainMenuClass(params);
 
     // Processes list component
     this.processList = new ProjectsListClass(params);
