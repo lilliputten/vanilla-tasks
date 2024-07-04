@@ -68,7 +68,7 @@
 }
 .ItemsList .Item:not(.Completed) .StatusIcon {
   /* border-color: var(--common-error-color); */
-  color: var(--common-error-color);
+  color: var(--primary-color);
 }
 .ItemsList .Item.Completed .Status:not(.Completed),
 .ItemsList .Item:not(.Completed) .Status.Completed {
@@ -88,10 +88,11 @@
   --drag-indicate-color1: rgba(var(--primary-color-rgb) / 50%);
   --drag-indicate-color2: rgba(var(--primary-color-rgb) / 40%);
 }
-.ItemsList.Dragging .Item.DragFrom {
-  border: 1px dashed var(--primary-color);
+.ItemsList.Dragging .Item.DragFrom:hover,
+.ItemsList.Dragging.hasDragTarget .Item.DragFrom {
+  /* border: 1px dashed var(--primary-color); */
   background-color: rgba(var(--primary-color-rgb) / 20%);
-  opacity: 0.25;
+  opacity: 0.5;
 }
 .ItemsList.Dragging .Item.DragTo {
   /* border: 1px dashed red; */
@@ -120,7 +121,8 @@
 .ItemsList.Dragging .Item.DragTo.DragBefore::before {
   height: var(--drag-gap);
 }
-.ItemsList.Dragging .Item.DragFrom,
+.ItemsList.Dragging .Item.DragFrom:hover,
+.ItemsList.Dragging.hasDragTarget .Item.DragFrom,
 .ItemsList.Dragging .Item.DragTo.DragAfter::after,
 .ItemsList.Dragging .Item.DragTo.DragBefore::before {
   /* Diagonal stripes background */

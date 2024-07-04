@@ -84,7 +84,7 @@ export class TasksListClass {
 
     if (useDragListItems) {
       this.dragListItems = new DragListItems({
-        dragId: 'Tasks',
+        dragId: 'tasks',
         listNode: this.listNode,
         onDragFinish: callbacks.onDragFinish,
       });
@@ -389,7 +389,7 @@ export class TasksListClass {
          */
         this.listNode.append(taskNode);
         AppHelpers.updateActionHandlers(taskNode, this.callbacks);
-        this.dragListItems?.updateDomNodes();
+        this.dragListItems?.updateDragHandlers();
         this.setCurrentTask(taskId);
         // Call tasks changed callback
         if (this.tasksChangedCallback) {
@@ -428,14 +428,14 @@ export class TasksListClass {
     ]
       .filter(Boolean)
       .join(' ');
-    const attrs = [
+    const optionalAttrs = [
       // prettier-ignore
       useDragListItems && 'draggable="true"',
     ]
       .filter(Boolean)
       .join(' ');
     return `
-<div class="${className}" id="${id}" -click-action-id="onTaskItemClickAction"${attrs}>
+<div class="${className}" id="${id}" -click-action-id="onTaskItemClickAction" drag-id="tasks"${optionalAttrs}>
   <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete" click-action-id="onChangeTaskStatus">
     <i class="Status Default fa fa-clock-o" title="Pending"></i>
     <i class="Status Completed fa fa-check" title="Completed"></i>
@@ -489,6 +489,6 @@ export class TasksListClass {
   renderTasks() {
     this.renderTasksToNode(this.listNode, this.tasks);
     this.updateStatus();
-    this.dragListItems?.updateDomNodes();
+    this.dragListItems?.updateDragHandlers();
   }
 }

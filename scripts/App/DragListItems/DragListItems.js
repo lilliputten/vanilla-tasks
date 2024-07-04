@@ -61,16 +61,16 @@ export class DragListItems {
     // Init handler callbacks...
     callbacks.clearDragState = this.clearDragState.bind(this);
     callbacks.updateDragState = this.updateDragState.bind(this);
-    callbacks.onDragItemStart = this.onDragItemStart.bind(this);
-    callbacks.onDragItemOver = this.onDragItemOver.bind(this);
-    callbacks.onDragItemDrop = this.onDragItemDrop.bind(this);
+    callbacks.onDragStart = this.onDragStart.bind(this);
+    callbacks.onDragOver = this.onDragOver.bind(this);
+    callbacks.onDragEnd = this.onDragEnd.bind(this);
 
-    this.updateDomNodes();
+    this.updateDragHandlers();
   }
 
   // Helpers...
 
-  updateDomNodes() {
+  updateDragHandlers() {
     const { dragId, listNode, callbacks } = this;
 
     const nodes = listNode.querySelectorAll('.Item[draggable]');
@@ -80,10 +80,13 @@ export class DragListItems {
     }
 
     const actionHandlers = {
+      touchstart: callbacks.onDragStart,
+      touchmove: callbacks.onDragOver,
+      touchend: callbacks.onDragEnd,
+      dragstart: callbacks.onDragStart,
       dragend: callbacks.clearDragState,
-      dragstart: callbacks.onDragItemStart,
-      dragover: callbacks.onDragItemOver,
-      drop: callbacks.onDragItemDrop,
+      dragover: callbacks.onDragOver,
+      drop: callbacks.onDragEnd,
     };
     const actionTypes = Object.keys(actionHandlers);
     nodes.forEach((node) => {
@@ -92,7 +95,7 @@ export class DragListItems {
         if (!action) {
           const error = new Error(`Not found action for id "${actionType}"`);
           // eslint-disable-next-line no-console
-          console.warn('[DragListItems:updateDomNodes]', error, {
+          console.warn('[DragListItems:updateDragHandlers]', error, {
             dragId,
             actionType,
             actionHandlers,
@@ -173,6 +176,7 @@ export class DragListItems {
   clearDragState() {
     const { listNode } = this;
     listNode.classList.toggle('Dragging', false);
+    listNode.classList.toggle('hasDragTarget', false);
     const nodes = listNode.querySelectorAll('.Item');
     nodes.forEach((node) => {
       node.classList.toggle('DragTo', false);
@@ -189,53 +193,6 @@ export class DragListItems {
       clearTimeout(this.dragTimerHandler);
       this.dragTimerHandler = undefined;
     }
-  }
-
-  /** @return {TDragListItemsResult} */
-  getDragListItemsResult() {
-    const {
-      // prettier-ignore
-      dragId,
-      // dragType,
-      dragTargetId,
-      dragTargetAfter,
-      // onDragFinish,
-      dragSourceId,
-    } = this;
-    /** @type {TDragListItemsResult} */
-    const result = {
-      dragId,
-      targetId: dragTargetId,
-      sourceId: dragSourceId,
-      insertAfter: dragTargetAfter,
-    };
-    return result;
-  }
-
-  /** @param {DragEvent} event */
-  onDragItemDrop(event) {
-    event.preventDefault();
-    const { onDragFinish } = this;
-    /* // NOTE: Alternate way of receiving source data (from event data)
-     * const dataJson = event.dataTransfer.getData(dragType);
-     * if (!dataJson) {
-     *   // ???
-     *   return;
-     * }
-     * const itemData = [>* @type {TDragItemData} <] (JSON.parse(dataJson));
-     * const { sourceItemId } = itemData;
-     */
-    /** @type {TDragListItemsResult} */
-    const result = this.getDragListItemsResult();
-    /* console.log('[DragListItems:onDragItemDrop]', this.dragId, {
-     *   result,
-     *   dragSourceId,
-     *   dragTargetId,
-     *   dragTargetAfter,
-     *   onDragFinish,
-     * });
-     */
-    onDragFinish(result);
   }
 
   updateDragState() {
@@ -262,18 +219,90 @@ export class DragListItems {
       dragTargetNode.classList.toggle('DragBefore', !dragTargetAfter);
       dragTargetNode.classList.toggle('DragAfter', dragTargetAfter);
     }
+    listNode.classList.toggle('hasDragTarget', !!dragTargetNode);
   }
 
-  /** @param {DragEvent} event */
-  onDragItemOver(event) {
-    event.preventDefault();
-    const { dragType, dragSourceId, dragSourceNode } = this;
-    const targetNode = /** @type {HTMLElement} */ (event.currentTarget);
+  /** @return {TDragListItemsResult} */
+  getDragListItemsResult() {
+    const {
+      // prettier-ignore
+      dragId,
+      // dragType,
+      dragTargetId,
+      dragTargetAfter,
+      // onDragFinish,
+      dragSourceId,
+    } = this;
+    /** @type {TDragListItemsResult} */
+    const result = {
+      dragId,
+      targetId: dragTargetId,
+      sourceId: dragSourceId,
+      insertAfter: dragTargetAfter,
+    };
+    return result;
+  }
+
+  /** @param {DragEvent} _event */
+  onDragEnd(_event) {
+    // event.preventDefault();
+    const { onDragFinish } = this;
+    /** @type {TDragListItemsResult} */
+    const result = this.getDragListItemsResult();
+    const { targetId, sourceId } = result;
+    // console.log('[DragListItems:onDragEnd]', this.dragId, result);
+    if (targetId && sourceId && onDragFinish) {
+      onDragFinish(result);
+    }
+    this.clearDragState();
+  }
+
+  /** @param {DragEvent & TouchEvent} event */
+  onDragOver(event) {
+    // event.preventDefault();
+    const { dragId, dragSourceId, dragSourceNode } = this;
+    const {
+      // prettier-ignore
+      type,
+      touches,
+      changedTouches,
+      dataTransfer,
+      // target,
+      // targetTouches,
+    } = event;
+    const isTouch = type.startsWith('touch');
+    const touch = (touches && touches[0]) || changedTouches[0];
+    const pageX = isTouch ? touch.pageX : event.pageX;
+    const pageY = isTouch ? touch.pageY : event.pageY;
+    let targetNode = /** @type {HTMLElement} */ (event.currentTarget);
+    if (isTouch) {
+      const overNode = document.elementFromPoint(pageX, pageY);
+      targetNode = /** @type {HTMLElement} */ (
+        overNode.matches('.Item') ? overNode : overNode.closest('.Item')
+      );
+    }
     const targetItemId = targetNode.id;
+    const targetDragId = targetNode.getAttribute('drag-id');
     const isSource = targetItemId === dragSourceId;
-    const isValidDrag = event.dataTransfer.types.includes(dragType) && !isSource;
+    const isExpectedDrag = dragId === targetDragId;
+    const isValidDrag = isExpectedDrag && !isSource;
+    /* console.log('[DragListItems:onDragOver]', this.dragId, {
+     *   dragId,
+     *   targetDragId,
+     *   dataTransfer,
+     *   targetNode,
+     *   targetItemId,
+     *   isSource,
+     *   isValidDrag,
+     *   isTouch,
+     *   type,
+     *   touches,
+     *   pageX,
+     *   pageY,
+     *   event,
+     * });
+     */
     if (isValidDrag) {
-      const { pageY } = event;
       const rect = targetNode.getBoundingClientRect();
       const { y, height } = rect;
       const middle = y + height / 2;
@@ -285,19 +314,21 @@ export class DragListItems {
       this.dragTargetId = targetItemId;
       this.dragTargetAfter = isAfter;
       this.dragTargetNode = targetNode;
-      targetNode.classList.toggle('DragTo', true);
+      // targetNode.classList.toggle('DragTo', true);
     } else if (isSource) {
       this.dragTargetId = undefined;
       this.dragTargetNode = undefined;
     }
-    event.dataTransfer.dropEffect = isValidDrag ? 'move' : 'none';
+    if (dataTransfer) {
+      dataTransfer.dropEffect = isValidDrag ? 'move' : 'none';
+    }
     if (!this.dragTimerHandler) {
-      this.dragTimerHandler = setTimeout(this.callbacks.updateDragState, 200);
+      this.dragTimerHandler = setTimeout(this.callbacks.updateDragState, 300);
     }
   }
 
   /** @param {DragEvent} event */
-  onDragItemStart(event) {
+  onDragStart(event) {
     const { dragId, dragType, listNode } = this;
     const sourceNode = /** @type {HTMLElement} */ (event.currentTarget);
     const sourceId = sourceNode.id;
@@ -305,18 +336,22 @@ export class DragListItems {
       sourceDragId: dragId,
       sourceItemId: sourceId,
     };
-    /* console.log('[DragListItems:onDragItemStart]', this.dragId, {
+    const { dataTransfer } = event;
+    /* console.log('[DragListItems:onDragStart]', this.dragId, {
      *   itemData,
      *   sourceId,
      *   sourceNode,
+     *   dataTransfer,
      *   event,
      *   dragId,
      *   dragType,
      *   listNode,
      * });
      */
-    event.dataTransfer.setData(dragType, JSON.stringify(itemData));
-    // event.dataTransfer.effectAllowed = 'move';
+    if (dataTransfer) {
+      dataTransfer.setData(dragType, JSON.stringify(itemData));
+      dataTransfer.effectAllowed = 'move';
+    }
     listNode.classList.toggle('Dragging', true);
     sourceNode.classList.toggle('DragFrom', true);
     this.dragSourceId = sourceId;
