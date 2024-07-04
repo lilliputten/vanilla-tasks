@@ -9,7 +9,7 @@ import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import * as AppHelpers from '../AppHelpers.js';
 
-export class ImportExportClass {
+export class ExportDataClass {
   /** @type {DataStorageClass} */
   dataStorage;
 
@@ -29,6 +29,7 @@ export class ImportExportClass {
       type: 'vanilla-tasks-data',
       url: 'https://vanilla-tasks.lilliputten.com/',
       version,
+      created: Date.now(),
       projects,
     };
     const jsonData = JSON.stringify(data, null, 2);
@@ -42,6 +43,7 @@ export class ImportExportClass {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+    // TODO: To store fileName for the next use?
   }
 
   exportData() {
@@ -53,10 +55,5 @@ export class ImportExportClass {
     )
       .then(this.downloadData.bind(this))
       .catch(CommonHelpers.NOOP);
-  }
-
-  importData() {
-    console.log('[ImportExportClass:importData]');
-    debugger;
   }
 }

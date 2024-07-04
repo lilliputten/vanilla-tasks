@@ -71,15 +71,14 @@ export class ProjectsListClass {
     callbacks.onRemoveProjectAction = this.onRemoveProjectAction.bind(this);
     callbacks.onProjectItemClickAction = this.onProjectItemClickAction.bind(this);
     callbacks.onAddProjectAction = this.onAddProjectAction.bind(this);
+    callbacks.onNewProjects = this.onNewProjects.bind(this);
+
+    this.dataStorage.events.add('newProjects', callbacks.onNewProjects);
 
     this.tasksList = new TasksListClass(params);
     this.tasksList.setTasksChangedCallback(callbacks.onTasksChanged);
 
-    this.renderProjects();
-    this.updateCurrentProject();
-
-    // Init toolbar handlers...
-    AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
+    this.renderContent();
 
     if (useDragListItems) {
       this.dragListItems = new DragListItems({
@@ -88,6 +87,16 @@ export class ProjectsListClass {
         onDragFinish: callbacks.onDragFinish,
       });
     }
+  }
+
+  renderContent() {
+    this.renderProjects();
+    this.updateCurrentProject();
+
+    // Init toolbar handlers...
+    AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
+
+    this.updateStatus();
   }
 
   // Init...
@@ -349,6 +358,10 @@ export class ProjectsListClass {
       return;
     }
     this.setCurrentProject(projectId);
+  }
+
+  onNewProjects() {
+    this.renderContent();
   }
 
   // Render...

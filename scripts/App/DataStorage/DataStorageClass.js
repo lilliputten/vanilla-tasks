@@ -30,6 +30,10 @@ export class DataStorageClass {
     // Load projects data...
     this.loadProjects();
 
+    this.initCurrentProjectId();
+  }
+
+  initCurrentProjectId() {
     // Set selected project...
     this.loadCurrentProjectId();
 
@@ -40,8 +44,6 @@ export class DataStorageClass {
   }
 
   // Save & load data...
-
-  // \<\(selectFirstProject\|loadProjects\|saveProjects\|loadCurrentProjectId\|saveCurrentProjectId\)\>
 
   selectFirstProject() {
     // Set default project
@@ -94,10 +96,19 @@ export class DataStorageClass {
   // Actions...
 
   /** @param {TProject[]} projects */
+  setNewProjects(projects) {
+    this.projects = projects;
+    this.initCurrentProjectId();
+    this.saveProjects();
+    this.saveCurrentProjectId();
+    this.events.emit('newProjects', { projects });
+  }
+
+  /** @param {TProject[]} projects */
   setProjects(projects) {
     this.projects = projects;
     this.saveProjects();
-    this.events.emit('projectsUpdated', { projects });
+    this.events.emit('updatedProjects', { projects });
   }
 
   /** @param {TProjectId} currentProjectId */

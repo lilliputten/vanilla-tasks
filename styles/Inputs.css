@@ -48,3 +48,43 @@
 .GhostInput:active,
 .GhostInput:focus {
 }
+
+/* File upload input */
+.FileUploadButton {
+  position: relative;
+  display: flex;
+  gap: 1em;
+}
+.FileUploadButtonXL {
+  padding: 3em 1em;
+}
+.FileUploadButton #spinner {
+  font-size: 1.5em;
+  color: var(--primary-color);
+}
+.FileUploadButton:not(.Loading) #spinner {
+  opacity: 0;
+  pointer-events: none;
+}
+.FileUploadButton.Loading {
+  pointer-events: none;
+}
+.FileUploadButton.Loading #buttonText {
+  opacity: 0.5;
+}
+.FileUploadButton #buttonText {
+  display: inline-block;
+  /* Compensate left spinner icon */
+  margin-right: 2em;
+}
+.FileUploadInput {
+  cursor: pointer;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  white-space: nowrap;
+  opacity: 0;
+}

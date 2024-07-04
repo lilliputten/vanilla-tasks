@@ -6,7 +6,8 @@
 import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 /* eslint-enable no-unused-vars */
 
-import { ImportExportClass } from '../ImportExport/ImportExportClass.js';
+import { ExportDataClass } from '../ImportExport/ExportDataClass.js';
+import { ImportDataClass } from '../ImportExport/ImportDataClass.js';
 
 import { commonNotify } from '../../common/CommonNotify.js';
 
@@ -16,8 +17,11 @@ export class MainMenuClass {
   /** @type {DataStorageClass} */
   dataStorage;
 
-  /* @type {ImportExportClass} */
-  importExport;
+  /* @type {ExportDataClass} */
+  exportData;
+
+  /* @type {ImportDataClass} */
+  importData;
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
@@ -36,7 +40,8 @@ export class MainMenuClass {
     const { dataStorage } = params;
     this.dataStorage = dataStorage;
 
-    this.importExport = new ImportExportClass(params);
+    this.exportData = new ExportDataClass(params);
+    this.importData = new ImportDataClass(params);
 
     this.initDomNodes();
 
@@ -63,7 +68,7 @@ export class MainMenuClass {
   // Actions...
 
   onDataExport() {
-    this.importExport.exportData();
+    this.exportData.exportData();
   }
 
   onDataImport() {
@@ -72,7 +77,7 @@ export class MainMenuClass {
     console.log('[MainMenuClass:onDataImport]', {
       headerNode,
     });
-    this.importExport.importData();
+    this.importData.importData();
   }
 
   onMainMenuToggle() {
