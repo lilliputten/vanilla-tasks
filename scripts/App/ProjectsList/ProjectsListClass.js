@@ -95,7 +95,7 @@ export class ProjectsListClass {
 
     if (useDragListItems) {
       this.dragListItems = new DragListItems({
-        dragId: 'Projects',
+        dragId: 'projects',
         listNode: this.listNode,
         onDragFinish: callbacks.onDragFinish,
       });
@@ -264,13 +264,8 @@ export class ProjectsListClass {
     const hasProjects = Array.isArray(projects) && projects.length;
     if (window.localStorage && hasProjects) {
       const { currentProjectIdStorageId } = AppConstants;
-      const currentProjectIdJson = window.localStorage.getItem(currentProjectIdStorageId);
-      // TODO: Do bulletproof json parsing (inside try/catch)?
-      const currentProjectId =
-        currentProjectIdJson && currentProjectIdJson !== 'undefined'
-          ? JSON.parse(currentProjectIdJson)
-          : undefined;
-      // Is it existed project id?
+      const currentProjectId = window.localStorage.getItem(currentProjectIdStorageId);
+      // Is this existed project id?
       if (currentProjectId && projects.find(({ id }) => id === currentProjectId)) {
         this.currentProjectId = currentProjectId;
       }
@@ -280,8 +275,7 @@ export class ProjectsListClass {
   saveCurrentProjectId() {
     if (window.localStorage) {
       const { currentProjectIdStorageId } = AppConstants;
-      const currentProjectIdJson = JSON.stringify(this.currentProjectId);
-      window.localStorage.setItem(currentProjectIdStorageId, currentProjectIdJson);
+      window.localStorage.setItem(currentProjectIdStorageId, this.currentProjectId);
     }
   }
 
@@ -382,7 +376,7 @@ export class ProjectsListClass {
         const projectNode = /** @type {HTMLElement} */ (projectNodeCollection[0]);
         this.listNode.append(projectNode);
         AppHelpers.updateActionHandlers(projectNode, this.callbacks);
-        this.dragListItems?.updateDomNodes();
+        this.dragListItems?.updateDragHandlers();
         this.setCurrentProject(projectId);
         this.saveProjects();
       })
@@ -446,14 +440,14 @@ export class ProjectsListClass {
     ]
       .filter(Boolean)
       .join(' ');
-    const attrs = [
+    const optionalAttrs = [
       // prettier-ignore
       useDragListItems && 'draggable="true"',
     ]
       .filter(Boolean)
       .join(' ');
     return `
-<div class="${className}" id="${id}" click-action-id="onProjectItemClickAction"${attrs}>
+<div class="${className}" id="${id}" click-action-id="onProjectItemClickAction" drag-id="projects"${optionalAttrs}>
   <div class="Title -WithTextInput">${titleContent}</div>
   <div class="Actions">
     <!-- Edit -->
@@ -503,6 +497,6 @@ export class ProjectsListClass {
   renderProjects() {
     this.renderProjectsToNode(this.listNode, this.projects);
     this.updateStatus();
-    this.dragListItems?.updateDomNodes();
+    this.dragListItems?.updateDragHandlers();
   }
 }

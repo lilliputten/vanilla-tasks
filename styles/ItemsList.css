@@ -68,7 +68,7 @@
 }
 .ItemsList .Item:not(.Completed) .StatusIcon {
   /* border-color: var(--common-error-color); */
-  color: var(--common-error-color);
+  color: var(--primary-color);
 }
 .ItemsList .Item.Completed .Status:not(.Completed),
 .ItemsList .Item:not(.Completed) .Status.Completed {
