@@ -1,10 +1,15 @@
 // @ts-check
 
+// Import only types...
+/* eslint-disable no-unused-vars */
+// import { SimpleEvents } from '../../common/SimpleEvents.js';
+import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
+/* eslint-enable no-unused-vars */
+
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as AppHelpers from '../AppHelpers.js';
-import * as AppConstants from '../AppConstants.js';
 
 import { DragListItems } from '../DragListItems/DragListItems.js';
 
@@ -17,6 +22,9 @@ const NOOP = () => {};
 const useDragListItems = true;
 
 export class ProjectsListClass {
+  /** @type {DataStorageClass} */
+  dataStorage;
+
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
@@ -40,15 +48,14 @@ export class ProjectsListClass {
   /** @type {HTMLElement} */
   listNode = undefined;
 
-  /** Projects
-   * @type {TProject[]}
-   */
-  projects = undefined;
-
-  /** Currently displayed project id
-   * @type {TProjectId | undefined}
-   */
-  currentProjectId = undefined;
+  // /** Projects
+  //  * @type {TProject[]}
+  //  */
+  // projects = undefined;
+  // /** Currently displayed project id
+  //  * @type {TProjectId | undefined}
+  //  */
+  // currentProjectId = undefined;
 
   uniqIdCounter = 1;
   projectIdPrefix = 'project-';
@@ -56,24 +63,16 @@ export class ProjectsListClass {
   // Core...
 
   /** @constructor
-   * @param {TSharedParams} sharedParams
+   * @param {TProjectsListClassParams} params
    */
-  constructor(sharedParams) {
+  constructor(params) {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
-    const { layoutNode } = sharedParams;
+    const { layoutNode, dataStorage } = params;
     this.layoutNode = layoutNode;
+    this.dataStorage = dataStorage;
 
-    this.initDomNodes(sharedParams);
-
-    // Load projects data...
-    this.loadProjects();
-
-    // Set selected project...
-    this.loadCurrentProjectId();
-    if (!this.currentProjectId) {
-      this.selectFirstProject();
-    }
+    this.initDomNodes(params);
 
     // Init handler callbacks...
     callbacks.onDragFinish = this.onDragFinish.bind(this);
@@ -84,7 +83,7 @@ export class ProjectsListClass {
     callbacks.onProjectItemClickAction = this.onProjectItemClickAction.bind(this);
     callbacks.onAddProjectAction = this.onAddProjectAction.bind(this);
 
-    this.tasksList = new TasksListClass(sharedParams);
+    this.tasksList = new TasksListClass(params);
     this.tasksList.setTasksChangedCallback(callbacks.onTasksChanged);
 
     this.renderProjects();
@@ -105,10 +104,10 @@ export class ProjectsListClass {
   // Init...
 
   /**
-   * @param {TSharedParams} sharedParams
+   * @param {TProjectsListClassParams} params
    */
-  initDomNodes(sharedParams) {
-    const { layoutNode } = sharedParams;
+  initDomNodes(params) {
+    const { layoutNode } = params;
 
     const sectionNode = /** @type {HTMLElement} */ (layoutNode.querySelector('#ProjectsSection'));
     if (!sectionNode) {
@@ -144,15 +143,16 @@ export class ProjectsListClass {
   // Action helpers...
 
   updateStatus() {
-    const { projects, sectionNode } = this;
+    const { sectionNode } = this;
+    const { projects } = this.dataStorage;
     const isEmpty = !Array.isArray(projects) || !projects.length;
     sectionNode.classList.toggle('Empty', isEmpty);
     this.tasksList.updateStatus();
   }
 
   updateCurrentProject() {
-    const { currentProjectId } = this;
-    const project = this.projects.find(({ id }) => id === currentProjectId);
+    const { projects, currentProjectId } = this.dataStorage;
+    const project = projects.find(({ id }) => id === currentProjectId);
     this.tasksList.setProject(project);
     // Show project tasks
     this.updateStatus();
@@ -160,7 +160,8 @@ export class ProjectsListClass {
 
   /** @param {TProjectId | undefined} projectId */
   setCurrentProject(projectId) {
-    const { currentProjectId, listNode } = this;
+    const { listNode } = this;
+    const { currentProjectId } = this.dataStorage;
     if (projectId === currentProjectId) {
       return;
     }
@@ -183,7 +184,7 @@ export class ProjectsListClass {
       item.classList.toggle('Current', false);
     });
     this.currentProjectId = projectId;
-    this.saveCurrentProjectId();
+    this.dataStorage.setCurrentProjectId(projectId); // saveCurrentProjectId();
     if (nextCurrentNode) {
       nextCurrentNode.classList.toggle('Current', true);
     }
@@ -195,7 +196,8 @@ export class ProjectsListClass {
    * @return {TProject | undefined}
    */
   getProjectById(projectId) {
-    const foundProject = this.projects.find(({ id }) => id === projectId);
+    const { projects } = this.dataStorage;
+    const foundProject = projects.find(({ id }) => id === projectId);
     return foundProject;
   }
 
@@ -223,79 +225,38 @@ export class ProjectsListClass {
    * @param {string} name
    */
   setProjectName(projectId, name) {
-    const project = this.projects.find(({ id }) => id === projectId);
+    const { projects } = this.dataStorage;
+    const project = projects.find(({ id }) => id === projectId);
     project.name = name;
     project.updated = Date.now();
     this.tasksList.setProjectName(name);
     this.updateStatus();
-    this.saveProjects();
-  }
-
-  selectFirstProject() {
-    // Set default project
-    const { projects } = this;
-    if (Array.isArray(projects) && projects.length) {
-      this.currentProjectId = projects[0].id;
-    } else {
-      this.currentProjectId = undefined;
-    }
-  }
-
-  loadProjects() {
-    if (window.localStorage) {
-      const { projectsStorageId } = AppConstants;
-      const projectsJson = window.localStorage.getItem(projectsStorageId);
-      // TODO: Do bulletproof json parsing (inside try/catch)?
-      const projects = projectsJson && projectsJson !== 'undefined' ? JSON.parse(projectsJson) : [];
-      this.projects = projects;
-    }
-  }
-
-  saveProjects() {
-    if (window.localStorage) {
-      const { projectsStorageId } = AppConstants;
-      const projectsJson = JSON.stringify(this.projects);
-      window.localStorage.setItem(projectsStorageId, projectsJson);
-    }
-  }
-
-  loadCurrentProjectId() {
-    const { projects } = this;
-    const hasProjects = Array.isArray(projects) && projects.length;
-    if (window.localStorage && hasProjects) {
-      const { currentProjectIdStorageId } = AppConstants;
-      const currentProjectId = window.localStorage.getItem(currentProjectIdStorageId);
-      // Is this existed project id?
-      if (currentProjectId && projects.find(({ id }) => id === currentProjectId)) {
-        this.currentProjectId = currentProjectId;
-      }
-    }
-  }
-
-  saveCurrentProjectId() {
-    if (window.localStorage) {
-      const { currentProjectIdStorageId } = AppConstants;
-      window.localStorage.setItem(currentProjectIdStorageId, this.currentProjectId);
-    }
+    // this.saveProjects();
+    this.dataStorage.setProjects(projects);
   }
 
   // Actions...
 
   /** Finish items order change */
   onDragFinish() {
-    const { projects, dragListItems } = this;
+    const { dragListItems } = this;
+    const { projects } = this.dataStorage;
     dragListItems.commitMove(projects);
     this.updateStatus();
-    this.saveProjects();
+    // this.saveProjects();
+    this.dataStorage.setProjects(projects);
   }
 
   /**
    * @param {TProjectId} projectId
-   * @param {TTask[]} _tasks
+   * @param {TTask[]} tasks
    */
-  onTasksChanged(projectId, _tasks) {
+  onTasksChanged(projectId, tasks) {
+    const { projects } = this.dataStorage;
+    const project = projects.find(({ id }) => id === projectId);
+    project.tasks = tasks;
+    this.dataStorage.setProjects(projects);
     this.updateProjectItemTitle(projectId);
-    this.saveProjects();
   }
 
   /** @param {Event} event */
@@ -311,10 +272,11 @@ export class ProjectsListClass {
 
   /** @param {PointerEvent} event */
   onEditProjectNameAction(event) {
+    const { projects } = this.dataStorage;
     event.preventDefault();
     const projectNode = ProjectsListHelpers.getEventProjectNode(event);
     const projectId = projectNode.id;
-    const project = this.projects.find(({ id }) => id === projectId);
+    const project = projects.find(({ id }) => id === projectId);
     if (!project) {
       // ???
       return;
@@ -346,13 +308,15 @@ export class ProjectsListClass {
       'Are you sure to delete the project?',
     )
       .then(() => {
-        const projectIdx = this.projects.findIndex(({ id }) => id === projectId);
+        const { projects } = this.dataStorage;
+        const projectIdx = projects.findIndex(({ id }) => id === projectId);
         if (projectIdx !== -1) {
-          this.projects.splice(projectIdx, 1);
+          projects.splice(projectIdx, 1);
+          this.dataStorage.setProjects(projects);
         }
         projectNode.remove();
         this.setCurrentProject(undefined);
-        this.saveProjects();
+        // this.saveProjects();
       })
       .catch(NOOP);
   }
@@ -360,6 +324,7 @@ export class ProjectsListClass {
   onAddProjectAction() {
     AppHelpers.editTextValueModal('projectName', 'New Project Name', 'Project Name', '')
       .then((name) => {
+        const { projects } = this.dataStorage;
         const currTimestamp = Date.now();
         const projectId = this.getUniqProjectId();
         /** @type {TProject} */
@@ -370,7 +335,8 @@ export class ProjectsListClass {
           created: currTimestamp,
           updated: currTimestamp,
         };
-        this.projects.push(project);
+        projects.push(project);
+        this.dataStorage.setProjects(projects);
         const projectNodeTemplate = this.renderProjectItem(project);
         const projectNodeCollection = CommonHelpers.htmlToElements(projectNodeTemplate);
         const projectNode = /** @type {HTMLElement} */ (projectNodeCollection[0]);
@@ -378,7 +344,7 @@ export class ProjectsListClass {
         AppHelpers.updateActionHandlers(projectNode, this.callbacks);
         this.dragListItems?.updateDragHandlers();
         this.setCurrentProject(projectId);
-        this.saveProjects();
+        // this.saveProjects();
       })
       .catch(NOOP);
   }
@@ -387,7 +353,7 @@ export class ProjectsListClass {
    * @param {PointerEvent} event
    */
   onProjectItemClickAction(event) {
-    const { currentProjectId } = this;
+    const { currentProjectId } = this.dataStorage;
     const projectId = ProjectsListHelpers.getEventProjectId(event);
     // TODO: Check if projectId has been defined?
     if (!projectId || projectId === currentProjectId) {
@@ -417,7 +383,8 @@ export class ProjectsListClass {
   /** @param {TProjectId} projectId */
   updateProjectItemTitle(projectId) {
     const { sectionNode } = this;
-    const project = this.projects.find(({ id }) => id === projectId);
+    const { projects } = this.dataStorage;
+    const project = projects.find(({ id }) => id === projectId);
     const titleContent = this.getProjectTitleContent(project);
     const node = sectionNode.querySelector(`.Project.Item[id="${projectId}"] > .Title`);
     node.innerHTML = titleContent;
@@ -429,7 +396,8 @@ export class ProjectsListClass {
    */
   renderProjectItem(project) {
     const { id } = project;
-    const isCurrent = id === this.currentProjectId;
+    const { currentProjectId } = this.dataStorage;
+    const isCurrent = id === currentProjectId;
     const titleContent = this.getProjectTitleContent(project);
     const className = [
       // prettier-ignore
@@ -495,7 +463,8 @@ export class ProjectsListClass {
   /** Render all the projects to the list node
    */
   renderProjects() {
-    this.renderProjectsToNode(this.listNode, this.projects);
+    const { projects } = this.dataStorage;
+    this.renderProjectsToNode(this.listNode, projects);
     this.updateStatus();
     this.dragListItems?.updateDragHandlers();
   }
