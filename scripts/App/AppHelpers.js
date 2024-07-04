@@ -37,7 +37,7 @@ export function getTasksStatsStr(tasks) {
  * @param {string} name - Current name
  */
 function getEditTextValueFormContent(id, paramName, name) {
-  const quotedName = CommonHelpers.quoteHtmlAttr(name); // .replace(/"/g, '&quot;');
+  const quotedName = CommonHelpers.quoteHtmlAttr(name);
   const content = `
 <form class="InputForm" id="form" form-id="${id}">
   <div>

@@ -1,5 +1,7 @@
 // @ts-check
 
+export function NOOP() {}
+
 /** Compare two arrays with scalar (number, string, boolean) values
  * @param {(number | string | boolean)[]} a1
  * @param {(number | string | boolean)[]} a2
@@ -449,4 +451,56 @@ export function processMultipleRequestErrors(resList) {
       })
       .filter(Boolean)
   );
+}
+
+/**
+ * @param {number} n
+ * @param {TNormalizedFloatStrOptions} [opts={}]
+ * @returns {string}
+ */
+export function normalizedFloatStr(n, opts = {}) {
+  const {
+    // prettier-ignore
+    fixedPoint = 2,
+    stripFixedZeros = true,
+  } = opts;
+  let str = n.toFixed(fixedPoint);
+  if (stripFixedZeros) {
+    str = str.replace(/\.*0+$/, '');
+  }
+  return str;
+}
+/**
+ * @param {number} size
+ * @param {TGetApproxSizeOptions} [opts={}]
+ * @returns {[number | string, string]}
+ */
+export function getApproxSize(size, opts = {}) {
+  const { normalize } = opts;
+  const levels = [
+    'B', // Bytes
+    'K', // Kilobytes
+    'M', // Megabytes
+    'G', // Gigabites
+  ];
+  const lastLevel = levels.length - 1;
+  const range = 1024;
+  let level = 0;
+  while (level < lastLevel) {
+    if (size < range) {
+      break;
+    }
+    size /= range;
+    level++;
+  }
+  const currLevelStr = levels[level];
+  /** Result: final number or normalized representation (depends on option's `normalize`)
+   * @type {number | string}
+   */
+  let result = size;
+  if (normalize) {
+    const normalizeOpts = typeof normalize === 'object' ? normalize : undefined;
+    result = normalizedFloatStr(size, normalizeOpts);
+  }
+  return [result, currLevelStr];
 }
