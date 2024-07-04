@@ -259,7 +259,6 @@ export class DragListItems {
 
   /** @param {DragEvent & TouchEvent} event */
   onDragOver(event) {
-    // event.preventDefault();
     const { dragId, dragSourceId, dragSourceNode } = this;
     const {
       // prettier-ignore
@@ -267,11 +266,12 @@ export class DragListItems {
       touches,
       changedTouches,
       dataTransfer,
-      // target,
-      // targetTouches,
     } = event;
     const isTouch = type.startsWith('touch');
-    const touch = (touches && touches[0]) || changedTouches[0];
+    if (!isTouch) {
+      event.preventDefault();
+    }
+    const touch = isTouch ? (touches && touches[0]) || changedTouches[0] : undefined;
     const pageX = isTouch ? touch.pageX : event.pageX;
     const pageY = isTouch ? touch.pageY : event.pageY;
     let targetNode = /** @type {HTMLElement} */ (event.currentTarget);
@@ -286,7 +286,7 @@ export class DragListItems {
     const isSource = targetItemId === dragSourceId;
     const isExpectedDrag = dragId === targetDragId;
     const isValidDrag = isExpectedDrag && !isSource;
-    /* console.log('[DragListItems:onDragOver]', this.dragId, {
+    /* console.log('[DragListItems:onDragOver]', this.dragId, isValidDrag, {
      *   dragId,
      *   targetDragId,
      *   dataTransfer,
@@ -314,7 +314,6 @@ export class DragListItems {
       this.dragTargetId = targetItemId;
       this.dragTargetAfter = isAfter;
       this.dragTargetNode = targetNode;
-      // targetNode.classList.toggle('DragTo', true);
     } else if (isSource) {
       this.dragTargetId = undefined;
       this.dragTargetNode = undefined;
