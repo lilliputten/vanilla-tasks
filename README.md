@@ -1,6 +1,6 @@
 <!--
 @since 2024.06.30, 12:00
-@changed 2024.07.03, 21:18
+@changed 2024.07.04, 21:16
 -->
 
 # Vanilla tasks list manager
@@ -15,9 +15,10 @@ The small application aimed to demonstrate native js and css abilities in browse
 - Inter-session data storing in the `localStorage`.
 - Adaptive layout, adaptive main menu.
 - ES6 JavaScript code.
-- ES6 modules.
+- ES6 browser modules.
 - Internal TypeScript support.
 - Changing the order by dragging.
+- Data import/export.
 
 ## Resources
 

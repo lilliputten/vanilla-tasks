@@ -7,6 +7,7 @@ import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 /* eslint-enable no-unused-vars */
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class ExportDataClass {
@@ -44,6 +45,7 @@ export class ExportDataClass {
     element.click();
     document.body.removeChild(element);
     // TODO: To store fileName for the next use?
+    commonNotify.showSuccess('File "' + fileName + '" successfully saved!');
   }
 
   exportData() {
