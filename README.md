@@ -17,7 +17,7 @@ The small application aimed to demonstrate native js and css abilities in browse
 - ES6 JavaScript code.
 - ES6 browser modules.
 - Internal TypeScript support.
-- Changing the order by dragging.
+- Changing the order by dragging (with mobile support).
 - Data import/export.
 
 ## Resources
