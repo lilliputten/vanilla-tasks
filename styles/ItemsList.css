@@ -4,6 +4,10 @@
 .ItemsList .Item {
   --item-v-padding: 0.5em;
 
+  /* Disables pull-to-refresh but allows overscroll glow effects. */
+  overscroll-behavior: none;
+  overscroll-behavior-y: contain;
+
   position: relative;
   padding: var(--item-v-padding) 1em;
   display: flex;
