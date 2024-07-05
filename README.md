@@ -5,8 +5,8 @@
 
 # Vanilla Tasks List Manager
 
-- Version: 0.0.7
-- Last changes timestamp: 2024.07.05 15:29 +0500
+- Version: 0.0.8
+- Last changes timestamp: 2024.07.05 20:52 +0500
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
 
