@@ -3,7 +3,7 @@
 @changed 2024.07.04, 21:16
 -->
 
-# Vanilla tasks list manager
+# Vanilla Tasks List Manager
 
 - Version: 0.0.7
 - Last changes timestamp: 2024.07.05 11:24 +0500
@@ -12,13 +12,15 @@ The small application aimed to demonstrate native js and css abilities in browse
 
 ## Features
 
-- Inter-session data storing in the `localStorage`.
+- Inter-session data storing (in the `localStorage`).
 - Adaptive layout, adaptive main menu.
 - ES6 JavaScript code.
 - ES6 browser modules.
-- Internal TypeScript support.
-- Changing the order by dragging (with mobile support).
-- Data import/export.
+- Internal TypeScript support (via jsdoc tags).
+- Changing the order of project/task items by dragging (with mobile support).
+- Change the order of the project/task items by dragg-and-drop (with support for mobile devices).
+- Data import/export from/to a local json file.
+- Basic PWA funcitonality (cache, ability to install on a mobile desktop)
 
 ## Resources
 

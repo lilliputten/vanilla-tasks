@@ -36,8 +36,20 @@ export class AppClass {
     // Processes list component
     this.processList = new ProjectsListClass(params);
 
-    // Init handler callbacks...
-    // callbacks.onProjectsChanged = this.onProjectsChanged.bind(this);
-    // callbacks.onProjectsChanged = this.onProjectsChanged.bind(this);
+    window.addEventListener('load', () => {
+      this.registerSW();
+    });
+  }
+
+  // Register the Service Worker
+  async registerSW() {
+    if ('serviceWorker' in navigator) {
+      try {
+        await navigator.serviceWorker.register('serviceworker.js');
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('SW registration failed', error);
+      }
+    }
   }
 }

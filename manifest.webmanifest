@@ -1,6 +1,6 @@
 {
-  "short_name": "Vanilla tasks",
-  "name": "Vanilla tasks list manager",
+  "short_name": "Vanilla Tasks",
+  "name": "Vanilla Tasks List Manager",
   "description": "The small application aimed to demonstrate native js and css abilities in browser environment.",
   "lang": "en",
   "start_url": "/",
@@ -11,7 +11,7 @@
   "background_color": "#339af0",
   "icons": [
     {
-      "src": "images/og/og-192.png",
+      "src": "images/og/og-192.jpg",
       "type": "image/png",
       "sizes": "192x192"
     },
