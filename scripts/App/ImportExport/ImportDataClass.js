@@ -2,7 +2,6 @@
 
 // Import types only...
 /* eslint-disable no-unused-vars */
-// import { SimpleEvents } from '../../common/SimpleEvents.js';
 import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 /* eslint-enable no-unused-vars */
 
@@ -122,15 +121,6 @@ export class ImportDataClass {
           }
           const sizeStr = CommonHelpers.getApproxSize(size, { normalize: true }).join('');
           const buttonStr = `File: ${name} (${sizeStr})`;
-          /* console.log('[selectFile]', {
-           *   buttonStr,
-           *   type,
-           *   name,
-           *   size,
-           *   sizeStr,
-           *   file,
-           * });
-           */
           selectedFile = file;
           buttonText.innerText = buttonStr;
           uploadButton.removeAttribute('disabled');
@@ -151,7 +141,6 @@ export class ImportDataClass {
         /** @param {MouseEvent} event */
         function onUpload(event) {
           event.preventDefault();
-          // handleSelectedFile
           loadDataFromFile()
             .then((data) => {
               resolve(data);
@@ -172,11 +161,6 @@ export class ImportDataClass {
               .then(
                 /** @param {TImportExportData} data */
                 (data) => {
-                  /* console.log('[ImportDataClass:loadDataFromFile] loadDataFile success', {
-                   *   data,
-                   *   name,
-                   * });
-                   */
                   commonNotify.showSuccess('File "' + name + '" successfully loaded!');
                   resolve(data);
                 },
@@ -200,7 +184,6 @@ export class ImportDataClass {
           });
         }
         fileInput.addEventListener('change', handleSelectedFile);
-        // fileButton.addEventListener('click', onFileButtonClick);
         formNode.addEventListener('submit', preventSubmit);
         uploadButton.addEventListener('click', onUpload);
         cancelButton.addEventListener('click', (event) => {

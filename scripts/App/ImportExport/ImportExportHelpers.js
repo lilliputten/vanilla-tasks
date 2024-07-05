@@ -2,29 +2,18 @@
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
-// TODO: Add possibility to cancel the loading for user?
+// TODO: Add possibility to cancel the loading for the user?
+
 /**
  * @param {File} file
  * @param {TLoadDataFileOptions} [opts={}]
  * @returns {Promise}
  */
 export function loadDataFile(file, opts = {}) {
-  const {
-    name: fileName,
-    // type: fileType,
-    // size: fileSize,
-  } = file;
+  const { name: fileName } = file;
   const { onProgress, onLoaded, onError, timeout } = opts;
   return new Promise(function loadDataFile_promise(resolve, reject) {
     const fileReader = new FileReader();
-    /* console.log('[ImportExportHelpers:loadDataFile:onloadend] start', {
-     *   fileReader,
-     *   // file,
-     *   fileName,
-     *   // fileType,
-     *   // fileSize,
-     * });
-     */
     // Set load timeout (if specified)...
     let timeoutHandler = timeout
       ? setTimeout(function loadDataFile_timeout() {
@@ -119,17 +108,6 @@ export function loadDataFile(file, opts = {}) {
         const rawResult = target?.result;
         // TODO: Catch parse errors...
         const data = rawResult && JSON.parse(rawResult);
-        /* console.log('[ImportExportHelpers:loadDataFile] onloadend', {
-         *   data,
-         *   rawResult,
-         *   // loaded, // 5878
-         *   target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
-         *   // total, // 5878
-         *   ev,
-         *   fileReader,
-         *   fileName,
-         * });
-         */
         // TODO: Get and return file info also?
         if (onLoaded) {
           onLoaded({ data, fileReader });

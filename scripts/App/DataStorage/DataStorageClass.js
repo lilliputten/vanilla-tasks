@@ -1,6 +1,8 @@
 // @ts-check
 
 import * as AppConstants from '../AppConstants.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
 import { SimpleEvents } from '../../common/SimpleEvents.js';
 
@@ -58,10 +60,24 @@ export class DataStorageClass {
   loadProjects() {
     if (window.localStorage) {
       const { projectsStorageId } = AppConstants;
-      const projectsJson = window.localStorage.getItem(projectsStorageId);
-      // TODO: Do bulletproof json parsing (inside try/catch)?
-      const projects = projectsJson && projectsJson !== 'undefined' ? JSON.parse(projectsJson) : [];
-      this.projects = projects;
+      const jsonStr = window.localStorage.getItem(projectsStorageId);
+      // NOTE: Do bulletproof json parsing (inside try/catch)...
+      try {
+        const projects = jsonStr && jsonStr !== 'undefined' ? JSON.parse(jsonStr) : [];
+        this.projects = projects;
+      } catch (error) {
+        const errMsg = ['Data parsing error', CommonHelpers.getErrorText(error)]
+          .filter(Boolean)
+          .join(': ');
+        const dataError = new Error(errMsg);
+        // eslint-disable-next-line no-console
+        console.error('[DataStorageClass:loadProjects]: get data error', {
+          dataError,
+          error,
+        });
+        debugger; // eslint-disable-line no-debugger
+        commonNotify.showError(error);
+      }
     }
   }
 
