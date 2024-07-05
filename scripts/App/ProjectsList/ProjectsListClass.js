@@ -287,7 +287,7 @@ export class ProjectsListClass {
           const inputText = /** @type {HTMLInputElement} */ (titleText);
           inputText.value = name;
         } else {
-          titleText.innerHTML = name;
+          titleText.innerHTML = CommonHelpers.quoteHtmlAttr(name);
         }
         // Save data...
         this.setProjectName(projectId, name);
@@ -374,7 +374,7 @@ export class ProjectsListClass {
       /* // NOTE: It's possible to use inputs or just text nodes (with `GhostInput` here and `WithTextInput` for title nodes)
        * `<input class="TitleText InputText FullWidth GhostInput" value="${CommonHelpers.quoteHtmlAttr(name)}" change-action-id="onUpdateTextInputProjectName" />`,
        */
-      `<span class="TitleText">${name}</span>`,
+      `<span class="TitleText">${CommonHelpers.quoteHtmlAttr(name)}</span>`,
       tasksStatsStr && `<span class="Info Small">(${tasksStatsStr})</span>`,
     ]
       .filter(Boolean)
@@ -388,7 +388,9 @@ export class ProjectsListClass {
     const { projects } = this.dataStorage;
     const project = projects.find(({ id }) => id === projectId);
     const titleContent = this.getProjectTitleContent(project);
-    const node = sectionNode.querySelector(`.Project.Item[id="${projectId}"] > .Title`);
+    const node = sectionNode.querySelector(
+      `.Project.Item[id="${CommonHelpers.quoteHtmlAttr(projectId)}"] > .Title`,
+    );
     node.innerHTML = titleContent;
   }
 

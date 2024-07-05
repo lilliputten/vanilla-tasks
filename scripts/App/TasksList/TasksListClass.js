@@ -177,7 +177,7 @@ export class TasksListClass {
     const tasksStatsStr = AppHelpers.getTasksStatsStr(tasks);
     const titleNode = toolbarNode.querySelector('.TitleText');
     const infoNode = toolbarNode.querySelector('.Info');
-    titleNode.innerHTML = title;
+    titleNode.innerHTML = CommonHelpers.quoteHtmlAttr(title);
     infoNode.innerHTML = tasksStatsStr ? `(${tasksStatsStr})` : '';
   }
 
@@ -318,7 +318,7 @@ export class TasksListClass {
           const inputText = /** @type {HTMLInputElement} */ (titleText);
           inputText.value = name;
         } else {
-          titleText.innerHTML = name;
+          titleText.innerHTML = CommonHelpers.quoteHtmlAttr(name);
         }
         // Save data...
         this.setTaskName(taskId, name);
@@ -406,12 +406,12 @@ export class TasksListClass {
   renderTaskItem(task) {
     const { id, name, completed } = task;
     const isCurrent = id === this.currentTaskId;
-    // const title = `<span class="TitleText">${name}</span>`;
-    const title = [
+    // const titleContent = `<span class="TitleText">${name}</span>`;
+    const titleContent = [
       /* // NOTE: It's possible to use inputs or just text nodes (with `GhostInput` here and `WithTextInput` for title nodes)
        * `<input class="TitleText InputText FullWidth GhostInput" value="${CommonHelpers.quoteHtmlAttr(name)}" change-action-id="onUpdateTextInputTaskName" />`,
        */
-      `<span class="TitleText">${name}</span>`,
+      `<span class="TitleText">${CommonHelpers.quoteHtmlAttr(name)}</span>`,
       // tasksStatsStr && `<span class="Info Small">(${tasksStatsStr})</span>`,
     ]
       .filter(Boolean)
@@ -421,8 +421,8 @@ export class TasksListClass {
       'Task',
       'Item',
       !!completed && 'Completed',
-      // 'Active', // ???
-      isCurrent && 'Current', // ???
+      // 'Active', // NOTE: Task nodes aren't active.
+      isCurrent && 'Current', // NOTE: We don't have se;lction for task nodes.
     ]
       .filter(Boolean)
       .join(' ');
@@ -433,12 +433,12 @@ export class TasksListClass {
       .filter(Boolean)
       .join(' ');
     return `
-<div class="${className}" id="${id}" -click-action-id="onTaskItemClickAction" drag-id="tasks"${optionalAttrs}>
+<div class="${className}" id="${CommonHelpers.quoteHtmlAttr(id)}" -click-action-id="onTaskItemClickAction" drag-id="tasks"${optionalAttrs}>
   <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete" click-action-id="onChangeTaskStatus">
     <i class="Status Default fa fa-clock-o" title="Pending"></i>
     <i class="Status Completed fa fa-check" title="Completed"></i>
   </button>
-  <div class="Title -WithTextInput">${title}</div>
+  <div class="Title">${titleContent}</div>
   <div class="Actions">
     <!-- Edit -->
     <button

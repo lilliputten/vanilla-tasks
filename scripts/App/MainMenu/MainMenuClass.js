@@ -6,7 +6,7 @@
 import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 /* eslint-enable no-unused-vars */
 
-import * as AppConstants from '../AppConstants.js';
+// import * as AppConstants from '../AppConstants.js';
 
 import { ExportDataClass } from '../ImportExport/ExportDataClass.js';
 import { ImportDataClass } from '../ImportExport/ImportDataClass.js';
@@ -88,11 +88,13 @@ export class MainMenuClass {
     //   // return;
     // }
     /** @type {BeforeInstallPromptEvent} */
-    console.log('[MainMenuClass:initPWAInstall]', {
-      installEvent: this.installEvent,
-      installButton: this.installButton,
-      // hasInstallFeatures,
-    });
+    /*
+     * console.log('[MainMenuClass:initPWAInstall]', {
+     *   installEvent: this.installEvent,
+     *   installButton: this.installButton,
+     *   // hasInstallFeatures,
+     * });
+     */
     // Show the button...
     // Add event handlers...
     window.addEventListener('beforeinstallprompt', callbacks.onBeforeInstallPromptEvent);
@@ -104,22 +106,22 @@ export class MainMenuClass {
   /** @param {BeforeInstallPromptEvent} event */
   onBeforeInstallPromptEvent(event) {
     event.preventDefault();
-    console.log('[MainMenuClass:onBeforeInstallPromptEvent]');
-    commonNotify.showSuccess('Before install prompt event (beforeinstallprompt) has been called');
+    // console.log('[MainMenuClass:onBeforeInstallPromptEvent]');
+    // commonNotify.showSuccess('Before install prompt event (beforeinstallprompt) has been called');
     this.installEvent = event;
     this.installButton.disabled = false;
     this.installButton.classList.toggle('hidden', false);
   }
 
   onInstallDone() {
-    console.log('[MainMenuClass:onInstallDone]');
+    // console.log('[MainMenuClass:onInstallDone]');
     this.installButton.disabled = true;
     this.installEvent = undefined;
     commonNotify.showSuccess('The application has been already installed');
   }
 
   async onInstallButtonClick() {
-    console.log('[MainMenuClass:onInstallButtonClick]');
+    // console.log('[MainMenuClass:onInstallButtonClick]');
     const logEvent = this.installEvent ? 'event' : 'empty';
     if (!this.installEvent) {
       commonNotify.showError('No installation event (beforeinstallprompt) has been provided');
@@ -138,11 +140,6 @@ export class MainMenuClass {
   }
 
   onDataImport() {
-    const { headerNode } = this;
-    // eslint-disable-next-line no-console
-    console.log('[MainMenuClass:onDataImport]', {
-      headerNode,
-    });
     this.importData.importData();
   }
 
