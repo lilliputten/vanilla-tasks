@@ -136,26 +136,9 @@ export class DragListItems {
     const insertAfterSource = targetIdx > sourceIdx;
     // NOTE: The index should be changed if we have to insert after source position
     const targetIdxWhenRemoved = insertAfterSource ? targetIdx - 1 : targetItemIdx;
-    /* console.log('[TasksListClass:onDragFinish] before', {
-     *   sourceNode,
-     *   targetNode,
-     *   targetIdxWhenRemoved,
-     *   targetIdx,
-     *   sourceIdx,
-     *   items: [...items],
-     *   targetId,
-     *   sourceId,
-     *   insertAfter,
-     * });
-     */
     // Move list item...
     const removedItems = items.splice(sourceIdx, 1);
     items.splice(targetIdxWhenRemoved, 0, removedItems[0]);
-    /* console.log('[TasksListClass:onDragFinish] after', {
-     *   removedItems,
-     *   items,
-     * });
-     */
     // Move dom node...
     sourceNode.remove();
     if (insertAfter) {
@@ -164,11 +147,6 @@ export class DragListItems {
       const parentNode = targetNode.parentElement;
       parentNode.insertBefore(sourceNode, targetNode);
     }
-    /* console.log('[TasksListClass:onDragFinish] finished', {
-     *   removedItems,
-     *   items,
-     * });
-     */
   }
 
   clearDragState() {
@@ -197,14 +175,6 @@ export class DragListItems {
     const { dragTargetId, dragTargetNode, dragTargetAfter, listNode } = this;
     this.dragTimerHandler = undefined;
     const dragNodes = listNode.querySelectorAll('.Item.DragTo');
-    /* console.log('[DragListItems:updateDragState]', {
-     *   dragNodes,
-     *   dragTargetNode,
-     *   dragTargetId,
-     *   // dragTargetAfter,
-     *   // listNode,
-     * });
-     */
     dragNodes.forEach((node) => {
       if (node.id !== dragTargetId) {
         node.classList.toggle('DragTo', false);
@@ -270,7 +240,7 @@ export class DragListItems {
     } = event;
     const isTouch = type.startsWith('touch');
     if (!isTouch) {
-      // event.preventDefault();
+      event.preventDefault();
     }
     const touch = isTouch ? (touches && touches[0]) || changedTouches[0] : undefined;
     const pageX = isTouch ? touch.pageX : event.pageX;
@@ -291,22 +261,6 @@ export class DragListItems {
     const isSource = targetItemId === dragSourceId;
     const isExpectedDrag = dragId === targetDragId;
     const isValidDrag = isExpectedDrag && !isSource;
-    /* console.log('[DragListItems:onDragOver]', this.dragId, isValidDrag, {
-     *   dragId,
-     *   targetDragId,
-     *   dataTransfer,
-     *   targetNode,
-     *   targetItemId,
-     *   isSource,
-     *   isValidDrag,
-     *   isTouch,
-     *   type,
-     *   touches,
-     *   pageX,
-     *   pageY,
-     *   event,
-     * });
-     */
     if (isValidDrag) {
       const rect = targetNode.getBoundingClientRect();
       const { y, height } = rect;
@@ -348,17 +302,6 @@ export class DragListItems {
       // TODO?
       // event.preventDefault();
     }
-    /* console.log('[DragListItems:onDragStart]', this.dragId, {
-     *   itemData,
-     *   sourceId,
-     *   sourceNode,
-     *   dataTransfer,
-     *   event,
-     *   dragId,
-     *   dragType,
-     *   listNode,
-     * });
-     */
     if (dataTransfer) {
       dataTransfer.setData(dragType, JSON.stringify(itemData));
       dataTransfer.effectAllowed = 'move';
