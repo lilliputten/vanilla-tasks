@@ -59,7 +59,11 @@ class CommonNotify {
     }
     setTimeout(() => {
       // ...And remove node (TODO: Check if node still exists in dom tree)...
-      this.notifyRoot.removeChild(node);
+      try {
+        this.notifyRoot.removeChild(node);
+      } catch (_e) {
+        // NOOP
+      }
     }, 250); // Value of `var(--common-animation-time)`
   }
 

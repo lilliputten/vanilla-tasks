@@ -243,9 +243,10 @@ export class DragListItems {
 
   // Actions...
 
-  /** @param {DragEvent} event */
-  onDragEnd(event) {
-    event.preventDefault();
+  /** @param {DragEvent} _event */
+  onDragEnd(_event) {
+    // NOTE: This call blocks item selection by click.
+    // event.preventDefault();
     const { onDragFinish } = this;
     /** @type {TDragListItemsResult} */
     const result = this.getDragListItemsResult();
@@ -269,7 +270,7 @@ export class DragListItems {
     } = event;
     const isTouch = type.startsWith('touch');
     if (!isTouch) {
-      event.preventDefault();
+      // event.preventDefault();
     }
     const touch = isTouch ? (touches && touches[0]) || changedTouches[0] : undefined;
     const pageX = isTouch ? touch.pageX : event.pageX;
@@ -342,7 +343,8 @@ export class DragListItems {
     const { type, dataTransfer } = event;
     const isTouch = type.startsWith('touch');
     if (isTouch) {
-      // NOTE: This call is required to prevent reload during drag, but blocks item selection (by click).
+      // NOTE: This call is required to prevent reload during drag.
+      // NOTE: This call blocks item selection by click.
       // TODO?
       // event.preventDefault();
     }

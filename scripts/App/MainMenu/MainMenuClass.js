@@ -61,9 +61,7 @@ export class MainMenuClass {
     callbacks.onInstallDone = this.onInstallDone.bind(this);
     callbacks.onBeforeInstallPromptEvent = this.onBeforeInstallPromptEvent.bind(this);
 
-    setTimeout(() => {
-      this.initPWAInstall();
-    }, 1000);
+    this.initPWAInstall();
 
     AppHelpers.updateActionHandlers(this.headerNode, this.callbacks);
   }
