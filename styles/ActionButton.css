@@ -1,3 +1,6 @@
+.ActionButton:not(.hidden) {
+  display: flex;
+}
 .ActionButton {
   /* -webkit-appearance: none; */
   user-select: none;
@@ -7,7 +10,6 @@
   opacity: 0.75;
   transition: all var(--common-transition-time);
   height: var(--form-item-size);
-  display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;

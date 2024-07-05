@@ -23,3 +23,12 @@ a {
 .FullWidth {
   width: 100%;
 }
+.ErrorPane {
+  background-color: var(--common-error-color);
+  color: #fff;
+  padding: 1em;
+}
+
+.hidden {
+  display: none;
+}

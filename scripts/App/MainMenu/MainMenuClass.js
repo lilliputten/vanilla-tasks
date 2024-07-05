@@ -6,6 +6,8 @@
 import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 /* eslint-enable no-unused-vars */
 
+import * as AppConstants from '../AppConstants.js';
+
 import { ExportDataClass } from '../ImportExport/ExportDataClass.js';
 import { ImportDataClass } from '../ImportExport/ImportDataClass.js';
 
@@ -31,6 +33,12 @@ export class MainMenuClass {
   /** @type {HTMLElement} */
   headerNode;
 
+  /** @type {HTMLButtonElement} */
+  installButton;
+
+  /** @type {BeforeInstallPromptEvent} */
+  installEvent;
+
   /** @constructor
    * @param {TProjectsListClassParams} params
    */
@@ -49,6 +57,13 @@ export class MainMenuClass {
     callbacks.onMainMenuToggle = this.onMainMenuToggle.bind(this);
     callbacks.onDataExport = this.onDataExport.bind(this);
     callbacks.onDataImport = this.onDataImport.bind(this);
+    callbacks.onInstallButtonClick = this.onInstallButtonClick.bind(this);
+    callbacks.onInstallDone = this.onInstallDone.bind(this);
+    callbacks.onBeforeInstallPromptEvent = this.onBeforeInstallPromptEvent.bind(this);
+
+    setTimeout(() => {
+      this.initPWAInstall();
+    }, 1000);
 
     AppHelpers.updateActionHandlers(this.headerNode, this.callbacks);
   }
@@ -63,9 +78,62 @@ export class MainMenuClass {
       throw error;
     }
     this.headerNode = headerNode;
+
+    this.installButton = headerNode.querySelector('#PWAInstallButton');
+  }
+
+  initPWAInstall() {
+    const { callbacks } = this;
+    // const useInstall = true && !AppConstants.isLocal;
+    // const hasInstallFeatures = 'BeforeInstallPromptEvent' in window;
+    // if ([> !useInstall || <] !hasInstallFeatures) {
+    //   // return;
+    // }
+    /** @type {BeforeInstallPromptEvent} */
+    console.log('[MainMenuClass:initPWAInstall]', {
+      installEvent: this.installEvent,
+      installButton: this.installButton,
+      // hasInstallFeatures,
+    });
+    // Show the button...
+    // Add event handlers...
+    window.addEventListener('beforeinstallprompt', callbacks.onBeforeInstallPromptEvent);
+    window.addEventListener('appinstalled', callbacks.onInstallDone);
   }
 
   // Actions...
+
+  /** @param {BeforeInstallPromptEvent} event */
+  onBeforeInstallPromptEvent(event) {
+    event.preventDefault();
+    console.log('[MainMenuClass:onBeforeInstallPromptEvent]');
+    commonNotify.showSuccess('Before install prompt event (beforeinstallprompt) has been called');
+    this.installEvent = event;
+    this.installButton.disabled = false;
+    this.installButton.classList.toggle('hidden', false);
+  }
+
+  onInstallDone() {
+    console.log('[MainMenuClass:onInstallDone]');
+    this.installButton.disabled = true;
+    this.installEvent = undefined;
+    commonNotify.showSuccess('The application has been already installed');
+  }
+
+  async onInstallButtonClick() {
+    console.log('[MainMenuClass:onInstallButtonClick]');
+    const logEvent = this.installEvent ? 'event' : 'empty';
+    if (!this.installEvent) {
+      commonNotify.showError('No installation event (beforeinstallprompt) has been provided');
+      return;
+    }
+    commonNotify.showSuccess(`Installing the application (${logEvent})...`);
+    this.installEvent.prompt();
+    const result = await this.installEvent.userChoice;
+    if (result.outcome === 'accepted') {
+      this.onInstallDone();
+    }
+  }
 
   onDataExport() {
     this.exportData.exportData();

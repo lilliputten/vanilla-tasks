@@ -2,7 +2,7 @@
 <!--
 @changed 2024.07.02, 17:02
 Version: 0.0.7
-Last changes timestamp: 2024.07.05 11:24 +0500
+Last changes timestamp: 2024.07.05 15:00 +0500
 -->
 <html lang="en">
   <head>
@@ -58,6 +58,9 @@ Last changes timestamp: 2024.07.05 11:24 +0500
     </script>
   </head>
   <body class="Page">
+    <noscript>
+      <div class="ErrorPane">JavaScript support is required.</div>
+    </noscript>
     <!-- Page header -->
     <nav class="PageHeader" id="PageHeader">
       <div class="PageTitle Large">
@@ -77,6 +80,15 @@ Last changes timestamp: 2024.07.05 11:24 +0500
       <!--
       -->
       <div class="MainMenu" id="MainMenu">
+        <button
+          class="ActionButton ThemePrimary hidden"
+          click-action-id="onInstallButtonClick"
+          id="PWAInstallButton"
+          title="Install the application locally as a mobile progressive web application"
+        >
+          <span class="fa fa-share"></span>
+          Install PWA
+        </button>
         <button
           class="ActionButton ThemePrimary"
           click-action-id="onDataExport"
@@ -168,7 +180,7 @@ Last changes timestamp: 2024.07.05 11:24 +0500
         <div class="PageAttributes Small Info">
           <span class="Version" id="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.7 / 2024.07.05 11:24 +0500
+            v.0.0.7 / 2024.07.05 15:00 +0500
           </span>
         </div>
         <ul class="SocialList">

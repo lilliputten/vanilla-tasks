@@ -1,5 +1,7 @@
 // @ts-check
 
+import * as AppConstants from './AppConstants.js';
+// import { commonNotify } from '../common/CommonNotify.js';
 import { DataStorageClass } from './DataStorage/DataStorageClass.js';
 import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
@@ -43,7 +45,8 @@ export class AppClass {
 
   // Register the Service Worker
   async registerSW() {
-    if ('serviceWorker' in navigator) {
+    if (!AppConstants.isLocal && 'serviceWorker' in navigator) {
+      // commonNotify.showSuccess('start serviceworker');
       try {
         await navigator.serviceWorker.register('serviceworker.js');
       } catch (error) {
