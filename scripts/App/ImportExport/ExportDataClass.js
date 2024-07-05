@@ -2,7 +2,6 @@
 
 // Import types only...
 /* eslint-disable no-unused-vars */
-// import { SimpleEvents } from '../../common/SimpleEvents.js';
 import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
 /* eslint-enable no-unused-vars */
 
