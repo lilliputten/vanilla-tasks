@@ -110,8 +110,6 @@ export class DragListItems {
     });
   }
 
-  // Actions...
-
   /** Apply movement for dom nodes and items list data according to current
    * `TDragListItemsResult` data (should be called from `onDragFinish` handler).
    *
@@ -243,9 +241,11 @@ export class DragListItems {
     return result;
   }
 
-  /** @param {DragEvent} _event */
-  onDragEnd(_event) {
-    // event.preventDefault();
+  // Actions...
+
+  /** @param {DragEvent} event */
+  onDragEnd(event) {
+    event.preventDefault();
     const { onDragFinish } = this;
     /** @type {TDragListItemsResult} */
     const result = this.getDragListItemsResult();
@@ -280,6 +280,10 @@ export class DragListItems {
       targetNode = /** @type {HTMLElement} */ (
         overNode.matches('.Item') ? overNode : overNode.closest('.Item')
       );
+    }
+    if (!targetNode) {
+      // ???
+      return;
     }
     const targetItemId = targetNode.id;
     const targetDragId = targetNode.getAttribute('drag-id');
@@ -335,7 +339,11 @@ export class DragListItems {
       sourceDragId: dragId,
       sourceItemId: sourceId,
     };
-    const { dataTransfer } = event;
+    const { type, dataTransfer } = event;
+    const isTouch = type.startsWith('touch');
+    if (isTouch) {
+      event.preventDefault();
+    }
     /* console.log('[DragListItems:onDragStart]', this.dragId, {
      *   itemData,
      *   sourceId,
