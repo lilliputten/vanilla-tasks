@@ -11,7 +11,7 @@ html,
 }
 
 html, body {
-  /* Disables pull-to-refresh but allows overscroll glow effects. */
+  /* Attempt to disable pull-to-refresh (it doesn't work). */
   overscroll-behavior-y: contain;
   overscroll-behavior: none !important;
 }
