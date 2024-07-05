@@ -342,7 +342,9 @@ export class DragListItems {
     const { type, dataTransfer } = event;
     const isTouch = type.startsWith('touch');
     if (isTouch) {
-      event.preventDefault();
+      // NOTE: This call is required to prevent reload during drag, but blocks item selection (by click).
+      // TODO?
+      // event.preventDefault();
     }
     /* console.log('[DragListItems:onDragStart]', this.dragId, {
      *   itemData,
