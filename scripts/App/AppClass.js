@@ -3,6 +3,7 @@
 import * as AppConstants from './AppConstants.js';
 // import { commonNotify } from '../common/CommonNotify.js';
 import { DataStorageClass } from './DataStorage/DataStorageClass.js';
+import { ActiveTasksClass } from './ActiveTasks/ActiveTasksClass.js';
 import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
 
@@ -15,6 +16,9 @@ export class AppClass {
   /** @type {DataStorageClass} */
   dataStorage;
 
+  /** @type {ActiveTasksClass} */
+  activeTasksClass;
+
   /** @type {ProjectsListClass} */
   processList;
 
@@ -24,7 +28,9 @@ export class AppClass {
   constructor(sharedParams) {
     // const { callbacks } = this;
 
-    this.dataStorage = new DataStorageClass();
+    const dataStorage = (this.dataStorage = new DataStorageClass());
+
+    this.activeTasksClass = new ActiveTasksClass(sharedParams, { dataStorage });
 
     /** @type {TProjectsListClassParams} */
     const params = {

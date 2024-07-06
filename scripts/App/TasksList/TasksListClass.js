@@ -44,6 +44,9 @@ export class TasksListClass {
    */
   tasks = undefined;
 
+  /** @type {TActiveTask[]} */
+  activeTasks = undefined;
+
   /** Currently displayed task id
    * @type {TTaskId | undefined}
    */

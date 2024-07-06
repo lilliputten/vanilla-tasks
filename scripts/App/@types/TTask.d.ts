@@ -5,7 +5,7 @@ interface TTask extends TListItem {
   /** Current task status */
   status?: TTaskStatus;
   /** Milliseconds of the measured task execution time */
-  elapsedTime?: number;
+  elapsed?: number;
   /** Last measured timestamp */
   measured?: TTimestamp;
   created?: TTimestamp;
