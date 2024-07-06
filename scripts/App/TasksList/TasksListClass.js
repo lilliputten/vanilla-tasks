@@ -20,6 +20,12 @@ export class TasksListClass {
    */
   callbacks = {};
 
+  // [>* @type {TProjectsListClassParams['dataStorage']} <]
+  // dataStorage;
+
+  /** @type {TProjectsListClassParams['activeTasks']} */
+  activeTasks;
+
   /** @type {DragListItems} */
   dragListItems = undefined;
 
@@ -44,9 +50,6 @@ export class TasksListClass {
    */
   tasks = undefined;
 
-  /** @type {TActiveTask[]} */
-  activeTasks = undefined;
-
   /** Currently displayed task id
    * @type {TTaskId | undefined}
    */
@@ -61,17 +64,17 @@ export class TasksListClass {
   // Core...
 
   /** @constructor
-   * @param {TSharedParams} sharedParams
+   * @param {TProjectsListClassParams} params
    */
-  constructor(sharedParams) {
+  constructor(params) {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
-    this.initDomNodes(sharedParams);
-
-    const { layoutNode } = sharedParams;
-
+    const { layoutNode, activeTasks } = params;
     this.layoutNode = layoutNode;
+    this.activeTasks = activeTasks;
+
+    this.initDomNodes();
 
     // Init handler callbacks...
     callbacks.onDragFinish = this.onDragFinish.bind(this);
@@ -124,11 +127,8 @@ export class TasksListClass {
     this.updateStatus();
   }
 
-  /**
-   * @param {TSharedParams} sharedParams
-   */
-  initDomNodes(sharedParams) {
-    const { layoutNode } = sharedParams;
+  initDomNodes() {
+    const { layoutNode } = this;
 
     const sectionNode = /** @type {HTMLElement} */ (layoutNode.querySelector('#TasksSection'));
     if (!sectionNode) {
@@ -169,6 +169,7 @@ export class TasksListClass {
     const hasTasks = !!Array.isArray(tasks) && !!tasks.length;
     sectionNode.classList.toggle('Empty', !hasTasks);
     sectionNode.classList.toggle('NoProject', !hasProject);
+    sectionNode.setAttribute('project-id', projectId || '');
     this.updateToolbarTitle();
   }
 
@@ -271,6 +272,7 @@ export class TasksListClass {
 
   /** @param {Event} event */
   onChangeTaskStatus(event) {
+    const { projectId, activeTasks } = this;
     event.preventDefault();
     const node = /** @type {HTMLElement} */ (event.currentTarget);
     const taskNode = node.closest('.Task.Item');
@@ -280,7 +282,9 @@ export class TasksListClass {
     const task = this.tasks.find(({ id }) => id === taskId);
     // Change status: pending -> active, active <-> completed
     const nextStatus = taskStatus === 'active' ? 'completed' : 'active';
+    const hasActiveTask = activeTasks.hasProjectTask(projectId, taskId);
     console.log('[TasksListClass:onChangeTaskStatus]', {
+      hasActiveTask,
       node,
       taskNode,
       taskStatus,
@@ -288,6 +292,21 @@ export class TasksListClass {
       task,
       nextStatus,
     });
+    if (nextStatus === 'active') {
+      if (!hasActiveTask) {
+        /** @type {TActiveTask} */
+        const activeTask = {
+          projectId,
+          taskId,
+          task,
+        };
+        activeTasks.addTask(activeTask);
+      }
+    } else {
+      if (hasActiveTask) {
+        activeTasks.removeProjectTask(projectId, taskId);
+      }
+    }
     // Update data & dom node status...
     task.status = nextStatus;
     taskNode.setAttribute('status', nextStatus);
@@ -415,7 +434,8 @@ export class TasksListClass {
    * @return string
    */
   renderTaskItem(task) {
-    const { id, name, status = AppConstants.defaultTaskStatus } = task;
+    const { id, name, status = AppConstants.defaultTaskStatus, elapsed = 0 } = task;
+    const elapsedStr = CommonHelpers.formatDuration(elapsed);
     // const isCurrent = id === this.currentTaskId;
     // const titleContent = `<span class="TitleText">${name}</span>`;
     const titleContent = [
@@ -459,7 +479,7 @@ export class TasksListClass {
     <i class="Status active fa fa-play-circle" title="In Progress"></i>
     <i class="Status completed fa fa-check" title="Completed"></i>
   </button>
-  <div class="Time">00:00</div>
+  <div class="Time">${elapsedStr}</div>
   <div class="Title">${titleContent}</div>
   <div class="Actions">
     <!-- Edit -->

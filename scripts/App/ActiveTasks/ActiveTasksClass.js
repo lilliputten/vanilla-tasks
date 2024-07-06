@@ -1,6 +1,6 @@
 // @ts-check
 
-// import * as CommonHelpers from '../../common/CommonHelpers.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 // import * as AppHelpers from '../AppHelpers.js';
@@ -20,8 +20,8 @@ export class ActiveTasksClass {
   /** @type {HTMLElement} */
   layoutNode = undefined;
 
-  /** @type {TActiveTasksClassParams['dataStorage']} */
-  dataStorage = undefined;
+  // [>* @type {TActiveTasksClassParams['dataStorage']} <]
+  // dataStorage = undefined;
 
   /** @type {TActiveTask[]} */
   activeTasksList = [];
@@ -31,17 +31,18 @@ export class ActiveTasksClass {
 
   /** @constructor
    * @param {TSharedParams} sharedParams
-   * @param {TActiveTasksClassParams} params
+   * --@param {TActiveTasksClassParams} params
    */
-  constructor(sharedParams, params) {
+  constructor(sharedParams) {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
     const { layoutNode } = sharedParams;
-    const { dataStorage } = params;
 
     this.layoutNode = layoutNode;
-    this.dataStorage = dataStorage;
+
+    // const { dataStorage } = params;
+    // this.dataStorage = dataStorage;
 
     // Init handler callbacks...
     callbacks.onTickTimer = this.onTickTimer.bind(this);
@@ -50,12 +51,13 @@ export class ActiveTasksClass {
 
   /** @param {TActiveTask} activeTask */
   activeTaskTick(activeTask) {
+    const { layoutNode } = this;
     const {
       // prettier-ignore
       projectId,
       taskId,
       task,
-      node,
+      // node,
     } = activeTask;
     const {
       // prettier-ignore
@@ -67,7 +69,15 @@ export class ActiveTasksClass {
     } = task;
     const now = Date.now();
     const diff = now - measured;
+    task.elapsed += diff;
+    task.measured = now;
+    const elapsedStr = CommonHelpers.formatDuration(task.elapsed);
+    const timeNode = layoutNode.querySelector(
+      `#TasksSection[project-id="${projectId}"] .Task.Item#${taskId} .Time`,
+    );
+    timeNode.innerHTML = elapsedStr;
     console.log('[ActiveTasksClass:activeTaskTick]', {
+      elapsedStr,
       diff,
       now,
       // Task:
@@ -80,11 +90,8 @@ export class ActiveTasksClass {
       projectId,
       taskId,
       task,
-      node,
+      timeNode,
     });
-    debugger;
-    task.elapsed += diff;
-    task.measured = now;
     this.events.emit('activeTaskTick', activeTask);
   }
 
@@ -105,9 +112,8 @@ export class ActiveTasksClass {
         task,
         activeTask,
       });
-      debugger;
+      // TODO: Check for too long time gaps (on initalization?)?
     }
-    // TODO: Check for too long time gaps (on initalization?)?
     task.measured = now;
     if (!task.elapsed) {
       task.elapsed = 0;
@@ -117,7 +123,8 @@ export class ActiveTasksClass {
       task,
       activeTask,
     });
-    debugger;
+    // debugger;
+    task.status = 'active';
     // TODO: Check and init time properties...
     this.events.emit('activeTaskStart', activeTask);
   }
@@ -128,10 +135,10 @@ export class ActiveTasksClass {
     console.log('[ActiveTasksClass:activeTaskFinish]', {
       activeTask,
     });
-    debugger;
     // TODO: Do final time tick...
     this.activeTaskTick(activeTask);
     task.measured = undefined;
+    task.status = 'completed';
     this.events.emit('activeTaskFinish', activeTask);
   }
 
@@ -148,11 +155,11 @@ export class ActiveTasksClass {
     const hasActiveTasks = activeTasksList.length;
     if (hasActiveTasks) {
       if (!this.tickHandler) {
-        this.tickHandler = setTimeout(callbacks.onTickTimer, 1000);
+        this.tickHandler = setInterval(callbacks.onTickTimer, 1000);
       }
     } else {
       if (this.tickHandler) {
-        clearTimeout(this.tickHandler);
+        clearInterval(this.tickHandler);
         this.tickHandler = undefined;
       }
     }
@@ -165,7 +172,7 @@ export class ActiveTasksClass {
   indexOfProjectTask(projectId, taskId) {
     const { activeTasksList } = this;
     const idx = activeTasksList.findIndex((activeTask) => {
-      return projectId === activeTask.projectId && taskId && activeTask.taskId;
+      return projectId === activeTask.projectId && taskId === activeTask.taskId;
     });
     return idx;
   }
@@ -178,15 +185,18 @@ export class ActiveTasksClass {
     return idx !== -1;
   }
 
-  /** @param {TActiveTask} activeTask */
-  addTask(activeTask) {
+  /**
+   * @param {TActiveTask} activeTask
+   * @param {TActiveTaskStartOpts} opts
+   */
+  addTask(activeTask, opts = {}) {
     const { activeTasksList } = this;
     console.log('[ActiveTasksClass:addTask]', {
       activeTask,
       activeTasksList,
     });
     activeTasksList.push(activeTask);
-    this.activeTaskStart(activeTask);
+    this.activeTaskStart(activeTask, opts);
     this.updateActivity();
   }
 

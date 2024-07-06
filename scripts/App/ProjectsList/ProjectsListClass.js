@@ -1,11 +1,5 @@
 // @ts-check
 
-// Import types only...
-/* eslint-disable no-unused-vars */
-// import { SimpleEvents } from '../../common/SimpleEvents.js';
-import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
-/* eslint-enable no-unused-vars */
-
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
@@ -20,8 +14,11 @@ import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 const useDragListItems = true;
 
 export class ProjectsListClass {
-  /** @type {DataStorageClass} */
+  /** @type {TProjectsListClassParams['dataStorage']} */
   dataStorage;
+
+  /** @type {TProjectsListClassParams['activeTasks']} */
+  activeTasks;
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
@@ -57,9 +54,10 @@ export class ProjectsListClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode, dataStorage } = params;
+    const { layoutNode, dataStorage, activeTasks } = params;
     this.layoutNode = layoutNode;
     this.dataStorage = dataStorage;
+    this.activeTasks = activeTasks;
 
     this.initDomNodes(params);
 

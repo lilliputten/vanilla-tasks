@@ -504,3 +504,52 @@ export function getApproxSize(size, opts = {}) {
   }
   return [result, currLevelStr];
 }
+
+/** @param {number} time - Time duration, ms
+ * @return {string}
+ */
+export function formatDuration(time) {
+  const sec = time / 1000;
+  const min = sec / 60;
+  const hrs = min / 60;
+  const days = hrs / 24;
+  const srcItems = [
+    // prettier-ignore
+    days,
+    hrs % 24,
+    min % 60,
+    sec % 60,
+  ];
+  const items = srcItems.map(Math.floor).map((val, idx) => {
+    // Not mins and secs and empty...
+    if (idx < 2 && !val) {
+      return undefined;
+    }
+    // Hours, mins, secs...
+    if (idx >= 1) {
+      return String(val).padStart(2, '0');
+    }
+    // Days...
+    if (!idx) {
+      return String(val) + 'd';
+    }
+  });
+  /* console.log('[CommonHelpers:formatDuration]', {
+   *   sec,
+   *   min,
+   *   hrs,
+   *   days,
+   *   items,
+   *   srcItems,
+   *   time,
+   * });
+   */
+  const daysStr = items.shift();
+  return [
+    // prettier-ignore
+    daysStr,
+    items.filter(Boolean).join(':'),
+  ]
+    .filter(Boolean)
+    .join(' ');
+}

@@ -17,7 +17,7 @@ export class AppClass {
   dataStorage;
 
   /** @type {ActiveTasksClass} */
-  activeTasksClass;
+  activeTasks;
 
   /** @type {ProjectsListClass} */
   processList;
@@ -30,12 +30,15 @@ export class AppClass {
 
     const dataStorage = (this.dataStorage = new DataStorageClass());
 
-    this.activeTasksClass = new ActiveTasksClass(sharedParams, { dataStorage });
+    const activeTasks = (this.activeTasks = new ActiveTasksClass(sharedParams));
+
+    this.initActiveProjects();
 
     /** @type {TProjectsListClassParams} */
     const params = {
       ...sharedParams,
-      dataStorage: this.dataStorage,
+      dataStorage,
+      activeTasks,
     };
 
     // Main menu
@@ -47,6 +50,37 @@ export class AppClass {
     window.addEventListener('load', () => {
       this.registerSW();
     });
+  }
+
+  initActiveProjects() {
+    const { dataStorage, activeTasks } = this;
+    const { projects } = dataStorage;
+    /** @type {TActiveTask[]} */
+    // const activeTasksList = [];
+    // Try to find all the active tasks...
+    projects.forEach(({ id: projectId, tasks }) => {
+      tasks.forEach((task) => {
+        const { id: taskId, status } = task;
+        if (status === 'active') {
+          /** @type {TActiveTask} */
+          const activeTask = {
+            projectId,
+            taskId,
+            task,
+          };
+          /* // DEBUG!
+           * task.measured = undefined;
+           * task.elapsed = undefined;
+           */
+          // activeTasksList.push(activeTask);
+          activeTasks.addTask(activeTask, { isStart: true });
+        }
+      });
+    });
+    // console.log('[AppClass:initActiveProjects] result', {
+    //   activeTasksList,
+    //   projects,
+    // });
   }
 
   // Register the Service Worker
