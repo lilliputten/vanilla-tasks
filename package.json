@@ -1,8 +1,8 @@
 {
   "name": "vanilla-tasks",
-  "version": "0.0.9",
-  "timetag": "240707-1758",
-  "timestamp": "2024.07.07 17:58 +0500",
+  "version": "0.0.10",
+  "timetag": "240707-1806",
+  "timestamp": "2024.07.07 18:06 +0500",
   "changed": "2024.07.02, 09:42",
   "description": "Vanilla Tasks List Manager",
   "main": "index.html",
