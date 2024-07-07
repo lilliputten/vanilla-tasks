@@ -1,5 +1,5 @@
 html,
-.Page {
+.Page:not(.Plain) {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -13,3 +13,12 @@ html,
   background-color: var(--default-background-color);
   color: var(--default-text-color);
 }
+.Page.Plain {
+  padding: 1em;
+}
+.Page.Plain h1,
+.Page.Plain h2,
+.Page.Plain h3 {
+  color: var(--primary-color);
+}
+
