@@ -77,10 +77,11 @@ export class AppClass {
         }
       });
     });
-    console.log('[AppClass:initActiveProjects] result', {
-      activeTasksList,
-      projects,
-    });
+    /* console.log('[AppClass:initActiveProjects] result', {
+     *   activeTasksList,
+     *   projects,
+     * });
+     */
     return activeTasks.initTasks(activeTasksList);
   }
 

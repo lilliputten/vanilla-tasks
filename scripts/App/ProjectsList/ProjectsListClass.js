@@ -362,10 +362,10 @@ export class ProjectsListClass {
     this.renderContent();
   }
 
-  /** @param {TActiveTask[]} activeTasksList */
-  onActiveTasksUpdated(activeTasksList) {
+  /** @param {TActiveTask[]} _activeTasksList */
+  onActiveTasksUpdated(_activeTasksList) {
     const { activeTasks, dataStorage, tasksList } = this;
-    const { currentProjectId } = dataStorage;
+    // const { currentProjectId } = dataStorage;
     /** @type {TProjectId[]} */
     const activeProjectIds = activeTasks.getActiveTaskProjects();
     if (!activeProjectIds.length) {
@@ -380,16 +380,17 @@ export class ProjectsListClass {
     if (!hasUpdatedProjects) {
       return;
     }
-    const hasCurrentProjectUpdated =
-      hasUpdatedProjects && updatedProjectIds.includes(currentProjectId);
-    console.log('[ProjectsListClass:activeTasksList]', {
-      hasUpdatedProjects,
-      hasCurrentProjectUpdated,
-      updatedProjectIds,
-      activeProjectIds,
-      activeTasks,
-      activeTasksList,
-    });
+    /* // DEBUG
+     * const hasCurrentProjectUpdated =
+     *   hasUpdatedProjects && updatedProjectIds.includes(currentProjectId);
+     * console.log('[ProjectsListClass:onActiveTasksUpdated]', {
+     *   hasUpdatedProjects,
+     *   hasCurrentProjectUpdated,
+     *   updatedProjectIds,
+     *   activeProjectIds,
+     *   activeTasks,
+     * });
+     */
     updatedProjectIds.forEach((projectId) => {
       this.updateProjectItemTitle(projectId);
     });

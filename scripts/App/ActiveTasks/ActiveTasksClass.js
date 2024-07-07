@@ -62,38 +62,23 @@ export class ActiveTasksClass {
 
   /** @param {TActiveTask} activeTask */
   activeTaskTick(activeTask) {
-    const {
-      // prettier-ignore
-      projectId,
-      taskId,
-      task,
-    } = activeTask;
-    const {
-      // prettier-ignore
-      status,
-      elapsed,
-      measured,
-      created,
-      updated,
-    } = task;
+    const { task } = activeTask;
+    const { measured } = task;
     const now = Date.now();
     const diff = now - measured;
     task.elapsed += diff;
     task.measured = now;
-    console.log('[ActiveTasksClass:activeTaskTick]', {
-      diff,
-      now,
-      // Task:
-      status,
-      elapsed,
-      measured,
-      created,
-      updated,
-      // Active task:
-      projectId,
-      taskId,
-      task,
-    });
+    /* console.log('[ActiveTasksClass:activeTaskTick]', {
+     *   diff,
+     *   now,
+     *   // Task:
+     *   measured,
+     *   // Active task:
+     *   projectId,
+     *   taskId,
+     *   task,
+     * });
+     */
     this.events.emit('activeTaskTick', activeTask);
   }
 
@@ -115,15 +100,16 @@ export class ActiveTasksClass {
       const diff = now - measured;
       // If detected too large diff then ask if it should be added to the elapsed accumulator for the task
       const isNormal = diff <= maxNormalDiffPeriod;
-      console.warn('[ActiveTasksClass:activeTaskStart] has measured time', {
-        isNormal,
-        maxNormalDiffPeriod,
-        diff,
-        measured,
-        status,
-        task,
-        activeTask,
-      });
+      /* console.warn('[ActiveTasksClass:activeTaskStart] has measured time', {
+       *   isNormal,
+       *   maxNormalDiffPeriod,
+       *   diff,
+       *   measured,
+       *   status,
+       *   task,
+       *   activeTask,
+       * });
+       */
       if (!isNormal) {
         resultCb = () => {
           const diffStr = CommonHelpers.formatDuration(diff);
@@ -133,17 +119,6 @@ export class ActiveTasksClass {
           <p>Probably, it was measured during a period of inactivity of the application.</p>
           <p>Do you want to add it to the elapsed time?</p>
           `;
-          console.log('[ActiveTasksClass:activeTaskStart] show dialog', {
-            diffStr,
-            msgText,
-            isNormal,
-            maxNormalDiffPeriod,
-            diff,
-            measured,
-            status,
-            task,
-            activeTask,
-          });
           return AppHelpers.confirmationModal('addLastDiff', 'Add already tracked time?', msgText)
             .then(() => {
               // Add the time if the answer was 'yes'...
@@ -160,11 +135,12 @@ export class ActiveTasksClass {
       }
     }
     task.measured = now;
-    console.log('[ActiveTasksClass:activeTaskStart]', {
-      now,
-      task,
-      activeTask,
-    });
+    /* console.log('[ActiveTasksClass:activeTaskStart]', {
+     *   now,
+     *   task,
+     *   activeTask,
+     * });
+     */
     task.status = 'active';
     if (!resultCb) {
       this.events.emit('activeTaskStart', activeTask);
@@ -177,16 +153,7 @@ export class ActiveTasksClass {
     const initPromises = activeTasks.map((activeTask) => {
       return this.addTask(activeTask, { onInit: true, dontUpdate: true });
     });
-    console.log('[ActiveTasksClass:initTasks] start', {
-      initPromises,
-      activeTasks,
-    });
-    return CommonHelpers.runAsyncCallbacksSequentially(initPromises).then((res) => {
-      console.log('[ActiveTasksClass:initTasks] finish', {
-        res,
-        initPromises,
-        activeTasks,
-      });
+    return CommonHelpers.runAsyncCallbacksSequentially(initPromises).finally(() => {
       this.updateActivity();
     });
   }
@@ -194,10 +161,12 @@ export class ActiveTasksClass {
   /** @param {TActiveTask} activeTask */
   activeTaskFinish(activeTask) {
     const { task } = activeTask;
-    console.log('[ActiveTasksClass:activeTaskFinish]', {
-      activeTask,
-    });
-    // TODO: Do final time tick...
+    /*
+     * console.log('[ActiveTasksClass:activeTaskFinish]', {
+     *   activeTask,
+     * });
+     */
+    // Do final time tick...
     this.activeTaskTick(activeTask);
     task.measured = undefined;
     task.status = 'completed';
@@ -251,10 +220,11 @@ export class ActiveTasksClass {
    */
   addTask(activeTask, opts = {}) {
     const { activeTasksList } = this;
-    console.log('[ActiveTasksClass:addTask]', {
-      activeTask,
-      activeTasksList,
-    });
+    /* console.log('[ActiveTasksClass:addTask]', {
+     *   activeTask,
+     *   activeTasksList,
+     * });
+     */
     activeTasksList.push(activeTask);
     const result = this.activeTaskStart(activeTask, opts);
     if (!opts.dontUpdate) {
@@ -281,11 +251,12 @@ export class ActiveTasksClass {
       commonNotify.showError(error);
       return;
     }
-    console.log('[ActiveTasksClass:removeTask]', {
-      idx,
-      activeTask,
-      activeTasksList,
-    });
+    /* console.log('[ActiveTasksClass:removeTask]', {
+     *   idx,
+     *   activeTask,
+     *   activeTasksList,
+     * });
+     */
     this.activeTaskFinish(activeTask);
     activeTasksList.splice(idx, 1);
     this.updateActivity();

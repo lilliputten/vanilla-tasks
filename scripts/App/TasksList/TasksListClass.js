@@ -301,15 +301,16 @@ export class TasksListClass {
     // Change status: pending -> active, active <-> completed
     const nextStatus = taskStatus === 'active' ? 'completed' : 'active';
     const hasActiveTask = activeTasks.hasProjectTask(projectId, taskId);
-    console.log('[TasksListClass:onChangeTaskStatus]', {
-      hasActiveTask,
-      node,
-      taskNode,
-      taskStatus,
-      taskId,
-      task,
-      nextStatus,
-    });
+    /* console.log('[TasksListClass:onChangeTaskStatus]', {
+     *   hasActiveTask,
+     *   node,
+     *   taskNode,
+     *   taskStatus,
+     *   taskId,
+     *   task,
+     *   nextStatus,
+     * });
+     */
     if (nextStatus === 'active') {
       if (!hasActiveTask) {
         /** @type {TActiveTask} */
@@ -328,7 +329,6 @@ export class TasksListClass {
     // Update data & dom node status...
     task.status = nextStatus;
     taskNode.setAttribute('status', nextStatus);
-    // taskNode.classList.toggle('Completed', newCompleted); // NOTE: Old version, before 0.0.9
     // Store data...
     this.updateStatus();
     // Call tasks changed callback
@@ -396,20 +396,6 @@ export class TasksListClass {
       .catch(CommonHelpers.NOOP);
   }
 
-  /* *** Select task
-   *  * @param {PointerEvent} event
-   *  **
-   * onTaskItemClickAction(event) {
-   *   const { currentTaskId } = this;
-   *   const taskId = TasksListHelpers.getEventTaskId(event);
-   *   // TODO: Check if taskId has been defined?
-   *   if (!taskId || taskId === currentTaskId) {
-   *     return;
-   *   }
-   *   this.setCurrentTask(taskId);
-   * }
-   */
-
   onAddTaskAction() {
     AppHelpers.editTextValueModal('taskName', 'New Task Name', 'Task Name', '')
       .then((name) => {
@@ -449,23 +435,23 @@ export class TasksListClass {
   onActiveTaskUpdated(activeTask) {
     const { listNode } = this;
     const { projectId, taskId, task } = activeTask;
-    const { elapsed, status } = task;
+    const { elapsed } = task;
     // Update times only for current project' nodes...
     if (projectId !== this.projectId) {
       return;
     }
     const elapsedStr = CommonHelpers.formatDuration(elapsed);
     const timeNode = listNode.querySelector(`.Task.Item#${taskId} .Time`);
-    console.log('[TasksListClass:onActiveTaskUpdated]', {
-      elapsedStr,
-      status,
-      elapsed,
-      timeNode,
-      activeTask,
-      projectId,
-      taskId,
-      task,
-    });
+    /* console.log('[TasksListClass:onActiveTaskUpdated]', {
+     *   elapsedStr,
+     *   elapsed,
+     *   timeNode,
+     *   activeTask,
+     *   projectId,
+     *   taskId,
+     *   task,
+     * });
+     */
     if (timeNode) {
       timeNode.innerHTML = elapsedStr;
     }
