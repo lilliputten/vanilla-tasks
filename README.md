@@ -1,12 +1,12 @@
 <!--
 @since 2024.06.30, 12:00
-@changed 2024.07.04, 21:16
+@changed 2024.07.07, 17:39
 -->
 
 # Vanilla Tasks List Manager
 
 - Version: 0.0.9
-- Last changes timestamp: 2024.07.07 17:31 +0500
+- Last changes timestamp: 2024.07.07 17:36 +0500
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
 
@@ -21,6 +21,7 @@ The small application aimed to demonstrate native js and css abilities in browse
 - Change the order of the project/task items by dragg-and-drop (with support for mobile devices).
 - Data import/export from/to a local json file.
 - Basic PWA funcitonality (cache, ability to install on a mobile desktop)
+- Time tracking functionality.
 
 ## Resources
 

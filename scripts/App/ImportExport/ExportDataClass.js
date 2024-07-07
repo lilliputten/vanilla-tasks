@@ -44,7 +44,7 @@ export class ExportDataClass {
     element.click();
     document.body.removeChild(element);
     // TODO: To store fileName for the next use?
-    commonNotify.showSuccess('File "' + fileName + '" successfully saved!');
+    commonNotify.showSuccess('File "' + fileName + '" successfully created!');
   }
 
   exportData() {

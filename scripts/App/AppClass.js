@@ -47,9 +47,11 @@ export class AppClass {
     // Processes list component
     this.processList = new ProjectsListClass(params);
 
-    window.addEventListener('load', () => {
-      this.registerSW();
-    });
+    /* NOTE: SW temporaqrily disabled (for the demo time)
+     * window.addEventListener('load', () => {
+     *   this.registerSW();
+     * });
+     */
   }
 
   initActiveProjects() {
