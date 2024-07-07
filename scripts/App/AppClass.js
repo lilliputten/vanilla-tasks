@@ -70,20 +70,10 @@ export class AppClass {
             taskId,
             task,
           };
-          /* // DEBUG!
-           * task.measured = undefined;
-           * task.elapsed = undefined;
-           */
           activeTasksList.push(activeTask);
-          // activeTasks.addTask(activeTask, { onInit: true });
         }
       });
     });
-    /* console.log('[AppClass:initActiveProjects] result', {
-     *   activeTasksList,
-     *   projects,
-     * });
-     */
     return activeTasks.initTasks(activeTasksList);
   }
 

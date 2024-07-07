@@ -68,17 +68,6 @@ export class ActiveTasksClass {
     const diff = now - measured;
     task.elapsed += diff;
     task.measured = now;
-    /* console.log('[ActiveTasksClass:activeTaskTick]', {
-     *   diff,
-     *   now,
-     *   // Task:
-     *   measured,
-     *   // Active task:
-     *   projectId,
-     *   taskId,
-     *   task,
-     * });
-     */
     this.events.emit('activeTaskTick', activeTask);
   }
 
@@ -88,7 +77,7 @@ export class ActiveTasksClass {
    * */
   activeTaskStart(activeTask, opts = {}) {
     const { task } = activeTask;
-    const { status, measured } = task;
+    const { measured } = task;
     const now = Date.now();
     // let resultPromise = Promise.resolve(undefined);
     /** @type {() => Promise} */
@@ -135,12 +124,6 @@ export class ActiveTasksClass {
       }
     }
     task.measured = now;
-    /* console.log('[ActiveTasksClass:activeTaskStart]', {
-     *   now,
-     *   task,
-     *   activeTask,
-     * });
-     */
     task.status = 'active';
     if (!resultCb) {
       this.events.emit('activeTaskStart', activeTask);
@@ -161,11 +144,6 @@ export class ActiveTasksClass {
   /** @param {TActiveTask} activeTask */
   activeTaskFinish(activeTask) {
     const { task } = activeTask;
-    /*
-     * console.log('[ActiveTasksClass:activeTaskFinish]', {
-     *   activeTask,
-     * });
-     */
     // Do final time tick...
     this.activeTaskTick(activeTask);
     task.measured = undefined;
@@ -220,11 +198,6 @@ export class ActiveTasksClass {
    */
   addTask(activeTask, opts = {}) {
     const { activeTasksList } = this;
-    /* console.log('[ActiveTasksClass:addTask]', {
-     *   activeTask,
-     *   activeTasksList,
-     * });
-     */
     activeTasksList.push(activeTask);
     const result = this.activeTaskStart(activeTask, opts);
     if (!opts.dontUpdate) {
@@ -251,12 +224,6 @@ export class ActiveTasksClass {
       commonNotify.showError(error);
       return;
     }
-    /* console.log('[ActiveTasksClass:removeTask]', {
-     *   idx,
-     *   activeTask,
-     *   activeTasksList,
-     * });
-     */
     this.activeTaskFinish(activeTask);
     activeTasksList.splice(idx, 1);
     this.updateActivity();

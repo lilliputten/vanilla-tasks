@@ -174,12 +174,6 @@ export class ProjectsListClass {
       .join('');
     const prevCurrentNodes = listNode.querySelectorAll(prevSelector);
     const nextCurrentNode = projectId && listNode.querySelector(`.Project.Item[id="${projectId}"]`);
-    /* console.log('[ProjectsListClass:setCurrentProject]', {
-     *   projectId,
-     *   prevCurrentNodes,
-     *   nextCurrentNode,
-     * });
-     */
     prevCurrentNodes.forEach((item) => {
       item.classList.toggle('Current', false);
     });
@@ -380,17 +374,6 @@ export class ProjectsListClass {
     if (!hasUpdatedProjects) {
       return;
     }
-    /* // DEBUG
-     * const hasCurrentProjectUpdated =
-     *   hasUpdatedProjects && updatedProjectIds.includes(currentProjectId);
-     * console.log('[ProjectsListClass:onActiveTasksUpdated]', {
-     *   hasUpdatedProjects,
-     *   hasCurrentProjectUpdated,
-     *   updatedProjectIds,
-     *   activeProjectIds,
-     *   activeTasks,
-     * });
-     */
     updatedProjectIds.forEach((projectId) => {
       this.updateProjectItemTitle(projectId);
     });

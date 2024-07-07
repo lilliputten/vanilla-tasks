@@ -275,16 +275,6 @@ export class TasksListClass {
     // Change status: pending -> active, active <-> completed
     const nextStatus = taskStatus === 'active' ? 'completed' : 'active';
     const hasActiveTask = activeTasks.hasProjectTask(projectId, taskId);
-    /* console.log('[TasksListClass:onChangeTaskStatus]', {
-     *   hasActiveTask,
-     *   node,
-     *   taskNode,
-     *   taskStatus,
-     *   taskId,
-     *   task,
-     *   nextStatus,
-     * });
-     */
     if (nextStatus === 'active') {
       if (!hasActiveTask) {
         /** @type {TActiveTask} */
@@ -392,6 +382,7 @@ export class TasksListClass {
         if (this.tasksChangedCallback) {
           this.tasksChangedCallback(this.projectId, this.tasks);
         }
+        this.updateStatus();
       })
       .catch(CommonHelpers.NOOP);
   }

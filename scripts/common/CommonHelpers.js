@@ -66,10 +66,6 @@ export function runPromisesSequentially(promises) {
       return (
         promise
           .then((res) => {
-            console.log('[CommonHelpers:runPromisesSequentially]', {
-              res,
-            });
-            debugger;
             // Store result...
             results.push(res);
             // Do next promise...
