@@ -188,7 +188,9 @@ export class TasksListClass {
     /** @type {TProject} */
     const project = projects.find(({ id }) => id === projectId);
     const elapsed = project?.elapsed;
-    const title = projectName || '<span class="Info">No selected project</span>';
+    const titleContent = projectName
+      ? CommonHelpers.quoteHtmlAttr(projectName)
+      : '<span class="Info">No selected project</span>';
     const tasksStatsStr = AppHelpers.getTasksStatsStr(tasks);
     const projectTime = elapsed && CommonHelpers.formatDuration(elapsed);
     const infoStr = [
@@ -200,37 +202,9 @@ export class TasksListClass {
       .join(', ');
     const titleNode = toolbarNode.querySelector('.TitleText');
     const infoNode = toolbarNode.querySelector('.Info');
-    titleNode.innerHTML = CommonHelpers.quoteHtmlAttr(title);
+    titleNode.innerHTML = titleContent;
     infoNode.innerHTML = tasksStatsStr ? `(${infoStr})` : '';
   }
-
-  /* // UNUSED: setCurrentTask
-   * [>* @param {TTaskId | undefined} taskId <]
-   * setCurrentTask(taskId) {
-   *   const { currentTaskId, listNode } = this;
-   *   if (taskId === currentTaskId) {
-   *     return;
-   *   }
-   *   const prevSelector = [
-   *     // prettier-ignore
-   *     '.Task.Item.Current',
-   *     taskId && `:not([id="${taskId}"])`,
-   *   ]
-   *     .filter(Boolean)
-   *     .join('');
-   *   const prevCurrentNodes = listNode.querySelectorAll(prevSelector);
-   *   const nextCurrentNode = taskId && listNode.querySelector(`.Task.Item[id="${taskId}"]`);
-   *   prevCurrentNodes.forEach((item) => {
-   *     item.classList.toggle('Current', false);
-   *   });
-   *   this.currentTaskId = taskId;
-   *   if (nextCurrentNode) {
-   *     nextCurrentNode.classList.toggle('Current', true);
-   *   }
-   *   // Show task tasks
-   *   this.updateStatus();
-   * }
-   */
 
   /**
    * @param {TTaskId} taskId
@@ -386,7 +360,6 @@ export class TasksListClass {
           this.tasks.splice(taskIdx, 1);
         }
         taskNode.remove();
-        // this.setCurrentTask(undefined);
         this.updateStatus();
         // Call tasks changed callback
         if (this.tasksChangedCallback) {
@@ -412,17 +385,9 @@ export class TasksListClass {
         const taskNodeTemplate = this.renderTaskItem(task);
         const taskNodeCollection = CommonHelpers.htmlToElements(taskNodeTemplate);
         const taskNode = /** @type {HTMLElement} */ (taskNodeCollection[0]);
-        /* console.log('[TasksListClass:onAddTaskAction]', {
-         *   task,
-         *   taskNodeTemplate,
-         *   taskNode,
-         *   name,
-         * });
-         */
         this.listNode.append(taskNode);
         AppHelpers.updateActionHandlers(taskNode, this.callbacks);
         this.dragListItems?.updateDragHandlers();
-        // this.setCurrentTask(taskId);
         // Call tasks changed callback
         if (this.tasksChangedCallback) {
           this.tasksChangedCallback(this.projectId, this.tasks);
@@ -442,16 +407,6 @@ export class TasksListClass {
     }
     const elapsedStr = CommonHelpers.formatDuration(elapsed);
     const timeNode = listNode.querySelector(`.Task.Item#${taskId} .Time`);
-    /* console.log('[TasksListClass:onActiveTaskUpdated]', {
-     *   elapsedStr,
-     *   elapsed,
-     *   timeNode,
-     *   activeTask,
-     *   projectId,
-     *   taskId,
-     *   task,
-     * });
-     */
     if (timeNode) {
       timeNode.innerHTML = elapsedStr;
     }
