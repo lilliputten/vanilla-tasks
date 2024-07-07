@@ -1,12 +1,18 @@
 // @ts-check
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
+import * as CommonConstants from '../../common/CommonConstants.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
-// import * as AppHelpers from '../AppHelpers.js';
+import * as AppHelpers from '../AppHelpers.js';
 // import * as AppConstants from '../AppConstants.js';
 
 import { SimpleEvents } from '../../common/SimpleEvents.js';
+
+/** If detected too large diff then ask if it should be added to the elapsed accumulator for the task */
+const maxNormalDiffPeriod = 30 * 60 * 1000;
+
+const tickTimeout = CommonConstants.isDev ? 5000 : 1000;
 
 export class ActiveTasksClass {
   /** @type {SimpleEvents} */
@@ -20,9 +26,6 @@ export class ActiveTasksClass {
   /** @type {HTMLElement} */
   layoutNode = undefined;
 
-  // [>* @type {TActiveTasksClassParams['dataStorage']} <]
-  // dataStorage = undefined;
-
   /** @type {TActiveTask[]} */
   activeTasksList = [];
 
@@ -31,33 +34,39 @@ export class ActiveTasksClass {
 
   /** @constructor
    * @param {TSharedParams} sharedParams
-   * --@param {TActiveTasksClassParams} params
    */
   constructor(sharedParams) {
-    // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
     const { layoutNode } = sharedParams;
 
     this.layoutNode = layoutNode;
 
-    // const { dataStorage } = params;
-    // this.dataStorage = dataStorage;
-
     // Init handler callbacks...
-    callbacks.onTickTimer = this.onTickTimer.bind(this);
+    callbacks.activeTick = this.activeTick.bind(this);
     callbacks.activeTaskTick = this.activeTaskTick.bind(this);
+  }
+
+  /** @returns {TProjectId[]} Ids of projects with active tasks */
+  getActiveTaskProjects() {
+    const { activeTasksList } = this;
+    /** @type {TProjectId[]} */
+    const activeProjectIds = [];
+    activeTasksList.forEach(({ projectId }) => {
+      if (!activeProjectIds.includes(projectId)) {
+        activeProjectIds.push(projectId);
+      }
+    });
+    return activeProjectIds;
   }
 
   /** @param {TActiveTask} activeTask */
   activeTaskTick(activeTask) {
-    const { layoutNode } = this;
     const {
       // prettier-ignore
       projectId,
       taskId,
       task,
-      // node,
     } = activeTask;
     const {
       // prettier-ignore
@@ -71,13 +80,7 @@ export class ActiveTasksClass {
     const diff = now - measured;
     task.elapsed += diff;
     task.measured = now;
-    const elapsedStr = CommonHelpers.formatDuration(task.elapsed);
-    const timeNode = layoutNode.querySelector(
-      `#TasksSection[project-id="${projectId}"] .Task.Item#${taskId} .Time`,
-    );
-    timeNode.innerHTML = elapsedStr;
     console.log('[ActiveTasksClass:activeTaskTick]', {
-      elapsedStr,
       diff,
       now,
       // Task:
@@ -90,7 +93,6 @@ export class ActiveTasksClass {
       projectId,
       taskId,
       task,
-      timeNode,
     });
     this.events.emit('activeTaskTick', activeTask);
   }
@@ -103,30 +105,90 @@ export class ActiveTasksClass {
     const { task } = activeTask;
     const { status, measured } = task;
     const now = Date.now();
-    if (opts.isStart /* && status === 'active' */ && measured) {
+    // let resultPromise = Promise.resolve(undefined);
+    /** @type {() => Promise} */
+    let resultCb = undefined;
+    if (!task.elapsed) {
+      task.elapsed = 0;
+    }
+    if (opts.onInit /* && status === 'active' */ && measured) {
       const diff = now - measured;
+      // If detected too large diff then ask if it should be added to the elapsed accumulator for the task
+      const isNormal = diff <= maxNormalDiffPeriod;
       console.warn('[ActiveTasksClass:activeTaskStart] has measured time', {
+        isNormal,
+        maxNormalDiffPeriod,
         diff,
         measured,
         status,
         task,
         activeTask,
       });
-      // TODO: Check for too long time gaps (on initalization?)?
+      if (!isNormal) {
+        resultCb = () => {
+          const diffStr = CommonHelpers.formatDuration(diff);
+          const msgText = `
+          <p>An excessively long period of unaccounted time (${diffStr})
+            was detected for the task "${CommonHelpers.quoteHtmlAttr(task.name)}".</p>
+          <p>Probably, it was measured during a period of inactivity of the application.</p>
+          <p>Do you want to add it to the elapsed time?</p>
+          `;
+          console.log('[ActiveTasksClass:activeTaskStart] show dialog', {
+            diffStr,
+            msgText,
+            isNormal,
+            maxNormalDiffPeriod,
+            diff,
+            measured,
+            status,
+            task,
+            activeTask,
+          });
+          return AppHelpers.confirmationModal('addLastDiff', 'Add already tracked time?', msgText)
+            .then(() => {
+              // Add the time if the answer was 'yes'...
+              task.elapsed += diff;
+            })
+            .catch(CommonHelpers.NOOP)
+            .finally(() => {
+              this.events.emit('activeTaskStart', activeTask);
+            });
+        };
+      } else {
+        // Otherwise, add it immediatelly...
+        task.elapsed += diff;
+      }
     }
     task.measured = now;
-    if (!task.elapsed) {
-      task.elapsed = 0;
-    }
     console.log('[ActiveTasksClass:activeTaskStart]', {
       now,
       task,
       activeTask,
     });
-    // debugger;
     task.status = 'active';
-    // TODO: Check and init time properties...
-    this.events.emit('activeTaskStart', activeTask);
+    if (!resultCb) {
+      this.events.emit('activeTaskStart', activeTask);
+    }
+    return resultCb;
+  }
+
+  /** @param {TActiveTask[]} activeTasks */
+  initTasks(activeTasks) {
+    const initPromises = activeTasks.map((activeTask) => {
+      return this.addTask(activeTask, { onInit: true, dontUpdate: true });
+    });
+    console.log('[ActiveTasksClass:initTasks] start', {
+      initPromises,
+      activeTasks,
+    });
+    return CommonHelpers.runAsyncCallbacksSequentially(initPromises).then((res) => {
+      console.log('[ActiveTasksClass:initTasks] finish', {
+        res,
+        initPromises,
+        activeTasks,
+      });
+      this.updateActivity();
+    });
   }
 
   /** @param {TActiveTask} activeTask */
@@ -142,12 +204,10 @@ export class ActiveTasksClass {
     this.events.emit('activeTaskFinish', activeTask);
   }
 
-  onTickTimer() {
+  activeTick() {
     const { activeTasksList, callbacks } = this;
-    console.log('[ActiveTasksClass:addTask]', {
-      activeTasksList,
-    });
     activeTasksList.forEach(callbacks.activeTaskTick);
+    this.events.emit('activeTasksUpdated', this.activeTasksList);
   }
 
   updateActivity() {
@@ -155,7 +215,7 @@ export class ActiveTasksClass {
     const hasActiveTasks = activeTasksList.length;
     if (hasActiveTasks) {
       if (!this.tickHandler) {
-        this.tickHandler = setInterval(callbacks.onTickTimer, 1000);
+        this.tickHandler = setInterval(callbacks.activeTick, tickTimeout);
       }
     } else {
       if (this.tickHandler) {
@@ -196,8 +256,12 @@ export class ActiveTasksClass {
       activeTasksList,
     });
     activeTasksList.push(activeTask);
-    this.activeTaskStart(activeTask, opts);
-    this.updateActivity();
+    const result = this.activeTaskStart(activeTask, opts);
+    if (!opts.dontUpdate) {
+      this.updateActivity();
+    }
+    this.events.emit('activeTasksUpdated', this.activeTasksList);
+    return result;
   }
 
   /** @param {TActiveTask} activeTask */
@@ -225,6 +289,7 @@ export class ActiveTasksClass {
     this.activeTaskFinish(activeTask);
     activeTasksList.splice(idx, 1);
     this.updateActivity();
+    this.events.emit('activeTasksUpdated', this.activeTasksList);
   }
 
   /**

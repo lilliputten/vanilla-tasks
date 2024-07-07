@@ -1,5 +1,6 @@
 interface TActiveTaskStartOpts {
-  isStart?: boolean;
+  onInit?: boolean;
+  dontUpdate?: boolean;
 }
 interface TActiveTaskFinishOpts {
   isFinish?: boolean;

@@ -45,6 +45,31 @@ export class DataStorageClass {
     }
   }
 
+  // Times...
+
+  /** Recalculate total elapsed time for the project.
+   * @param {TProjectId} projectId
+   * @returns {boolean} Returns true if project elapsed time has changed
+   */
+  updateProjectTime(projectId) {
+    const { projects, events } = this;
+    const project = projects.find(({ id }) => id === projectId);
+    if (!project) {
+      // ???
+      return;
+    }
+    const { tasks } = project;
+    const totalElapsed = tasks.reduce((total, { elapsed }) => {
+      return elapsed ? total + elapsed : total;
+    }, 0);
+    if (totalElapsed !== project.elapsed) {
+      project.elapsed = totalElapsed;
+      events.emit('updatedProjectTime', project);
+      return true;
+    }
+    return false;
+  }
+
   // Save & load data...
 
   selectFirstProject() {

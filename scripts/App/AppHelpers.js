@@ -139,7 +139,7 @@ function getConfirmationFormContent(id, _title, text) {
       id="onCancelAction"
     >
       <span class="icon fa fa-times"></span>
-      Cancel
+      No
     </button>
   </div>
 </form>

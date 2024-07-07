@@ -56,7 +56,7 @@ export class AppClass {
     const { dataStorage, activeTasks } = this;
     const { projects } = dataStorage;
     /** @type {TActiveTask[]} */
-    // const activeTasksList = [];
+    const activeTasksList = [];
     // Try to find all the active tasks...
     projects.forEach(({ id: projectId, tasks }) => {
       tasks.forEach((task) => {
@@ -72,15 +72,16 @@ export class AppClass {
            * task.measured = undefined;
            * task.elapsed = undefined;
            */
-          // activeTasksList.push(activeTask);
-          activeTasks.addTask(activeTask, { isStart: true });
+          activeTasksList.push(activeTask);
+          // activeTasks.addTask(activeTask, { onInit: true });
         }
       });
     });
-    // console.log('[AppClass:initActiveProjects] result', {
-    //   activeTasksList,
-    //   projects,
-    // });
+    console.log('[AppClass:initActiveProjects] result', {
+      activeTasksList,
+      projects,
+    });
+    return activeTasks.initTasks(activeTasksList);
   }
 
   // Register the Service Worker

@@ -20,8 +20,8 @@ export class TasksListClass {
    */
   callbacks = {};
 
-  // [>* @type {TProjectsListClassParams['dataStorage']} <]
-  // dataStorage;
+  /** @type {TProjectsListClassParams['dataStorage']} */
+  dataStorage;
 
   /** @type {TProjectsListClassParams['activeTasks']} */
   activeTasks;
@@ -70,8 +70,9 @@ export class TasksListClass {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
-    const { layoutNode, activeTasks } = params;
+    const { layoutNode, dataStorage, activeTasks } = params;
     this.layoutNode = layoutNode;
+    this.dataStorage = dataStorage;
     this.activeTasks = activeTasks;
 
     this.initDomNodes();
@@ -83,6 +84,11 @@ export class TasksListClass {
     callbacks.onEditTaskNameAction = this.onEditTaskNameAction.bind(this);
     callbacks.onRemoveTaskAction = this.onRemoveTaskAction.bind(this);
     callbacks.onAddTaskAction = this.onAddTaskAction.bind(this);
+    callbacks.onActiveTaskUpdated = this.onActiveTaskUpdated.bind(this);
+
+    activeTasks.events.add('activeTaskTick', callbacks.onActiveTaskUpdated);
+    activeTasks.events.add('activeTaskStart', callbacks.onActiveTaskUpdated);
+    activeTasks.events.add('activeTaskFinish', callbacks.onActiveTaskUpdated);
 
     // Init toolbar handlers...
     AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
@@ -177,13 +183,25 @@ export class TasksListClass {
     if (!showTaskInfoToolbar) {
       return;
     }
-    const { projectName, tasks, toolbarNode } = this;
+    const { projectId, projectName, tasks, toolbarNode, dataStorage } = this;
+    const { projects } = dataStorage;
+    /** @type {TProject} */
+    const project = projects.find(({ id }) => id === projectId);
+    const elapsed = project?.elapsed;
     const title = projectName || '<span class="Info">No selected project</span>';
     const tasksStatsStr = AppHelpers.getTasksStatsStr(tasks);
+    const projectTime = elapsed && CommonHelpers.formatDuration(elapsed);
+    const infoStr = [
+      // prettier-ignore
+      projectTime,
+      tasksStatsStr,
+    ]
+      .filter(Boolean)
+      .join(', ');
     const titleNode = toolbarNode.querySelector('.TitleText');
     const infoNode = toolbarNode.querySelector('.Info');
     titleNode.innerHTML = CommonHelpers.quoteHtmlAttr(title);
-    infoNode.innerHTML = tasksStatsStr ? `(${tasksStatsStr})` : '';
+    infoNode.innerHTML = tasksStatsStr ? `(${infoStr})` : '';
   }
 
   /* // UNUSED: setCurrentTask
@@ -425,6 +443,32 @@ export class TasksListClass {
         }
       })
       .catch(CommonHelpers.NOOP);
+  }
+
+  /** @param {TActiveTask} activeTask */
+  onActiveTaskUpdated(activeTask) {
+    const { listNode } = this;
+    const { projectId, taskId, task } = activeTask;
+    const { elapsed, status } = task;
+    // Update times only for current project' nodes...
+    if (projectId !== this.projectId) {
+      return;
+    }
+    const elapsedStr = CommonHelpers.formatDuration(elapsed);
+    const timeNode = listNode.querySelector(`.Task.Item#${taskId} .Time`);
+    console.log('[TasksListClass:onActiveTaskUpdated]', {
+      elapsedStr,
+      status,
+      elapsed,
+      timeNode,
+      activeTask,
+      projectId,
+      taskId,
+      task,
+    });
+    if (timeNode) {
+      timeNode.innerHTML = elapsedStr;
+    }
   }
 
   // Render...

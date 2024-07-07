@@ -70,6 +70,10 @@ export class ProjectsListClass {
     callbacks.onProjectItemClickAction = this.onProjectItemClickAction.bind(this);
     callbacks.onAddProjectAction = this.onAddProjectAction.bind(this);
     callbacks.onNewProjects = this.onNewProjects.bind(this);
+    callbacks.onActiveTasksUpdated = this.onActiveTasksUpdated.bind(this);
+
+    activeTasks.events.add('activeTasksUpdated', callbacks.onActiveTasksUpdated);
+    // TODO activeTaskFinish
 
     this.dataStorage.events.add('newProjects', callbacks.onNewProjects);
 
@@ -227,7 +231,6 @@ export class ProjectsListClass {
     project.updated = Date.now();
     this.tasksList.setProjectName(name);
     this.updateStatus();
-    // this.saveProjects();
     this.dataStorage.setProjects(projects);
   }
 
@@ -239,7 +242,6 @@ export class ProjectsListClass {
     const { projects } = this.dataStorage;
     dragListItems.commitMove(projects);
     this.updateStatus();
-    // this.saveProjects();
     this.dataStorage.setProjects(projects);
   }
 
@@ -312,7 +314,6 @@ export class ProjectsListClass {
         }
         projectNode.remove();
         this.setCurrentProject(undefined);
-        // this.saveProjects();
       })
       .catch(CommonHelpers.NOOP);
   }
@@ -340,7 +341,6 @@ export class ProjectsListClass {
         AppHelpers.updateActionHandlers(projectNode, this.callbacks);
         this.dragListItems?.updateDragHandlers();
         this.setCurrentProject(projectId);
-        // this.saveProjects();
       })
       .catch(CommonHelpers.NOOP);
   }
@@ -362,18 +362,61 @@ export class ProjectsListClass {
     this.renderContent();
   }
 
+  /** @param {TActiveTask[]} activeTasksList */
+  onActiveTasksUpdated(activeTasksList) {
+    const { activeTasks, dataStorage, tasksList } = this;
+    const { currentProjectId } = dataStorage;
+    /** @type {TProjectId[]} */
+    const activeProjectIds = activeTasks.getActiveTaskProjects();
+    if (!activeProjectIds.length) {
+      return;
+    }
+    const updatedProjectIds = activeProjectIds
+      .map((projectId) => {
+        return dataStorage.updateProjectTime(projectId) && projectId;
+      })
+      .filter(Boolean);
+    const hasUpdatedProjects = !!updatedProjectIds.length;
+    if (!hasUpdatedProjects) {
+      return;
+    }
+    const hasCurrentProjectUpdated =
+      hasUpdatedProjects && updatedProjectIds.includes(currentProjectId);
+    console.log('[ProjectsListClass:activeTasksList]', {
+      hasUpdatedProjects,
+      hasCurrentProjectUpdated,
+      updatedProjectIds,
+      activeProjectIds,
+      activeTasks,
+      activeTasksList,
+    });
+    updatedProjectIds.forEach((projectId) => {
+      this.updateProjectItemTitle(projectId);
+    });
+    tasksList.updateToolbarTitle();
+    dataStorage.saveProjects();
+  }
+
   // Render...
 
   /** @param {TProject} project */
   getProjectTitleContent(project) {
-    const { name, tasks } = project;
+    const { name, tasks, elapsed } = project;
     const tasksStatsStr = AppHelpers.getTasksStatsStr(tasks);
+    const projectTime = elapsed && CommonHelpers.formatDuration(elapsed);
+    const infoStr = [
+      // prettier-ignore
+      projectTime,
+      tasksStatsStr,
+    ]
+      .filter(Boolean)
+      .join(', ');
     const title = [
       /* // NOTE: It's possible to use inputs or just text nodes (with `GhostInput` here and `WithTextInput` for title nodes)
        * `<input class="TitleText InputText FullWidth GhostInput" value="${CommonHelpers.quoteHtmlAttr(name)}" change-action-id="onUpdateTextInputProjectName" />`,
        */
       `<span class="TitleText">${CommonHelpers.quoteHtmlAttr(name)}</span>`,
-      tasksStatsStr && `<span class="Info Small">(${tasksStatsStr})</span>`,
+      tasksStatsStr && `<span class="Info Small">(${infoStr})</span>`,
     ]
       .filter(Boolean)
       .join(' ');
