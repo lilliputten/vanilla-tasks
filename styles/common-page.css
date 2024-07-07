@@ -10,8 +10,9 @@ html,
   overflow: hidden;
 }
 
-html, body {
+html,
+body {
   /* Attempt to disable pull-to-refresh (it doesn't work). */
+  overscroll-behavior: none;
   overscroll-behavior-y: contain;
-  overscroll-behavior: none !important;
 }

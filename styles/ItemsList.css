@@ -10,10 +10,6 @@ body {
 .ItemsList .Item {
   --item-v-padding: 0.5em;
 
-  /* Disables pull-to-refresh but allows overscroll glow effects. */
-  overscroll-behavior: none;
-  overscroll-behavior-y: contain;
-
   position: relative;
   padding: var(--item-v-padding) 1em;
   display: flex;
@@ -64,7 +60,14 @@ body {
   overflow: hidden;
   display: inline-block; /* Required for `ellipsis` clipping mode */
 }
-.ItemsList .Item.Completed .Title {
+
+/* Items with a status (task list items) */
+.ItemsList .Item[status='completed'] .Status:not(.completed),
+.ItemsList .Item[status='active'] .Status:not(.active),
+.ItemsList .Item[status='pending'] .Status:not(.pending) {
+  display: none;
+}
+.ItemsList .Item[status='completed'] .Title {
   text-decoration: line-through;
   opacity: 0.3;
 }
@@ -72,17 +75,34 @@ body {
   /* border-color: rgba(var(--primary-color-rgb) / 50%); */
   border-radius: 5px;
 }
-.ItemsList .Item.Completed .StatusIcon {
-  /* border-color: var(--common-success-color); */
+/* .ItemsList .Item .StatusIcon { */
+/*   color: var(--primary-color); */
+/* } */
+/* .ItemsList .Item[status="completed"] .StatusIcon { */
+/*   color: var(--common-success-color); */
+/* } */
+/* .ItemsList .Item[status="completed"] .StatusIcon { */
+/*   color: var(--common-success-color); */
+/* } */
+.ItemsList .Item[status='active'] {
+  /* background-color: rgba(var(--primary-color-rgb) / 10%); */
+  background-color: rgba(var(--common-error-color-rgb) / 20%);
+}
+.ItemsList .Item[status='active'] .StatusIcon {
+  color: var(--common-error-color);
+}
+.ItemsList .Item[status='completed'] .StatusIcon {
   color: var(--common-success-color);
 }
-.ItemsList .Item:not(.Completed) .StatusIcon {
-  /* border-color: var(--common-error-color); */
-  color: var(--primary-color);
+.ItemsList .Item[status='completed'] {
+  background-color: rgba(var(--common-success-color-rgb) / 20%);
 }
-.ItemsList .Item.Completed .Status:not(.Completed),
-.ItemsList .Item:not(.Completed) .Status.Completed {
+.ItemsList .Item[status='pending'] .Time {
   display: none;
+}
+.ItemsList .Item .Time {
+  font-size: 90%;
+  opacity: 0.25;
 }
 
 /* Actions */

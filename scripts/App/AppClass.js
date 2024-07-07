@@ -3,6 +3,7 @@
 import * as AppConstants from './AppConstants.js';
 // import { commonNotify } from '../common/CommonNotify.js';
 import { DataStorageClass } from './DataStorage/DataStorageClass.js';
+import { ActiveTasksClass } from './ActiveTasks/ActiveTasksClass.js';
 import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
 
@@ -15,6 +16,9 @@ export class AppClass {
   /** @type {DataStorageClass} */
   dataStorage;
 
+  /** @type {ActiveTasksClass} */
+  activeTasks;
+
   /** @type {ProjectsListClass} */
   processList;
 
@@ -24,12 +28,17 @@ export class AppClass {
   constructor(sharedParams) {
     // const { callbacks } = this;
 
-    this.dataStorage = new DataStorageClass();
+    const dataStorage = (this.dataStorage = new DataStorageClass());
+
+    const activeTasks = (this.activeTasks = new ActiveTasksClass(sharedParams));
+
+    this.initActiveProjects();
 
     /** @type {TProjectsListClassParams} */
     const params = {
       ...sharedParams,
-      dataStorage: this.dataStorage,
+      dataStorage,
+      activeTasks,
     };
 
     // Main menu
@@ -41,6 +50,39 @@ export class AppClass {
     window.addEventListener('load', () => {
       this.registerSW();
     });
+  }
+
+  initActiveProjects() {
+    const { dataStorage, activeTasks } = this;
+    const { projects } = dataStorage;
+    /** @type {TActiveTask[]} */
+    const activeTasksList = [];
+    // Try to find all the active tasks...
+    projects.forEach(({ id: projectId, tasks }) => {
+      tasks.forEach((task) => {
+        const { id: taskId, status } = task;
+        if (status === 'active') {
+          /** @type {TActiveTask} */
+          const activeTask = {
+            projectId,
+            taskId,
+            task,
+          };
+          /* // DEBUG!
+           * task.measured = undefined;
+           * task.elapsed = undefined;
+           */
+          activeTasksList.push(activeTask);
+          // activeTasks.addTask(activeTask, { onInit: true });
+        }
+      });
+    });
+    /* console.log('[AppClass:initActiveProjects] result', {
+     *   activeTasksList,
+     *   projects,
+     * });
+     */
+    return activeTasks.initTasks(activeTasksList);
   }
 
   // Register the Service Worker

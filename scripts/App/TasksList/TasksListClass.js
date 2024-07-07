@@ -4,6 +4,7 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as AppHelpers from '../AppHelpers.js';
+import * as AppConstants from '../AppConstants.js';
 
 import { DragListItems } from '../DragListItems/DragListItems.js';
 
@@ -18,6 +19,12 @@ export class TasksListClass {
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {TProjectsListClassParams['dataStorage']} */
+  dataStorage;
+
+  /** @type {TProjectsListClassParams['activeTasks']} */
+  activeTasks;
 
   /** @type {DragListItems} */
   dragListItems = undefined;
@@ -57,17 +64,18 @@ export class TasksListClass {
   // Core...
 
   /** @constructor
-   * @param {TSharedParams} sharedParams
+   * @param {TProjectsListClassParams} params
    */
-  constructor(sharedParams) {
+  constructor(params) {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
-    this.initDomNodes(sharedParams);
-
-    const { layoutNode } = sharedParams;
-
+    const { layoutNode, dataStorage, activeTasks } = params;
     this.layoutNode = layoutNode;
+    this.dataStorage = dataStorage;
+    this.activeTasks = activeTasks;
+
+    this.initDomNodes();
 
     // Init handler callbacks...
     callbacks.onDragFinish = this.onDragFinish.bind(this);
@@ -76,6 +84,11 @@ export class TasksListClass {
     callbacks.onEditTaskNameAction = this.onEditTaskNameAction.bind(this);
     callbacks.onRemoveTaskAction = this.onRemoveTaskAction.bind(this);
     callbacks.onAddTaskAction = this.onAddTaskAction.bind(this);
+    callbacks.onActiveTaskUpdated = this.onActiveTaskUpdated.bind(this);
+
+    activeTasks.events.add('activeTaskTick', callbacks.onActiveTaskUpdated);
+    activeTasks.events.add('activeTaskStart', callbacks.onActiveTaskUpdated);
+    activeTasks.events.add('activeTaskFinish', callbacks.onActiveTaskUpdated);
 
     // Init toolbar handlers...
     AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
@@ -120,11 +133,8 @@ export class TasksListClass {
     this.updateStatus();
   }
 
-  /**
-   * @param {TSharedParams} sharedParams
-   */
-  initDomNodes(sharedParams) {
-    const { layoutNode } = sharedParams;
+  initDomNodes() {
+    const { layoutNode } = this;
 
     const sectionNode = /** @type {HTMLElement} */ (layoutNode.querySelector('#TasksSection'));
     if (!sectionNode) {
@@ -165,6 +175,7 @@ export class TasksListClass {
     const hasTasks = !!Array.isArray(tasks) && !!tasks.length;
     sectionNode.classList.toggle('Empty', !hasTasks);
     sectionNode.classList.toggle('NoProject', !hasProject);
+    sectionNode.setAttribute('project-id', projectId || '');
     this.updateToolbarTitle();
   }
 
@@ -172,46 +183,54 @@ export class TasksListClass {
     if (!showTaskInfoToolbar) {
       return;
     }
-    const { projectName, tasks, toolbarNode } = this;
+    const { projectId, projectName, tasks, toolbarNode, dataStorage } = this;
+    const { projects } = dataStorage;
+    /** @type {TProject} */
+    const project = projects.find(({ id }) => id === projectId);
+    const elapsed = project?.elapsed;
     const title = projectName || '<span class="Info">No selected project</span>';
     const tasksStatsStr = AppHelpers.getTasksStatsStr(tasks);
+    const projectTime = elapsed && CommonHelpers.formatDuration(elapsed);
+    const infoStr = [
+      // prettier-ignore
+      projectTime,
+      tasksStatsStr,
+    ]
+      .filter(Boolean)
+      .join(', ');
     const titleNode = toolbarNode.querySelector('.TitleText');
     const infoNode = toolbarNode.querySelector('.Info');
     titleNode.innerHTML = CommonHelpers.quoteHtmlAttr(title);
-    infoNode.innerHTML = tasksStatsStr ? `(${tasksStatsStr})` : '';
+    infoNode.innerHTML = tasksStatsStr ? `(${infoStr})` : '';
   }
 
-  /** @param {TTaskId | undefined} taskId */
-  setCurrentTask(taskId) {
-    const { currentTaskId, listNode } = this;
-    if (taskId === currentTaskId) {
-      return;
-    }
-    const prevSelector = [
-      // prettier-ignore
-      '.Task.Item.Current',
-      taskId && `:not([id="${taskId}"])`,
-    ]
-      .filter(Boolean)
-      .join('');
-    const prevCurrentNodes = listNode.querySelectorAll(prevSelector);
-    const nextCurrentNode = taskId && listNode.querySelector(`.Task.Item[id="${taskId}"]`);
-    /* console.log('[TasksListClass:setCurrentTask]', {
-     *   taskId,
-     *   prevCurrentNodes,
-     *   nextCurrentNode,
-     * });
-     */
-    prevCurrentNodes.forEach((item) => {
-      item.classList.toggle('Current', false);
-    });
-    this.currentTaskId = taskId;
-    if (nextCurrentNode) {
-      nextCurrentNode.classList.toggle('Current', true);
-    }
-    // Show task tasks
-    this.updateStatus();
-  }
+  /* // UNUSED: setCurrentTask
+   * [>* @param {TTaskId | undefined} taskId <]
+   * setCurrentTask(taskId) {
+   *   const { currentTaskId, listNode } = this;
+   *   if (taskId === currentTaskId) {
+   *     return;
+   *   }
+   *   const prevSelector = [
+   *     // prettier-ignore
+   *     '.Task.Item.Current',
+   *     taskId && `:not([id="${taskId}"])`,
+   *   ]
+   *     .filter(Boolean)
+   *     .join('');
+   *   const prevCurrentNodes = listNode.querySelectorAll(prevSelector);
+   *   const nextCurrentNode = taskId && listNode.querySelector(`.Task.Item[id="${taskId}"]`);
+   *   prevCurrentNodes.forEach((item) => {
+   *     item.classList.toggle('Current', false);
+   *   });
+   *   this.currentTaskId = taskId;
+   *   if (nextCurrentNode) {
+   *     nextCurrentNode.classList.toggle('Current', true);
+   *   }
+   *   // Show task tasks
+   *   this.updateStatus();
+   * }
+   */
 
   /**
    * @param {TTaskId} taskId
@@ -271,16 +290,45 @@ export class TasksListClass {
 
   /** @param {Event} event */
   onChangeTaskStatus(event) {
+    const { projectId, activeTasks } = this;
     event.preventDefault();
     const node = /** @type {HTMLElement} */ (event.currentTarget);
     const taskNode = node.closest('.Task.Item');
+    const taskStatus = taskNode.getAttribute('status');
     const taskId = taskNode.id;
+    /** @type {TTask} */
     const task = this.tasks.find(({ id }) => id === taskId);
-    // Toggle status
-    const newCompleted = !task.completed;
+    // Change status: pending -> active, active <-> completed
+    const nextStatus = taskStatus === 'active' ? 'completed' : 'active';
+    const hasActiveTask = activeTasks.hasProjectTask(projectId, taskId);
+    /* console.log('[TasksListClass:onChangeTaskStatus]', {
+     *   hasActiveTask,
+     *   node,
+     *   taskNode,
+     *   taskStatus,
+     *   taskId,
+     *   task,
+     *   nextStatus,
+     * });
+     */
+    if (nextStatus === 'active') {
+      if (!hasActiveTask) {
+        /** @type {TActiveTask} */
+        const activeTask = {
+          projectId,
+          taskId,
+          task,
+        };
+        activeTasks.addTask(activeTask);
+      }
+    } else {
+      if (hasActiveTask) {
+        activeTasks.removeProjectTask(projectId, taskId);
+      }
+    }
     // Update data & dom node status...
-    task.completed = newCompleted;
-    taskNode.classList.toggle('Completed', newCompleted);
+    task.status = nextStatus;
+    taskNode.setAttribute('status', nextStatus);
     // Store data...
     this.updateStatus();
     // Call tasks changed callback
@@ -338,7 +386,7 @@ export class TasksListClass {
           this.tasks.splice(taskIdx, 1);
         }
         taskNode.remove();
-        this.setCurrentTask(undefined);
+        // this.setCurrentTask(undefined);
         this.updateStatus();
         // Call tasks changed callback
         if (this.tasksChangedCallback) {
@@ -347,20 +395,6 @@ export class TasksListClass {
       })
       .catch(CommonHelpers.NOOP);
   }
-
-  /* *** Select task
-   *  * @param {PointerEvent} event
-   *  **
-   * onTaskItemClickAction(event) {
-   *   const { currentTaskId } = this;
-   *   const taskId = TasksListHelpers.getEventTaskId(event);
-   *   // TODO: Check if taskId has been defined?
-   *   if (!taskId || taskId === currentTaskId) {
-   *     return;
-   *   }
-   *   this.setCurrentTask(taskId);
-   * }
-   */
 
   onAddTaskAction() {
     AppHelpers.editTextValueModal('taskName', 'New Task Name', 'Task Name', '')
@@ -388,13 +422,39 @@ export class TasksListClass {
         this.listNode.append(taskNode);
         AppHelpers.updateActionHandlers(taskNode, this.callbacks);
         this.dragListItems?.updateDragHandlers();
-        this.setCurrentTask(taskId);
+        // this.setCurrentTask(taskId);
         // Call tasks changed callback
         if (this.tasksChangedCallback) {
           this.tasksChangedCallback(this.projectId, this.tasks);
         }
       })
       .catch(CommonHelpers.NOOP);
+  }
+
+  /** @param {TActiveTask} activeTask */
+  onActiveTaskUpdated(activeTask) {
+    const { listNode } = this;
+    const { projectId, taskId, task } = activeTask;
+    const { elapsed } = task;
+    // Update times only for current project' nodes...
+    if (projectId !== this.projectId) {
+      return;
+    }
+    const elapsedStr = CommonHelpers.formatDuration(elapsed);
+    const timeNode = listNode.querySelector(`.Task.Item#${taskId} .Time`);
+    /* console.log('[TasksListClass:onActiveTaskUpdated]', {
+     *   elapsedStr,
+     *   elapsed,
+     *   timeNode,
+     *   activeTask,
+     *   projectId,
+     *   taskId,
+     *   task,
+     * });
+     */
+    if (timeNode) {
+      timeNode.innerHTML = elapsedStr;
+    }
   }
 
   // Render...
@@ -404,8 +464,9 @@ export class TasksListClass {
    * @return string
    */
   renderTaskItem(task) {
-    const { id, name, completed } = task;
-    const isCurrent = id === this.currentTaskId;
+    const { id, name, status = AppConstants.defaultTaskStatus, elapsed = 0 } = task;
+    const elapsedStr = CommonHelpers.formatDuration(elapsed);
+    // const isCurrent = id === this.currentTaskId;
     // const titleContent = `<span class="TitleText">${name}</span>`;
     const titleContent = [
       /* // NOTE: It's possible to use inputs or just text nodes (with `GhostInput` here and `WithTextInput` for title nodes)
@@ -420,9 +481,8 @@ export class TasksListClass {
       // prettier-ignore
       'Task',
       'Item',
-      !!completed && 'Completed',
       // 'Active', // NOTE: Task nodes aren't active.
-      isCurrent && 'Current', // NOTE: We don't have se;lction for task nodes.
+      // isCurrent && 'Current', // NOTE: We don't have se;lction for task nodes.
     ]
       .filter(Boolean)
       .join(' ');
@@ -433,11 +493,23 @@ export class TasksListClass {
       .filter(Boolean)
       .join(' ');
     return `
-<div class="${className}" id="${CommonHelpers.quoteHtmlAttr(id)}" -click-action-id="onTaskItemClickAction" drag-id="tasks"${optionalAttrs}>
-  <button class="StatusIcon ActionButton IconButton NoIconFade ThemeLight" id="Complete" click-action-id="onChangeTaskStatus">
-    <i class="Status Default fa fa-clock-o" title="Pending"></i>
-    <i class="Status Completed fa fa-check" title="Completed"></i>
+<div
+  class="${className}"
+  id="${CommonHelpers.quoteHtmlAttr(id)}"
+  --click-action-id="onTaskItemClickAction"
+  drag-id="tasks"${optionalAttrs}
+  status="${status}"
+>
+  <button
+    class="StatusIcon ActionButton IconButton NoIconFade ThemeLight"
+    id="Status"
+    click-action-id="onChangeTaskStatus"
+  >
+    <i class="Status pending fa fa-clock-o" title="Pending"></i>
+    <i class="Status active fa fa-play-circle" title="In Progress"></i>
+    <i class="Status completed fa fa-check" title="Completed"></i>
   </button>
+  <div class="Time">${elapsedStr}</div>
   <div class="Title">${titleContent}</div>
   <div class="Actions">
     <!-- Edit -->

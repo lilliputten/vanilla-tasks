@@ -14,7 +14,7 @@ export function getCompletedTasksCount(tasks) {
   if (!Array.isArray(tasks) || !tasks.length) {
     return 0;
   }
-  const completedTasks = tasks.filter(({ completed }) => !!completed);
+  const completedTasks = tasks.filter(({ status }) => status === 'completed');
   return completedTasks.length;
 }
 
@@ -139,7 +139,7 @@ function getConfirmationFormContent(id, _title, text) {
       id="onCancelAction"
     >
       <span class="icon fa fa-times"></span>
-      Cancel
+      No
     </button>
   </div>
 </form>
