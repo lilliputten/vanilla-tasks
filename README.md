@@ -1,12 +1,12 @@
 <!--
 @since 2024.06.30, 12:00
-@changed 2024.07.07, 17:39
+@changed 2024.07.09, 16:48
 -->
 
-# Vanilla Tasks List Manager
+# Vanilla Tasks Tracker
 
 - Version: 0.0.10
-- Last changes timestamp: 2024.07.07 18:06 +0500
+- Last changes timestamp: 2024.07.09 16:47 +0500
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
 
@@ -22,6 +22,7 @@ The small application aimed to demonstrate native js and css abilities in browse
 - Data import/export from/to a local json file.
 - Basic PWA funcitonality (cache, ability to install on a mobile desktop)
 - Time tracking functionality.
+- Minimal UI: Popup dialogs, toasts.
 
 ## Resources
 

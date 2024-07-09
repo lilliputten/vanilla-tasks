@@ -1,6 +1,6 @@
 {
   "short_name": "Vanilla Tasks",
-  "name": "Vanilla Tasks List Manager",
+  "name": "Vanilla Tasks Tracker",
   "description": "The small application aimed to demonstrate native js and css abilities in browser environment.",
   "lang": "en",
   "start_url": "/",
