@@ -7,6 +7,9 @@
   box-shadow: none;
   border-radius: var(--form-item-radius);
   padding: 0.25em 0.5em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   opacity: 0.75;
   transition: all var(--common-transition-time);
   height: var(--form-item-size);

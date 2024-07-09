@@ -1,6 +1,8 @@
 declare global {
-  const modules: {
-    define: (id: string, deps: string[], provide: ([...modules]) => any) => void;
-  };
+  const renderSignInButton: () => void;
+  interface Window {
+    renderSignInButton: () => void;
+    onSignInSuccess: (p: unknown) => void;
+  }
 }
 export default global;

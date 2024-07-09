@@ -18,7 +18,7 @@ The small application aimed to demonstrate native js and css abilities in browse
 - ES6 browser modules.
 - Internal TypeScript support (via jsdoc tags).
 - Changing the order of project/task items by dragging (with mobile support).
-- Change the order of the project/task items by dragg-and-drop (with support for mobile devices).
+- Change the order of the project/task items by drag-and-drop (with support for mobile devices).
 - Data import/export from/to a local json file.
 - Basic PWA funcitonality (cache, ability to install on a mobile desktop)
 - Time tracking functionality.
@@ -64,8 +64,3 @@ The code uses typescript support via jsdoc typing syntax.
 
 Not entirely pure javascript is used here. Some exceptions include:
 
-## TODO:
-
-- Implement a simpler and clearer minimalistic solution that implements the basic functionality with a minimum amount of code within a single module ([issue #12](https://github.com/lilliputten/vanilla-tasks/issues/12)).
-- Implement the time tracking function ([issue #13](https://github.com/lilliputten/vanilla-tasks/issues/13)).
-- Add ability to sort task nodes; by drag or via dialog ([issue #8](https://github.com/lilliputten/vanilla-tasks/issues/8))

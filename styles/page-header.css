@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: var(--header-flex-direction);
   justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: var(--header-flex-wrap);
   align-items: center;
   gap: 0.5em 1em;
 }

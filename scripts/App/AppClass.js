@@ -6,6 +6,7 @@ import { DataStorageClass } from './DataStorage/DataStorageClass.js';
 import { ActiveTasksClass } from './ActiveTasks/ActiveTasksClass.js';
 import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
+import { GoogleAuthClass } from './GoogleAuth/GoogleAuthClass.js';
 
 export class AppClass {
   /** Handlers exchange object
@@ -15,6 +16,16 @@ export class AppClass {
 
   /** @type {DataStorageClass} */
   dataStorage;
+
+  /** Authorization
+   * @type {GoogleAuthClass}
+   */
+  googleAuth;
+
+  /** Main menu
+   * @type {MainMenuClass}
+   */
+  mainMenu;
 
   /** @type {ActiveTasksClass} */
   activeTasks;
@@ -40,6 +51,9 @@ export class AppClass {
       dataStorage,
       activeTasks,
     };
+
+    // Auth...
+    this.googleAuth = new GoogleAuthClass(params);
 
     // Main menu
     this.mainMenu = new MainMenuClass(params);
