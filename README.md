@@ -6,7 +6,7 @@
 # Vanilla Tasks Tracker
 
 - Version: 0.0.10
-- Last changes timestamp: 2024.07.09 20:22 +0500
+- Last changes timestamp: 2024.07.09 21:15 +0500
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
 
@@ -63,4 +63,3 @@ It's not required to install anything -- the code is already production-ready.
 The code uses typescript support via jsdoc typing syntax.
 
 Not entirely pure javascript is used here. Some exceptions include:
-
