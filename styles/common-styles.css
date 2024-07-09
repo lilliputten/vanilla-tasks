@@ -36,7 +36,7 @@ a {
 /* Google sign-in... */
 #GapiSignInButton {
   /* border: 1px solid red; */
-  padding-left: .25em;
+  padding-left: 0.25em;
 }
 #GapiSignInButton .abcRioButton {
   border: none;

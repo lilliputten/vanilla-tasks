@@ -41,6 +41,7 @@ export class GoogleAuthClass {
     // Set global handler
     window.renderSignInButton = callbacks.renderSignInButton;
     window.onSignInSuccess = callbacks.onSignInSuccess;
+    window.onSignInFailure = callbacks.onSignInFailure;
 
     /* // DEBUG
      * const gapi = window.gapi;

@@ -15,7 +15,6 @@
   height: var(--form-item-size);
   justify-content: center;
   align-items: center;
-  overflow: hidden;
   gap: 0.5em;
   border: 1px solid transparent;
 }
