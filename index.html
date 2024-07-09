@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-@changed 2024.07.09, 16:48
+@changed 2024.07.09, 17:38
 Version: 0.0.10
 Last changes timestamp: 2024.07.09 16:47 +0500
 -->
@@ -16,6 +16,10 @@ Last changes timestamp: 2024.07.09 16:47 +0500
       content="The small application aimed to demonstrate native js and css abilities in browser environment"
     />
     <meta name="keywords" content="Vanilla, tasks, tasks list, tracker" />
+    <meta
+      name="google-signin-client_id"
+      content="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
+    />
     <link rel="icon" href="favicon.ico" />
     <meta property="og:url" content="https://vanilla-tasks.lilliputten.com/" />
     <meta property="og:title" content="Vanilla Tasks Tracker" />
@@ -86,6 +90,7 @@ Last changes timestamp: 2024.07.09 16:47 +0500
           id="PWAInstallButton"
           title="Install the application locally as a mobile progressive web application"
         >
+          <!-- TODO: PWA installtation button, Issue #17 -->
           <span class="fa fa-share"></span>
           Install PWA
         </button>
@@ -105,9 +110,37 @@ Last changes timestamp: 2024.07.09 16:47 +0500
           <span class="fa fa-upload"></span>
           Upload
         </button>
-        <!-- TODO: PWA installtation button, Issue #17 -->
+        <!-- Old gauth
+        <button
+          id="GapiSignInButton"
+          class="ActionButton ThemePrimary g-signin2"
+          data-onsuccess="onSignIn"
+        >
+          <span class="fa fa-lock"></span>
+          Sign-In
+        </button>
+        -->
+        <!-- Google auth sign-in button -->
+        <div
+          class="g_id_signin"
+          data-type="icon"
+          data-shape="circle"
+          data-theme="outline"
+          data-text="signin"
+          data-size="medium"
+        ></div>
       </div>
     </nav>
+    <!-- Google auth onload code -->
+    <div
+      id="g_id_onload"
+      data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-callback="onSignInSuccess"
+      data-auto_select="true"
+      data-itp_support="true"
+    ></div>
     <!-- Main content -->
     <main id="PageLayout" class="PageLayout">
       <!-- Left column -->
@@ -197,7 +230,7 @@ Last changes timestamp: 2024.07.09 16:47 +0500
       </div>
     </footer>
     <!-- Start page scripts -->
-    <script type="module">
+    <script type="module" async defer>
       // @ts-check
       // Core module
       import { AppClass } from './scripts/App/AppClass.js';
@@ -212,5 +245,15 @@ Last changes timestamp: 2024.07.09 16:47 +0500
       // Export to global scope (to access from generated html code handlers).
       window.app = new AppClass(sharedParams);
     </script>
+    <script>
+      // Google auth initialization...
+      function googleAuthInit() {
+        window.renderSignInButton && window.renderSignInButton();
+      }
+    </script>
+    <!--
+    <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
+    -->
+    <script src="https://accounts.google.com/gsi/client?onload=googleAuthInit" async></script>
   </body>
 </html>
