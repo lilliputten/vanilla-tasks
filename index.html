@@ -84,16 +84,17 @@ Last changes timestamp: 2024.07.09 16:47 +0500
       <!--
       -->
       <div class="MainMenu" id="MainMenu">
+        <!-- TODO: PWA installtation button, Issue #17
         <button
           class="ActionButton ThemePrimary hidden"
           click-action-id="onInstallButtonClick"
           id="PWAInstallButton"
           title="Install the application locally as a mobile progressive web application"
         >
-          <!-- TODO: PWA installtation button, Issue #17 -->
           <span class="fa fa-share"></span>
           Install PWA
         </button>
+        -->
         <button
           class="ActionButton ThemePrimary"
           click-action-id="onDataExport"
@@ -253,7 +254,8 @@ Last changes timestamp: 2024.07.09 16:47 +0500
     </script>
     <!--
     <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
-    -->
     <script src="https://accounts.google.com/gsi/client?onload=googleAuthInit" async></script>
+    -->
+    <script src="https://accounts.google.com/gsi/client" async></script>
   </body>
 </html>
