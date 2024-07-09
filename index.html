@@ -2,7 +2,7 @@
 <!--
 @changed 2024.07.09, 17:38
 Version: 0.0.10
-Last changes timestamp: 2024.07.09 20:17 +0500
+Last changes timestamp: 2024.07.09 20:22 +0500
 -->
 <html lang="en">
   <head>
@@ -126,7 +126,7 @@ Last changes timestamp: 2024.07.09 20:17 +0500
      data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
      data-context="signin"
      data-ux_mode="popup"
-     data-callback="onSignInSuccess"
+     data-callback="googleAuthSuccess"
      data-auto_prompt="false">
 </div>
 <div class="g_id_signin"
@@ -210,7 +210,7 @@ Last changes timestamp: 2024.07.09 20:17 +0500
         <div class="PageAttributes Small Info">
           <span class="Version" id="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.10 / 2024.07.09 20:17 +0500
+            v.0.0.10 / 2024.07.09 20:22 +0500
           </span>
         </div>
         <ul class="SocialList">
@@ -246,6 +246,9 @@ Last changes timestamp: 2024.07.09 20:17 +0500
       // Google auth initialization...
       function googleAuthInit() {
         window.renderSignInButton && window.renderSignInButton();
+      }
+      function googleAuthSuccess(p) {
+        window.onSignInSuccess && window.onSignInSuccess(p);
       }
     </script>
     <!--
