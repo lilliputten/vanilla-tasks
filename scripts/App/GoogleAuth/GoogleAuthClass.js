@@ -59,10 +59,14 @@ export class GoogleAuthClass {
 
   /** @param {any} googleUser */
   onSignInSuccess(googleUser) {
+    const { clientId, credential } = googleUser;
     // @ts-ignore: Specify the types
-    const profile = googleUser && googleUser.getBasicProfile();
-    const name = profile && profile.getName();
+    // Old api examples:
+    const profile = googleUser?.getBasicProfile?.();
+    const name = profile?.getName?.();
     console.log('[GoogleAuthClass:onSignInSuccess]', {
+      clientId,
+      credential,
       profile,
       name,
       googleUser,

@@ -109,13 +109,17 @@ export class MainMenuClass {
     // console.log('[MainMenuClass:onBeforeInstallPromptEvent]');
     // commonNotify.showSuccess('Before install prompt event (beforeinstallprompt) has been called');
     this.installEvent = event;
-    this.installButton.disabled = false;
-    this.installButton.classList.toggle('hidden', false);
+    if (this.installButton) {
+      this.installButton.disabled = false;
+      this.installButton.classList.toggle('hidden', false);
+    }
   }
 
   onInstallDone() {
     // console.log('[MainMenuClass:onInstallDone]');
-    this.installButton.disabled = true;
+    if (this.installButton) {
+      this.installButton.disabled = true;
+    }
     this.installEvent = undefined;
     commonNotify.showSuccess('The application has been already installed');
   }
