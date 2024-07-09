@@ -2,7 +2,7 @@
 <!--
 @changed 2024.07.09, 17:38
 Version: 0.0.10
-Last changes timestamp: 2024.07.09 21:15 +0500
+Last changes timestamp: 2024.07.09 21:30 +0500
 -->
 <html lang="en">
   <head>
@@ -112,7 +112,6 @@ Last changes timestamp: 2024.07.09 21:15 +0500
           Upload
         </button>
         <!-- Old gauth (via platform)
-        -->
         <button
           id="GapiSignInButton"
           class="ActionButton ThemePrimary g-signin2"
@@ -121,7 +120,9 @@ Last changes timestamp: 2024.07.09 21:15 +0500
           <span class="fa fa-lock"></span>
           Sign-In
         </button>
+        -->
         <!-- New google auth api: Google auth sign-in button
+        -->
         <div
           id="g_id_onload"
           data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
@@ -138,7 +139,6 @@ Last changes timestamp: 2024.07.09 21:15 +0500
           data-text="signin"
           data-size="medium"
         ></div>
-        -->
       </div>
     </nav>
     <!-- Main content -->
@@ -213,7 +213,7 @@ Last changes timestamp: 2024.07.09 21:15 +0500
         <div class="PageAttributes Small Info">
           <span class="Version" id="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.10 / 2024.07.09 21:15 +0500
+            v.0.0.10 / 2024.07.09 21:30 +0500
           </span>
         </div>
         <ul class="SocialList">
@@ -248,16 +248,16 @@ Last changes timestamp: 2024.07.09 21:15 +0500
     <script>
       // Google auth initialization...
       function googleAuthInit(p) {
-        // window.renderSignInButton && window.renderSignInButton();
+        window.renderSignInButton && window.renderSignInButton();
+        /*
         window.gapi.signin2.render('GapiSignInButton', {
           scope: 'profile email',
-          // width: 240,
-          // height: 50,
           longtitle: false,
           theme: 'dark', // dark, blue, light_blue
           onsuccess: window.onSignInSuccess,
           onfailure: window.onSignInFailure,
         });
+        */
       }
       function googleAuthSuccess(p) {
         window.onSignInSuccess && window.onSignInSuccess(p);
@@ -265,8 +265,8 @@ Last changes timestamp: 2024.07.09 21:15 +0500
     </script>
     <!--
     <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    -->
     <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
+    -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
   </body>
 </html>
