@@ -20,6 +20,8 @@
     "@babel/eslint-parser": "^7.22.9",
     "@babel/plugin-proposal-decorators": "^7.22.7",
     "@babel/preset-env": "^7.22.9",
+    "@types/google-one-tap": "^1.2.6",
+    "@types/google.accounts": "^0.0.14",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.9.0",

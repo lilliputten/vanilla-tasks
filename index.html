@@ -16,6 +16,8 @@ Last changes timestamp: 2024.07.09 21:30 +0500
       content="The small application aimed to demonstrate native js and css abilities in browser environment"
     />
     <meta name="keywords" content="Vanilla, tasks, tasks list, tracker" />
+    <!-- NOTE: `google-signin-client_id` used for old gauth api
+    -->
     <meta
       name="google-signin-client_id"
       content="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
@@ -111,33 +113,40 @@ Last changes timestamp: 2024.07.09 21:30 +0500
           <span class="fa fa-upload"></span>
           Upload
         </button>
-        <!-- Old gauth (via platform)
         <button
-          id="GapiSignInButton"
-          class="ActionButton ThemePrimary g-signin2"
-          data-onsuccess="onSignIn"
+          id="SignOutButton"
+          class="ActionButton ThemePrimary"
+          click-action-id="onSignOut"
+          title="Sign out"
         >
-          <span class="fa fa-lock"></span>
-          Sign-In
+          <span class="fa fa-sign-out"></span>
+          Sign out
         </button>
-        -->
-        <!-- New google auth api: Google auth sign-in button
-        -->
+        <!-- New google auth api: Google auth onload code -->
         <div
           id="g_id_onload"
+          data-auto_prompt="false"
+          data-auto_select="true"
+          data-callback="onSignInSuccess"
           data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
           data-context="signin"
           data-ux_mode="popup"
-          data-callback="googleAuthSuccess"
-          data-auto_prompt="false"
+          __data-login_uri="https://vanilla-tasks.lilliputten.com"
         ></div>
+        <!-- New google auth api: Google auth sign-in button
+          @see https://developers.google.com/identity/gsi/web/reference/html-reference#element_with_class_g_id_signin
+        -->
         <div
+          id="SignInButton"
           class="g_id_signin"
-          data-type="icon"
+          data-logo_alignment="left"
           data-shape="circle"
-          data-theme="outline"
-          data-text="signin"
           data-size="medium"
+          data-text="signin"
+          data-theme="outline"
+          data-type="standard"
+          data-locale="en_US"
+          title="Sign in"
         ></div>
       </div>
     </nav>
@@ -245,28 +254,30 @@ Last changes timestamp: 2024.07.09 21:30 +0500
       // Export to global scope (to access from generated html code handlers).
       window.app = new AppClass(sharedParams);
     </script>
-    <script>
-      // Google auth initialization...
-      function googleAuthInit(p) {
-        window.renderSignInButton && window.renderSignInButton();
-        /*
-        window.gapi.signin2.render('GapiSignInButton', {
-          scope: 'profile email',
-          longtitle: false,
-          theme: 'dark', // dark, blue, light_blue
-          onsuccess: window.onSignInSuccess,
-          onfailure: window.onSignInFailure,
-        });
-        */
-      }
-      function googleAuthSuccess(p) {
-        window.onSignInSuccess && window.onSignInSuccess(p);
-      }
-    </script>
-    <!--
-    <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
-    <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
-    -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Firebase setup -->
+    <script type="module">
+      // // TODO: Move to the app internals
+      // // Import the functions you need from the SDKs you need
+      // import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
+      // import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js';
+      // // TODO: Add SDKs for Firebase products that you want to use
+      // // https://firebase.google.com/docs/web/setup#available-libraries
+      // // Your web app's Firebase configuration
+      // // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      // const firebaseConfig = {
+      //   apiKey: 'AIzaSyBqboA2DsYCJJrjFYlKjdJXwQMd3vWavko',
+      //   authDomain: 'vanilla-tasks.lilliputten.com',
+      //   // authDomain: 'vanilla-tasks.firebaseapp.com',
+      //   projectId: 'vanilla-tasks',
+      //   storageBucket: 'vanilla-tasks.appspot.com',
+      //   messagingSenderId: '620506919435',
+      //   appId: '1:620506919435:web:8999b04eb3f77d12c9cd0e',
+      //   measurementId: 'G-NQHTMVJ1VJ',
+      // };
+      // // Initialize Firebase
+      // const app = initializeApp(firebaseConfig);
+      // const analytics = getAnalytics(app);
+    </script>
   </body>
 </html>

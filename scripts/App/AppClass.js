@@ -45,7 +45,7 @@ export class AppClass {
 
     this.initActiveProjects();
 
-    /** @type {TProjectsListClassParams} */
+    /** @type {TAppParams} */
     const params = {
       ...sharedParams,
       dataStorage,
@@ -53,10 +53,10 @@ export class AppClass {
     };
 
     // Auth...
-    this.googleAuth = new GoogleAuthClass(params);
+    const googleAuth = (this.googleAuth = new GoogleAuthClass(params));
 
     // Main menu
-    this.mainMenu = new MainMenuClass(params);
+    this.mainMenu = new MainMenuClass({ ...params, googleAuth });
 
     // Processes list component
     this.processList = new ProjectsListClass(params);

@@ -1,13 +1,5 @@
 // @ts-check
 
-// Import types only...
-/* eslint-disable no-unused-vars */
-// import { SimpleEvents } from '../../common/SimpleEvents.js';
-import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
-/* eslint-enable no-unused-vars */
-
-// import * as AppConstants from '../AppConstants.js';
-
 import { ExportDataClass } from '../ImportExport/ExportDataClass.js';
 import { ImportDataClass } from '../ImportExport/ImportDataClass.js';
 
@@ -16,8 +8,11 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class MainMenuClass {
-  /** @type {DataStorageClass} */
+  /** @type {TMainMenuParams['dataStorage']} */
   dataStorage;
+
+  /** @type {TMainMenuParams['googleAuth']} */
+  googleAuth;
 
   /* @type {ExportDataClass} */
   exportData;
@@ -40,13 +35,14 @@ export class MainMenuClass {
   installEvent;
 
   /** @constructor
-   * @param {TProjectsListClassParams} params
+   * @param {TMainMenuParams} params
    */
   constructor(params) {
     const { callbacks } = this;
 
-    const { dataStorage } = params;
+    const { dataStorage, googleAuth } = params;
     this.dataStorage = dataStorage;
+    this.googleAuth = googleAuth;
 
     this.exportData = new ExportDataClass(params);
     this.importData = new ImportDataClass(params);
@@ -60,6 +56,7 @@ export class MainMenuClass {
     callbacks.onInstallButtonClick = this.onInstallButtonClick.bind(this);
     callbacks.onInstallDone = this.onInstallDone.bind(this);
     callbacks.onBeforeInstallPromptEvent = this.onBeforeInstallPromptEvent.bind(this);
+    callbacks.onSignOut = this.onSignOut.bind(this);
 
     this.initPWAInstall();
 
@@ -102,6 +99,14 @@ export class MainMenuClass {
   }
 
   // Actions...
+
+  /** @param {MouseEvent} event */
+  onSignOut(event) {
+    const { googleAuth } = this;
+    event.preventDefault();
+    console.log('[MainMenuClass:onSignOut]');
+    googleAuth.onSignOut();
+  }
 
   /** @param {BeforeInstallPromptEvent} event */
   onBeforeInstallPromptEvent(event) {

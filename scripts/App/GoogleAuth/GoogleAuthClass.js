@@ -1,19 +1,10 @@
 // @ts-check
 
-// Import types only...
-/* eslint-disable no-unused-vars */
-// import { SimpleEvents } from '../../common/SimpleEvents.js';
-import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
-/* eslint-enable no-unused-vars */
-
-// import * as AppConstants from '../AppConstants.js';
-
-import { ExportDataClass } from '../ImportExport/ExportDataClass.js';
-import { ImportDataClass } from '../ImportExport/ImportDataClass.js';
-
 import { commonNotify } from '../../common/CommonNotify.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 
-import * as AppHelpers from '../AppHelpers.js';
+/** Time to keep user signed (via cookie, secs) */
+const keepSignedMaxAgeSecs = 60 * 60;
 
 export class GoogleAuthClass {
   /** Handlers exchange object
@@ -24,8 +15,15 @@ export class GoogleAuthClass {
   /** @type {HTMLElement} */
   layoutNode;
 
+  // UNUSED: Temporarily?
+  /** @type {TAuthResponse['credential']} */
+  credential;
+
+  /** @type {TAuthResponse['clientId']} */
+  clientId;
+
   /** @constructor
-   * @param {TProjectsListClassParams} params
+   * @param {TAppParams} params
    */
   constructor(params) {
     const { callbacks } = this;
@@ -37,42 +35,86 @@ export class GoogleAuthClass {
     callbacks.renderSignInButton = this.renderSignInButton.bind(this);
     callbacks.onSignInSuccess = this.onSignInSuccess.bind(this);
     callbacks.onSignInFailure = this.onSignInFailure.bind(this);
+    callbacks.onSignOut = this.onSignOut.bind(this);
+    callbacks.onInit = this.onInit.bind(this);
 
     // Set global handler
     window.renderSignInButton = callbacks.renderSignInButton;
     window.onSignInSuccess = callbacks.onSignInSuccess;
     window.onSignInFailure = callbacks.onSignInFailure;
 
-    /* // DEBUG
-     * const gapi = window.gapi;
-     * // @see https://developers.google.com/identity/sign-in/web/reference
-     * gapi.load('auth2', () => {
-     *   console.log('[GoogleAuthClass] load', {
-     *     load: gapi.load,
-     *     gapi,
-     *   });
-     *   // debugger;
-     * });
-     */
+    window.addEventListener('load', callbacks.onInit);
   }
 
   // Actions...
 
-  /** @param {any} googleUser */
-  onSignInSuccess(googleUser) {
-    const { clientId, credential } = googleUser;
-    // @ts-ignore: Specify the types
-    // Old api examples:
-    const profile = googleUser?.getBasicProfile?.();
-    const name = profile?.getName?.();
+  updateUserState() {
+    const { clientId, credential } = this;
+    const isSigned = this.isSigned();
+    /* // It's possible to access global google accounts data... (TODO?)
+     * // @ts-ignore
+     * const accounts = window.google.accounts;
+     * const {
+     *   // @ts-ignore
+     *   oauth2,
+     *   id,
+     * } = accounts;
+     */
+    console.log('[GoogleAuthClass:updateUserState]', {
+      isSigned,
+      clientId,
+      credential,
+      // id,
+      // oauth2,
+      // accounts,
+    });
+    // Update cookie and document state...
+    CommonHelpers.setCookie('clientId', isSigned ? clientId : '', keepSignedMaxAgeSecs);
+    CommonHelpers.setCookie('credential', isSigned ? credential : '', keepSignedMaxAgeSecs);
+    document.body.classList.toggle('Signed', isSigned);
+    // TODO: Invoke events onSignIn, onSignOut?
+  }
+
+  isSigned() {
+    const {
+      // clientId,
+      credential,
+    } = this;
+    const isSigned = !!credential;
+    return isSigned;
+  }
+
+  // Actions...
+
+  onSignOut() {
+    this.clientId = undefined;
+    this.credential = undefined;
+    console.log('[GoogleAuthClass:onSignOut]');
+    this.updateUserState();
+  }
+
+  onInit() {
+    const clientId = CommonHelpers.getCookie('clientId');
+    const credential = CommonHelpers.getCookie('credential');
+    this.clientId = clientId && clientId !== 'undefined' ? clientId : undefined;
+    this.credential = credential && credential !== 'undefined' ? credential : undefined;
+    console.log('[GoogleAuthClass:onInit]', {
+      clientId,
+      credential,
+    });
+    this.updateUserState();
+  }
+
+  /** @param {TAuthResponse} response */
+  onSignInSuccess(response) {
+    const { clientId, credential } = response;
     console.log('[GoogleAuthClass:onSignInSuccess]', {
       clientId,
       credential,
-      profile,
-      name,
-      googleUser,
     });
-    debugger;
+    this.clientId = clientId;
+    this.credential = credential;
+    this.updateUserState();
   }
 
   /** @param {Error | { error: string }} error */
@@ -84,6 +126,8 @@ export class GoogleAuthClass {
     });
     debugger; // eslint-disable-line no-debugger
     commonNotify.showError('Sign-In error ' + message);
+    this.clientId = undefined;
+    this.updateUserState();
   }
 
   renderSignInButton() {

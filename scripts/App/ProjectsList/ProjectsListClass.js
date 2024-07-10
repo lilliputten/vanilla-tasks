@@ -14,10 +14,10 @@ import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 const useDragListItems = true;
 
 export class ProjectsListClass {
-  /** @type {TProjectsListClassParams['dataStorage']} */
+  /** @type {TAppParams['dataStorage']} */
   dataStorage;
 
-  /** @type {TProjectsListClassParams['activeTasks']} */
+  /** @type {TAppParams['activeTasks']} */
   activeTasks;
 
   /** Handlers exchange object
@@ -49,7 +49,7 @@ export class ProjectsListClass {
   // Core...
 
   /** @constructor
-   * @param {TProjectsListClassParams} params
+   * @param {TAppParams} params
    */
   constructor(params) {
     const { callbacks } = this;
@@ -104,7 +104,7 @@ export class ProjectsListClass {
   // Init...
 
   /**
-   * @param {TProjectsListClassParams} params
+   * @param {TAppParams} params
    */
   initDomNodes(params) {
     const { layoutNode } = params;

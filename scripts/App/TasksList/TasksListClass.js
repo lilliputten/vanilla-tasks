@@ -20,10 +20,10 @@ export class TasksListClass {
    */
   callbacks = {};
 
-  /** @type {TProjectsListClassParams['dataStorage']} */
+  /** @type {TAppParams['dataStorage']} */
   dataStorage;
 
-  /** @type {TProjectsListClassParams['activeTasks']} */
+  /** @type {TAppParams['activeTasks']} */
   activeTasks;
 
   /** @type {DragListItems} */
@@ -64,7 +64,7 @@ export class TasksListClass {
   // Core...
 
   /** @constructor
-   * @param {TProjectsListClassParams} params
+   * @param {TAppParams} params
    */
   constructor(params) {
     // Will be initialized in `handlers` instance...
