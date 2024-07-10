@@ -4,7 +4,9 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 /** Time to keep user signed (via cookie, secs) */
-const keepSignedMaxAgeSecs = 60 * 60;
+const keepSignedMaxAgeSecs = 48 * 60 * 60; // 2d
+
+const defaultUserIconImage = '/images/icons/user-empty.png';
 
 export class GoogleAuthClass {
   /** Handlers exchange object
@@ -15,12 +17,26 @@ export class GoogleAuthClass {
   /** @type {HTMLElement} */
   layoutNode;
 
+  /** @type {HTMLButtonElement} */
+  userButtonNode;
+  /** @type {HTMLElement} */
+  userIconNode;
+  /** @type {HTMLElement} */
+  userNameNode;
+
   // UNUSED: Temporarily?
   /** @type {TAuthResponse['credential']} */
   credential;
 
-  /** @type {TAuthResponse['clientId']} */
-  clientId;
+  // [>* @type {TAuthResponse['clientId']} <]
+  // clientId;
+
+  /** @type {TTokenInfoData['name']} */
+  userName;
+  /** @type {TTokenInfoData['email']} */
+  userEmail;
+  /** @type {TTokenInfoData['picture']} */
+  userPicture;
 
   /** @constructor
    * @param {TAppParams} params
@@ -32,24 +48,36 @@ export class GoogleAuthClass {
     this.layoutNode = layoutNode;
 
     // Init handler callbacks...
-    callbacks.renderSignInButton = this.renderSignInButton.bind(this);
     callbacks.onSignInSuccess = this.onSignInSuccess.bind(this);
     callbacks.onSignInFailure = this.onSignInFailure.bind(this);
     callbacks.onSignOut = this.onSignOut.bind(this);
     callbacks.onInit = this.onInit.bind(this);
 
     // Set global handler
-    window.renderSignInButton = callbacks.renderSignInButton;
     window.onSignInSuccess = callbacks.onSignInSuccess;
     window.onSignInFailure = callbacks.onSignInFailure;
 
     window.addEventListener('load', callbacks.onInit);
+
+    // Prepare user button nodes...
+    this.userButtonNode = /** @type {HTMLButtonElement} */ (document.getElementById('UserButton'));
+    this.userNameNode = this.userButtonNode.querySelector('.UserName');
+    this.userIconNode = this.userButtonNode.querySelector('.UserIcon');
   }
 
   // Actions...
 
   updateUserState() {
-    const { clientId, credential } = this;
+    const {
+      // clientId,
+      credential,
+      userButtonNode,
+      userNameNode,
+      userIconNode,
+      userName,
+      userEmail,
+      userPicture,
+    } = this;
     const isSigned = this.isSigned();
     /* // It's possible to access global google accounts data... (TODO?)
      * // @ts-ignore
@@ -62,16 +90,19 @@ export class GoogleAuthClass {
      */
     console.log('[GoogleAuthClass:updateUserState]', {
       isSigned,
-      clientId,
+      // clientId,
       credential,
       // id,
       // oauth2,
       // accounts,
     });
     // Update cookie and document state...
-    CommonHelpers.setCookie('clientId', isSigned ? clientId : '', keepSignedMaxAgeSecs);
+    // CommonHelpers.setCookie('clientId', isSigned ? clientId : '', keepSignedMaxAgeSecs);
     CommonHelpers.setCookie('credential', isSigned ? credential : '', keepSignedMaxAgeSecs);
     document.body.classList.toggle('Signed', isSigned);
+    // Update user button...
+    userIconNode.style.backgroundImage = `url("${userPicture || defaultUserIconImage}")`;
+    userNameNode.innerHTML = CommonHelpers.quoteHtmlAttr(userName || 'Unknown user');
     // TODO: Invoke events onSignIn, onSignOut?
   }
 
@@ -87,46 +118,54 @@ export class GoogleAuthClass {
   // Actions...
 
   onSignOut() {
-    this.clientId = undefined;
+    // this.clientId = undefined;
     this.credential = undefined;
+    this.userName = undefined;
+    this.userEmail = undefined;
+    this.userPicture = undefined;
     console.log('[GoogleAuthClass:onSignOut]');
     this.updateUserState();
   }
 
   onInit() {
-    const clientId = CommonHelpers.getCookie('clientId');
+    // const clientId = CommonHelpers.getCookie('clientId');
     const credential = CommonHelpers.getCookie('credential');
-    this.clientId = clientId && clientId !== 'undefined' ? clientId : undefined;
+    // this.clientId = clientId && clientId !== 'undefined' ? clientId : undefined;
     this.credential = credential && credential !== 'undefined' ? credential : undefined;
     console.log('[GoogleAuthClass:onInit]', {
-      clientId,
+      // clientId,
       credential,
     });
     this.updateUserState();
+    this.fetchUserDetails();
   }
 
   /** @param {TAuthResponse} response */
   onSignInSuccess(response) {
-    const { error, clientId, credential } = response;
+    const {
+      error,
+      // clientId,
+      credential,
+    } = response;
     console.log('[GoogleAuthClass:onSignInSuccess]', {
       error,
-      clientId,
+      // clientId,
       credential,
+      response,
     });
     if (error) {
       return this.onSignInFailure(error);
     }
-    this.clientId = clientId;
+    // this.clientId = clientId;
     this.credential = credential;
     this.updateUserState();
-    this.fetchUserProfile();
+    this.fetchUserDetails();
   }
 
   /* @param {Error | { error: string }} error */
   /** @param {TAuthResponse['error']} error */
   onSignInFailure(error) {
-    const message =
-      error instanceof Error ? error.message : typeof error === 'string' ? error : error.error;
+    const message = CommonHelpers.getAuthErrorMessage(error);
     // eslint-disable-next-line no-console
     console.error('[GoogleAuthClass:onSignInFailure]', message, {
       error,
@@ -134,48 +173,69 @@ export class GoogleAuthClass {
     debugger; // eslint-disable-line no-debugger
     commonNotify.showError('Sign-In error ' + message);
     this.onSignOut();
-    // this.clientId = undefined;
-    // this.credential = undefined;
-    // this.updateUserState();
   }
 
-  fetchUserProfile() {
-    const { credential } = this;
+  fetchUserDetails() {
+    const {
+      credential,
+      // clientId,
+    } = this;
+    if (!credential) {
+      return Promise.resolve();
+    }
     // Use the access token to retrieve user profile data
-    return fetch('https://www.googleapis.com/userinfo/v2/me', {
-      headers: {
-        Authorization: `Bearer ${credential}`,
-      },
+    // const url = 'https://www.googleapis.com/plus/v1/people/me';
+    // const url = 'https://www.googleapis.com/oauth2/v2/userinfo';
+    // const url = `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${credential}`;
+    const url = `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${credential}`;
+    // const url = `https://www.googleapis.com/oauth2/v3/userinfo`;
+    return fetch(url, {
+      credentials: 'same-origin',
+      // credentials: 'include', // NOTE: Expecting `Access-Control-Allow-Credential` response header
+      // headers: {
+      //   Authorization: `Bearer ${credential}`,
+      // },
     })
       .then((response) => response.json())
-      .then((data) => {
-        // Extract the desired user profile information (e.g., name, email)
-        console.log('User profile:', data);
-        debugger;
-        // Use the information as needed (e.g., display on your website, store securely)
-        return data;
-      })
+      .then(
+        /** @param {TTokenInfoData} data */
+        (data) => {
+          const {
+            // prettier-ignore
+            error,
+            name,
+            email,
+            picture,
+            exp: expSec,
+          } = data;
+          if (error) {
+            throw error;
+          }
+          // Extract the desired user profile information (e.g., name, email)
+          console.log('[GoogleAuthClass:fetchUserDetails] Got user profile', {
+            error,
+            name,
+            email,
+            picture,
+            expSec,
+            data,
+          });
+          // Use the information as needed (e.g., display on your website, store securely)
+          this.userName = name;
+          this.userEmail = email;
+          this.userPicture = picture;
+          this.updateUserState();
+          return data;
+        },
+      )
       .catch((error) => {
-        // Handle errors during profile data retrieval
-        console.error('Error fetching user profile:', error);
-        debugger;
+        const message = CommonHelpers.getAuthErrorMessage(error);
+        // eslint-disable-next-line no-console
+        console.error('[GoogleAuthClass:fetchUserDetails]', message, {
+          error,
+        });
+        debugger; // eslint-disable-line no-debugger
+        this.onSignOut();
       });
-  }
-
-  // UNUSED: For old gauth api
-  renderSignInButton() {
-    const { callbacks } = this;
-    console.log('[GoogleAuthClass:renderSignInButton]');
-    debugger;
-    // @ts-ignore: Unknown type for signin2 (TODO?)
-    window.gapi.signin2.render('GapiSignInButton', {
-      scope: 'profile email',
-      // width: 240,
-      // height: 50,
-      longtitle: false,
-      theme: 'dark', // dark, blue, light_blue
-      onsuccess: callbacks.onSignInSuccess,
-      onfailure: callbacks.onSignInFailure,
-    });
   }
 }

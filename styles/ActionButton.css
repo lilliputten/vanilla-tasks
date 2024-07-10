@@ -64,3 +64,27 @@
   background-color: rgba(var(--primary-color-rgb) / 30%);
   box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb) / 30%);
 }
+
+/* UserButton */
+body:not(.Signed) #UserButton,
+body.Signed #SignInButton {
+  display: none;
+}
+#UserButton {
+  --user-icon-size: 28px;
+}
+#UserButton .UserIcon {
+  width: var(--user-icon-size);
+  height: var(--user-icon-size);
+  background-color: rgba(255 255 255 / 25%);
+  border-radius: 50%;
+  background-image: url('/images/icons/user-empty.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#UserButton .UserName {
+  max-width: 15em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
