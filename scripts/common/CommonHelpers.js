@@ -587,7 +587,7 @@ export function getCookie(cookieId) {
  * @param {number} maxAgeSecs -- Seconds of expire period
  */
 export function setCookie(id, val, maxAgeSecs) {
-  const cookieVal = [id, val].map(encodeURIComponent).join('=');
+  const cookieVal = [id, val || ''].map(encodeURIComponent).join('=');
   const parts = [
     // prettier-ignore
     cookieVal,
@@ -595,6 +595,6 @@ export function setCookie(id, val, maxAgeSecs) {
   if (maxAgeSecs) {
     parts.push('max-age=' + maxAgeSecs);
   }
-  const fullCookie = parts.join(';');
+  const fullCookie = parts.filter(Boolean).join(';');
   document.cookie = fullCookie;
 }

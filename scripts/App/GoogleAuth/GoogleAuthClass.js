@@ -15,10 +15,9 @@ export class GoogleAuthClass {
   /** @type {HTMLElement} */
   layoutNode;
 
-  /* // UNUSED: Temporarily?
-   * [>* @type {TAuthResponse['credential']} <]
-   * credential;
-   */
+  // UNUSED: Temporarily?
+  /** @type {TAuthResponse['credential']} */
+  credential;
 
   /** @type {TAuthResponse['clientId']} */
   clientId;
@@ -36,6 +35,7 @@ export class GoogleAuthClass {
     callbacks.renderSignInButton = this.renderSignInButton.bind(this);
     callbacks.onSignInSuccess = this.onSignInSuccess.bind(this);
     callbacks.onSignInFailure = this.onSignInFailure.bind(this);
+    callbacks.onSignOut = this.onSignOut.bind(this);
     callbacks.onInit = this.onInit.bind(this);
 
     // Set global handler
@@ -46,20 +46,11 @@ export class GoogleAuthClass {
     window.addEventListener('load', callbacks.onInit);
   }
 
-  onInit() {
-    const clientId = CommonHelpers.getCookie('clientId');
-    this.clientId = clientId;
-    console.log('[GoogleAuthClass:onInit]', {
-      clientId,
-    });
-    this.updateUserState();
-  }
-
   // Actions...
 
   updateUserState() {
-    const { clientId } = this;
-    const isSigned = !!clientId;
+    const { clientId, credential } = this;
+    const isSigned = this.isSigned();
     /* // It's possible to access global google accounts data... (TODO?)
      * // @ts-ignore
      * const accounts = window.google.accounts;
@@ -69,32 +60,60 @@ export class GoogleAuthClass {
      *   id,
      * } = accounts;
      */
-    console.log('[GoogleAuthClass:onSignInSuccess]', {
+    console.log('[GoogleAuthClass:updateUserState]', {
       isSigned,
       clientId,
+      credential,
       // id,
       // oauth2,
       // accounts,
     });
     // Update cookie and document state...
-    CommonHelpers.setCookie('clientId', clientId, keepSignedMaxAgeSecs);
+    CommonHelpers.setCookie('clientId', isSigned ? clientId : '', keepSignedMaxAgeSecs);
+    CommonHelpers.setCookie('credential', isSigned ? credential : '', keepSignedMaxAgeSecs);
     document.body.classList.toggle('Signed', isSigned);
-    // TODO: Invoke events onSignin, onSignout?
+    // TODO: Invoke events onSignIn, onSignOut?
+  }
+
+  isSigned() {
+    const {
+      // clientId,
+      credential,
+    } = this;
+    const isSigned = !!credential;
+    return isSigned;
+  }
+
+  // Actions...
+
+  onSignOut() {
+    this.clientId = undefined;
+    this.credential = undefined;
+    console.log('[GoogleAuthClass:onSignOut]');
+    this.updateUserState();
+  }
+
+  onInit() {
+    const clientId = CommonHelpers.getCookie('clientId');
+    const credential = CommonHelpers.getCookie('credential');
+    this.clientId = clientId && clientId !== 'undefined' ? clientId : undefined;
+    this.credential = credential && credential !== 'undefined' ? credential : undefined;
+    console.log('[GoogleAuthClass:onInit]', {
+      clientId,
+      credential,
+    });
+    this.updateUserState();
   }
 
   /** @param {TAuthResponse} response */
   onSignInSuccess(response) {
-    const {
-      clientId,
-      // TODO: To use `credential` too?
-      // credential,
-    } = response;
+    const { clientId, credential } = response;
     console.log('[GoogleAuthClass:onSignInSuccess]', {
-      cookie: document.cookie,
       clientId,
-      // credential,
+      credential,
     });
     this.clientId = clientId;
+    this.credential = credential;
     this.updateUserState();
   }
 
