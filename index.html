@@ -16,7 +16,8 @@ Last changes timestamp: 2024.07.09 21:30 +0500
       content="The small application aimed to demonstrate native js and css abilities in browser environment"
     />
     <meta name="keywords" content="Vanilla, tasks, tasks list, tracker" />
-    <!-- NOTE: `google-signin-client_id` used for old gauth api -->
+    <!-- NOTE: `google-signin-client_id` used for old gauth api
+    -->
     <meta
       name="google-signin-client_id"
       content="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
@@ -116,32 +117,11 @@ Last changes timestamp: 2024.07.09 21:30 +0500
           id="SignOutButton"
           class="ActionButton ThemePrimary"
           click-action-id="onSignOut"
-          title="Sign Out"
+          title="Sign out"
         >
           <span class="fa fa-sign-out"></span>
-          Sign Out
+          Sign out
         </button>
-        <!-- Old gauth (via platform)
-        <button
-          id="GapiSignInButton"
-          class="ActionButton ThemePrimary g-signin2"
-          data-onsuccess="onSignIn"
-        >
-          <span class="fa fa-lock"></span>
-          Sign-In
-        </button>
-        -->
-        <!-- New google auth api: Google auth sign-in button -->
-        <div
-          id="SignInButton"
-          class="g_id_signin"
-          data-logo_alignment="left"
-          data-shape="circle"
-          data-size="medium"
-          data-text="signin"
-          data-theme="outline"
-          data-type="standard"
-        ></div>
         <!-- New google auth api: Google auth onload code -->
         <div
           id="g_id_onload"
@@ -151,7 +131,22 @@ Last changes timestamp: 2024.07.09 21:30 +0500
           data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
           data-context="signin"
           data-ux_mode="popup"
-          data-login_uri="https://vanilla-tasks.lilliputten.com"
+          __data-login_uri="https://vanilla-tasks.lilliputten.com"
+        ></div>
+        <!-- New google auth api: Google auth sign-in button
+          @see https://developers.google.com/identity/gsi/web/reference/html-reference#element_with_class_g_id_signin
+        -->
+        <div
+          id="SignInButton"
+          class="g_id_signin"
+          data-logo_alignment="left"
+          data-shape="circle"
+          data-size="medium"
+          data-text="signin"
+          data-theme="outline"
+          data-type="standard"
+          data-locale="en_US"
+          title="Sign in"
         ></div>
       </div>
     </nav>
