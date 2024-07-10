@@ -45,7 +45,7 @@ export class AppClass {
 
     this.initActiveProjects();
 
-    /** @type {TProjectsListClassParams} */
+    /** @type {TAppParams} */
     const params = {
       ...sharedParams,
       dataStorage,

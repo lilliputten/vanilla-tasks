@@ -24,7 +24,7 @@ export class GoogleAuthClass {
   clientId;
 
   /** @constructor
-   * @param {TProjectsListClassParams} params
+   * @param {TAppParams} params
    */
   constructor(params) {
     const { callbacks } = this;

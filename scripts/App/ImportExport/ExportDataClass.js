@@ -5,11 +5,11 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class ExportDataClass {
-  /** @type {TProjectsListClassParams['dataStorage']} */
+  /** @type {TAppParams['dataStorage']} */
   dataStorage;
 
   /** @constructor
-   * @param {TProjectsListClassParams} params
+   * @param {TAppParams} params
    */
   constructor(params) {
     const { dataStorage } = params;
