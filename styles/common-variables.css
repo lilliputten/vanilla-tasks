@@ -12,6 +12,7 @@
 
   --default-link-color: #003d9d;
   --neutral-color: #888;
+  --neutral-color-rgb: 136 136 136;
 
   /* Sizes */
   --form-item-size: 2em;
@@ -45,6 +46,7 @@
   --layout-overflow: visible;
   --scrollable-overflow: visible;
   --header-hamburger-display: flex;
+  --header-dropdown-menu-position: relative;
   --header-menu-flex-direction: column;
   --header-menu-width: 100%;
   --header-title-flex: 1;
@@ -56,6 +58,7 @@
     --layout-overflow: hidden;
     --scrollable-overflow: auto;
     --header-hamburger-display: none;
+    --header-dropdown-menu-position: absolute;
     --header-menu-flex-direction: row;
     --header-menu-width: auto;
     --header-title-flex: auto;

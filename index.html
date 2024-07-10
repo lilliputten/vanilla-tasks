@@ -58,6 +58,7 @@ Last changes timestamp: 2024.07.10 16:39 +0500
     <link rel="stylesheet" href="./styles/Inputs.css" />
     <link rel="stylesheet" href="./styles/ProjectsList.css" />
     <link rel="stylesheet" href="./styles/TasksList.css" />
+    <link rel="stylesheet" href="./styles/Dropdown.css" />
     <script>
       // NOTE: Prevent firefox FOUC...
       var FF_FOUC_FI;
@@ -113,15 +114,39 @@ Last changes timestamp: 2024.07.10 16:39 +0500
           <span class="fa fa-upload"></span>
           Upload
         </button>
-        <button
-          id="SignOutButton"
-          class="ActionButton ThemePrimary"
-          click-action-id="onSignOut"
-          title="Sign out"
-        >
-          <span class="fa fa-sign-out"></span>
-          Sign out
-        </button>
+        <div class="Dropdown">
+          <button
+            id="UserButton"
+            class="ActionButton ThemePrimary DropdownToggle"
+            click-action-id="onUserDropdownMenuToggle"
+            title="Sign out"
+          >
+            <span class="UserIcon" id="UserIcon"></span>
+            <span class="Text" id="UserName">User</span>
+          </button>
+          <div class="DropdownMenu ThemePrimary AtRightSide" id="UserDropdownMenu">
+            <button
+              id="SignOutButton"
+              class="ActionButton ThemePrimary"
+              click-action-id="onSignOut"
+              title="Sign out"
+            >
+              <span class="fa fa-sign-out"></span>
+              Sign out
+            </button>
+            <!--
+            <button
+              id="SecondTestButton"
+              class="ActionButton ThemePrimary"
+              click-action-id="onSignOut"
+              title="Sign out"
+            >
+              <span class="fa fa-sign-out"></span>
+              Second Item
+            </button>
+            -->
+          </div>
+        </div>
         <!-- New google auth api: Google auth onload code -->
         <div
           id="g_id_onload"
@@ -147,6 +172,9 @@ Last changes timestamp: 2024.07.10 16:39 +0500
           data-type="standard"
           data-locale="en_US"
           title="Sign in"
+          data-cookiepolicy="single_host_origin"
+          data-requestvisibleactions="http://schemas.google.com/AddActivity"
+          data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email"
         ></div>
       </div>
     </nav>

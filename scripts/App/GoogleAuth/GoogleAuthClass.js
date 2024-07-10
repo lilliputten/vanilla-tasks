@@ -4,7 +4,7 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 /** Time to keep user signed (via cookie, secs) */
-const keepSignedMaxAgeSecs = 60 * 60;
+const keepSignedMaxAgeSecs = 48 * 60 * 60; // 2d
 
 export class GoogleAuthClass {
   /** Handlers exchange object
@@ -39,14 +39,12 @@ export class GoogleAuthClass {
     this.layoutNode = layoutNode;
 
     // Init handler callbacks...
-    callbacks.renderSignInButton = this.renderSignInButton.bind(this);
     callbacks.onSignInSuccess = this.onSignInSuccess.bind(this);
     callbacks.onSignInFailure = this.onSignInFailure.bind(this);
     callbacks.onSignOut = this.onSignOut.bind(this);
     callbacks.onInit = this.onInit.bind(this);
 
     // Set global handler
-    window.renderSignInButton = callbacks.renderSignInButton;
     window.onSignInSuccess = callbacks.onSignInSuccess;
     window.onSignInFailure = callbacks.onSignInFailure;
 
@@ -125,7 +123,6 @@ export class GoogleAuthClass {
       credential,
       response,
     });
-    debugger;
     if (error) {
       return this.onSignInFailure(error);
     }
@@ -206,22 +203,5 @@ export class GoogleAuthClass {
         debugger; // eslint-disable-line no-debugger
         this.onSignOut();
       });
-  }
-
-  // UNUSED: For old gauth api
-  renderSignInButton() {
-    const { callbacks } = this;
-    console.log('[GoogleAuthClass:renderSignInButton]');
-    debugger;
-    // @ts-ignore: Unknown type for signin2 (TODO?)
-    window.gapi.signin2.render('GapiSignInButton', {
-      scope: 'profile email',
-      // width: 240,
-      // height: 50,
-      longtitle: false,
-      theme: 'dark', // dark, blue, light_blue
-      onsuccess: callbacks.onSignInSuccess,
-      onfailure: callbacks.onSignInFailure,
-    });
   }
 }

@@ -57,6 +57,7 @@ export class MainMenuClass {
     callbacks.onInstallDone = this.onInstallDone.bind(this);
     callbacks.onBeforeInstallPromptEvent = this.onBeforeInstallPromptEvent.bind(this);
     callbacks.onSignOut = this.onSignOut.bind(this);
+    callbacks.onUserDropdownMenuToggle = this.onUserDropdownMenuToggle.bind(this);
 
     this.initPWAInstall();
 
@@ -99,6 +100,14 @@ export class MainMenuClass {
   }
 
   // Actions...
+
+  onUserDropdownMenuToggle() {
+    const userDropdownMenu = document.getElementById('UserDropdownMenu');
+    console.log('[MainMenuClass:onUserDropdownMenuToggle]', {
+      userDropdownMenu,
+    });
+    userDropdownMenu.classList.toggle('Show');
+  }
 
   /** @param {MouseEvent} event */
   onSignOut(event) {
