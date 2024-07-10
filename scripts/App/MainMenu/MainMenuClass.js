@@ -162,6 +162,7 @@ export class MainMenuClass {
   }
 
   async onInstallButtonClick() {
+    this.closeAllDropdownMenus();
     // console.log('[MainMenuClass:onInstallButtonClick]');
     const logEvent = this.installEvent ? 'event' : 'empty';
     if (!this.installEvent) {
@@ -177,10 +178,12 @@ export class MainMenuClass {
   }
 
   onDataExport() {
+    this.closeAllDropdownMenus();
     this.exportData.exportData();
   }
 
   onDataImport() {
+    this.closeAllDropdownMenus();
     this.importData.importData();
   }
 
