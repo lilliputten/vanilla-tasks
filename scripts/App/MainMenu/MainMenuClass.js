@@ -56,6 +56,7 @@ export class MainMenuClass {
     callbacks.onInstallButtonClick = this.onInstallButtonClick.bind(this);
     callbacks.onInstallDone = this.onInstallDone.bind(this);
     callbacks.onBeforeInstallPromptEvent = this.onBeforeInstallPromptEvent.bind(this);
+    callbacks.onSignOut = this.onSignOut.bind(this);
 
     this.initPWAInstall();
 
@@ -99,10 +100,12 @@ export class MainMenuClass {
 
   // Actions...
 
+  /** @param {MouseEvent} event */
   onSignOut(event) {
+    const { googleAuth } = this;
     event.preventDefault();
     console.log('[MainMenuClass:onSignOut]');
-    debugger;
+    googleAuth.onSignOut();
   }
 
   /** @param {BeforeInstallPromptEvent} event */
