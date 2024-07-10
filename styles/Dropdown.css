@@ -15,11 +15,14 @@
     align-items: flex-start;
   }
   .DropdownMenu {
-    padding: 0.25em;
+    padding: 0.25em 0;
+    /* padding-left: 1em; */
+    align-items: flex-start;
   }
 }
 @media (width >= 540px) {
   .DropdownMenu {
+    padding: 0.25em;
     text-align: left;
     position: absolute;
     z-index: 1000;
@@ -29,7 +32,6 @@
     border-radius: 4px;
     box-shadow: 2px 2px 4px 1px rgba(0 0 0 / 10%);
     align-items: flex-start;
-    padding: 0.25em 0;
   }
   .DropdownMenu.AtRightSide {
     right: 0;

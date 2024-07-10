@@ -66,6 +66,10 @@
 }
 
 /* UserButton */
+body:not(.Signed) #UserButton,
+body.Signed #SignInButton {
+  display: none;
+}
 #UserButton {
   --user-icon-size: 28px;
 }
@@ -78,4 +82,9 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+#UserButton .UserName {
+  max-width: 15em;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
