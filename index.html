@@ -2,7 +2,7 @@
 <!--
 @changed 2024.07.10, 16:31
 Version: 0.0.11
-Last changes timestamp: 2024.07.10 22:02 +0500
+Last changes timestamp: 2024.07.10 22:26 +0500
 -->
 <html lang="en">
   <head>
@@ -160,17 +160,6 @@ Last changes timestamp: 2024.07.10 22:02 +0500
             -->
           </div>
         </div>
-        <!-- New google auth api: Google auth onload code -->
-        <div
-          id="g_id_onload"
-          data-auto_prompt="false"
-          data-auto_select="true"
-          data-callback="googleAuthSuccess"
-          data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
-          data-context="signin"
-          data-ux_mode="popup"
-          __data-login_uri="https://vanilla-tasks.lilliputten.com"
-        ></div>
         <!-- New google auth api: Google auth sign-in button
           @see https://developers.google.com/identity/gsi/web/reference/html-reference#element_with_class_g_id_signin
         -->
@@ -191,6 +180,17 @@ Last changes timestamp: 2024.07.10 22:02 +0500
         ></div>
       </div>
     </nav>
+    <!-- New google auth api: Google auth onload code -->
+    <div
+      id="g_id_onload"
+      data-auto_prompt="false"
+      data-auto_select="true"
+      data-callback="googleAuthSuccess"
+      data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      __data-login_uri="https://vanilla-tasks.lilliputten.com"
+    ></div>
     <!-- Main content -->
     <main id="PageLayout" class="PageLayout">
       <!-- Left column -->
@@ -263,7 +263,7 @@ Last changes timestamp: 2024.07.10 22:02 +0500
         <div class="PageAttributes Small Info">
           <span class="Version" id="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.11 / 2024.07.10 22:02 +0500
+            v.0.0.11 / 2024.07.10 22:26 +0500
           </span>
         </div>
         <ul class="SocialList">

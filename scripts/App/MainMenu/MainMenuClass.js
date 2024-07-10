@@ -47,8 +47,6 @@ export class MainMenuClass {
     this.exportData = new ExportDataClass(params);
     this.importData = new ImportDataClass(params);
 
-    this.initDomNodes();
-
     // Init handler callbacks...
     callbacks.onMainMenuToggle = this.onMainMenuToggle.bind(this);
     callbacks.onDataExport = this.onDataExport.bind(this);
@@ -59,6 +57,9 @@ export class MainMenuClass {
     callbacks.onSignOut = this.onSignOut.bind(this);
     callbacks.onUserDropdownMenuToggle = this.onUserDropdownMenuToggle.bind(this);
     callbacks.onDataDropdownMenuToggle = this.onDataDropdownMenuToggle.bind(this);
+    callbacks.onDocumentClick = this.onDocumentClick.bind(this);
+
+    this.initDomNodes();
 
     this.initPWAInstall();
 
@@ -77,6 +78,9 @@ export class MainMenuClass {
     this.headerNode = headerNode;
 
     this.installButton = headerNode.querySelector('#PWAInstallButton');
+
+    // Hide any dropdowns on any click (TODO: To do it if clicked outside the menu)
+    // document.body.addEventListener('mousedown', this.callbacks.onDocumentClick);
   }
 
   initPWAInstall() {
@@ -109,6 +113,10 @@ export class MainMenuClass {
         node.classList.toggle('Show', false);
       }
     });
+  }
+
+  onDocumentClick() {
+    this.closeAllDropdownMenus();
   }
 
   // Actions...
@@ -162,6 +170,7 @@ export class MainMenuClass {
   }
 
   async onInstallButtonClick() {
+    this.closeAllDropdownMenus();
     // console.log('[MainMenuClass:onInstallButtonClick]');
     const logEvent = this.installEvent ? 'event' : 'empty';
     if (!this.installEvent) {
@@ -177,10 +186,12 @@ export class MainMenuClass {
   }
 
   onDataExport() {
+    this.closeAllDropdownMenus();
     this.exportData.exportData();
   }
 
   onDataImport() {
+    this.closeAllDropdownMenus();
     this.importData.importData();
   }
 

@@ -6,7 +6,7 @@ body.has-modal {
 }
 
 .common-modal-wrapper .common-modal {
-  z-index: 1; /* Sit on top */
+  z-index: 20; /* Sit on top */
   display: flex;
   justify-content: center;
   align-items: center;
