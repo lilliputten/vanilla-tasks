@@ -112,6 +112,15 @@ Last changes timestamp: 2024.07.09 21:30 +0500
           <span class="fa fa-upload"></span>
           Upload
         </button>
+        <button
+          id="SignOutButton"
+          class="ActionButton ThemePrimary"
+          click-action-id="onSignOut"
+          title="Sign Out"
+        >
+          <span class="fa fa-sign-out"></span>
+          Sign Out
+        </button>
         <!-- Old gauth (via platform)
         <button
           id="GapiSignInButton"
@@ -122,19 +131,9 @@ Last changes timestamp: 2024.07.09 21:30 +0500
           Sign-In
         </button>
         -->
-        <!-- New google auth api: Google auth sign-in button
-        -->
+        <!-- New google auth api: Google auth sign-in button -->
         <div
-          id="g_id_onload"
-          data-auto_prompt="true"
-          data-auto_select="true"
-          data-callback="googleAuthSuccess"
-          data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
-          data-context="signin"
-          data-ux_mode="popup"
-          data-login_uri="https://vanilla-tasks.lilliputten.com"
-        ></div>
-        <div
+          id="SignInButton"
           class="g_id_signin"
           data-logo_alignment="left"
           data-shape="circle"
@@ -143,16 +142,17 @@ Last changes timestamp: 2024.07.09 21:30 +0500
           data-theme="outline"
           data-type="standard"
         ></div>
-        <!--
+        <!-- New google auth api: Google auth onload code -->
         <div
-          class="g_id_signin"
-          data-shape="circle"
-          data-size="medium"
-          data-text="signin"
-          data-theme="outline"
-          data-type="icon"
+          id="g_id_onload"
+          data-auto_prompt="false"
+          data-auto_select="true"
+          data-callback="onSignInSuccess"
+          data-client_id="436962234341-upro1dib6ubpod5319cnfptv10s9n0i9.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-login_uri="https://vanilla-tasks.lilliputten.com"
         ></div>
-        -->
       </div>
     </nav>
     <!-- Main content -->
@@ -259,28 +259,6 @@ Last changes timestamp: 2024.07.09 21:30 +0500
       // Export to global scope (to access from generated html code handlers).
       window.app = new AppClass(sharedParams);
     </script>
-    <!-- Google auth setup -->
-    <script>
-      // Google auth initialization...
-      function googleAuthInit(p) {
-        window.renderSignInButton && window.renderSignInButton();
-        /*
-        window.gapi.signin2.render('GapiSignInButton', {
-          scope: 'profile email',
-          longtitle: false,
-          theme: 'dark', // dark, blue, light_blue
-          onsuccess: window.onSignInSuccess,
-          onfailure: window.onSignInFailure,
-        });
-        */
-      }
-      function googleAuthSuccess(p) {
-        window.onSignInSuccess && window.onSignInSuccess(p);
-      }
-    </script>
-    <!--
-    <script src="https://apis.google.com/js/platform.js?onload=googleAuthInit" async defer></script>
-    -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!-- Firebase setup -->
     <script type="module">

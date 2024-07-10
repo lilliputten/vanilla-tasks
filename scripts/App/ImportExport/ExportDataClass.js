@@ -1,16 +1,11 @@
 // @ts-check
 
-// Import types only...
-/* eslint-disable no-unused-vars */
-import { DataStorageClass } from '../DataStorage/DataStorageClass.js';
-/* eslint-enable no-unused-vars */
-
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class ExportDataClass {
-  /** @type {DataStorageClass} */
+  /** @type {TProjectsListClassParams['dataStorage']} */
   dataStorage;
 
   /** @constructor

@@ -553,3 +553,48 @@ export function formatDuration(time) {
     .filter(Boolean)
     .join(' ');
 }
+
+/** @param {string} str */
+export function getAsyncHash(str) {
+  const encoder = new TextEncoder();
+  const buf = encoder.encode(str);
+  return crypto.subtle.digest('SHA-256', buf).then((aryBuf) => {
+    const ary = new Uint8Array(aryBuf);
+    const res = Array.from(ary)
+      .map((x) => x.toString(16).padStart(2, '0'))
+      .join('');
+    return res;
+  });
+}
+
+/** @param {string} cookieId */
+export function getCookie(cookieId) {
+  const cookiesStr = document.cookie;
+  const cookiesList = cookiesStr.split(';'); // .map((s) => s.trim().split('='));
+  for (let i = 0; i < cookiesList.length; i++) {
+    const s = cookiesList[i];
+    const [id, val] = s.trim().split('=').map(decodeURIComponent);
+    if (id === cookieId) {
+      return val;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * @param {string} id
+ * @param {string} val
+ * @param {number} maxAgeSecs -- Seconds of expire period
+ */
+export function setCookie(id, val, maxAgeSecs) {
+  const cookieVal = [id, val].map(encodeURIComponent).join('=');
+  const parts = [
+    // prettier-ignore
+    cookieVal,
+  ];
+  if (maxAgeSecs) {
+    parts.push('max-age=' + maxAgeSecs);
+  }
+  const fullCookie = parts.join(';');
+  document.cookie = fullCookie;
+}

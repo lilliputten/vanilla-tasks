@@ -3,3 +3,6 @@ interface TProjectsListClassParams extends TSharedParams {
   dataStorage: DataStorageClass;
   activeTasks: ActiveTasksClass;
 }
+interface TMainMenuParams extends TProjectsListClassParams {
+  googleAuth: GoogleAuthClass;
+}
