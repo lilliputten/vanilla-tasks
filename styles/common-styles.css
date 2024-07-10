@@ -10,6 +10,9 @@ a {
 .Info {
   opacity: 0.35;
 }
+.EmptyMessage {
+  color: var(--primary-color);
+}
 .InfoWrapper {
   text-align: center;
   padding: 1em;

@@ -567,6 +567,17 @@ export function getAsyncHash(str) {
   });
 }
 
+/** @param {TAuthError} error */
+export function getAuthErrorMessage(error) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === 'string'
+        ? error
+        : error.error || error.error_description;
+  return message;
+}
+
 /** @param {string} cookieId */
 export function getCookie(cookieId) {
   const cookiesStr = document.cookie;

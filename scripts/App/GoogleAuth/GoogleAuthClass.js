@@ -22,6 +22,13 @@ export class GoogleAuthClass {
   /** @type {TAuthResponse['clientId']} */
   clientId;
 
+  /** @type {TTokenInfoData['name']} */
+  userName;
+  /** @type {TTokenInfoData['email']} */
+  userEmail;
+  /** @type {TTokenInfoData['picture']} */
+  userPicture;
+
   /** @constructor
    * @param {TAppParams} params
    */
@@ -89,6 +96,9 @@ export class GoogleAuthClass {
   onSignOut() {
     this.clientId = undefined;
     this.credential = undefined;
+    this.userName = undefined;
+    this.userEmail = undefined;
+    this.userPicture = undefined;
     console.log('[GoogleAuthClass:onSignOut]');
     this.updateUserState();
   }
@@ -103,6 +113,7 @@ export class GoogleAuthClass {
       credential,
     });
     this.updateUserState();
+    this.fetchUserDetails();
   }
 
   /** @param {TAuthResponse} response */
@@ -112,21 +123,22 @@ export class GoogleAuthClass {
       error,
       clientId,
       credential,
+      response,
     });
+    debugger;
     if (error) {
       return this.onSignInFailure(error);
     }
     this.clientId = clientId;
     this.credential = credential;
     this.updateUserState();
-    this.fetchUserProfile();
+    this.fetchUserDetails();
   }
 
   /* @param {Error | { error: string }} error */
   /** @param {TAuthResponse['error']} error */
   onSignInFailure(error) {
-    const message =
-      error instanceof Error ? error.message : typeof error === 'string' ? error : error.error;
+    const message = CommonHelpers.getAuthErrorMessage(error);
     // eslint-disable-next-line no-console
     console.error('[GoogleAuthClass:onSignInFailure]', message, {
       error,
@@ -134,31 +146,65 @@ export class GoogleAuthClass {
     debugger; // eslint-disable-line no-debugger
     commonNotify.showError('Sign-In error ' + message);
     this.onSignOut();
-    // this.clientId = undefined;
-    // this.credential = undefined;
-    // this.updateUserState();
   }
 
-  fetchUserProfile() {
-    const { credential } = this;
+  fetchUserDetails() {
+    const { credential, clientId } = this;
+    if (!credential) {
+      return Promise.resolve();
+    }
     // Use the access token to retrieve user profile data
-    return fetch('https://www.googleapis.com/userinfo/v2/me', {
-      headers: {
-        Authorization: `Bearer ${credential}`,
-      },
+    // const url = 'https://www.googleapis.com/plus/v1/people/me';
+    // const url = 'https://www.googleapis.com/oauth2/v2/userinfo';
+    // const url = `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${credential}`;
+    const url = `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${credential}`;
+    // const url = `https://www.googleapis.com/oauth2/v3/userinfo`;
+    return fetch(url, {
+      credentials: 'same-origin',
+      // credentials: 'include', // NOTE: Expecting `Access-Control-Allow-Credential` response header
+      // headers: {
+      //   Authorization: `Bearer ${credential}`,
+      // },
     })
       .then((response) => response.json())
-      .then((data) => {
-        // Extract the desired user profile information (e.g., name, email)
-        console.log('User profile:', data);
-        debugger;
-        // Use the information as needed (e.g., display on your website, store securely)
-        return data;
-      })
+      .then(
+        /** @param {TTokenInfoData} data */
+        (data) => {
+          const {
+            // prettier-ignore
+            error,
+            name,
+            email,
+            picture,
+            exp: expSec,
+          } = data;
+          if (error) {
+            throw error;
+          }
+          // Extract the desired user profile information (e.g., name, email)
+          console.log('[GoogleAuthClass:fetchUserDetails] Got user profile', {
+            error,
+            name,
+            email,
+            picture,
+            expSec,
+            data,
+          });
+          // Use the information as needed (e.g., display on your website, store securely)
+          this.userName = name;
+          this.userEmail = email;
+          this.userPicture = picture;
+          return data;
+        },
+      )
       .catch((error) => {
-        // Handle errors during profile data retrieval
-        console.error('Error fetching user profile:', error);
-        debugger;
+        const message = CommonHelpers.getAuthErrorMessage(error);
+        // eslint-disable-next-line no-console
+        console.error('[GoogleAuthClass:fetchUserDetails]', message, {
+          error,
+        });
+        debugger; // eslint-disable-line no-debugger
+        this.onSignOut();
       });
   }
 
