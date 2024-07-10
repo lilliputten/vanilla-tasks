@@ -107,29 +107,62 @@ export class GoogleAuthClass {
 
   /** @param {TAuthResponse} response */
   onSignInSuccess(response) {
-    const { clientId, credential } = response;
+    const { error, clientId, credential } = response;
     console.log('[GoogleAuthClass:onSignInSuccess]', {
+      error,
       clientId,
       credential,
     });
+    if (error) {
+      return this.onSignInFailure(error);
+    }
     this.clientId = clientId;
     this.credential = credential;
     this.updateUserState();
+    this.fetchUserProfile();
   }
 
-  /** @param {Error | { error: string }} error */
+  /* @param {Error | { error: string }} error */
+  /** @param {TAuthResponse['error']} error */
   onSignInFailure(error) {
-    const message = error instanceof Error ? error.message : error.error;
+    const message =
+      error instanceof Error ? error.message : typeof error === 'string' ? error : error.error;
     // eslint-disable-next-line no-console
     console.error('[GoogleAuthClass:onSignInFailure]', message, {
       error,
     });
     debugger; // eslint-disable-line no-debugger
     commonNotify.showError('Sign-In error ' + message);
-    this.clientId = undefined;
-    this.updateUserState();
+    this.onSignOut();
+    // this.clientId = undefined;
+    // this.credential = undefined;
+    // this.updateUserState();
   }
 
+  fetchUserProfile() {
+    const { credential } = this;
+    // Use the access token to retrieve user profile data
+    return fetch('https://www.googleapis.com/userinfo/v2/me', {
+      headers: {
+        Authorization: `Bearer ${credential}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Extract the desired user profile information (e.g., name, email)
+        console.log('User profile:', data);
+        debugger;
+        // Use the information as needed (e.g., display on your website, store securely)
+        return data;
+      })
+      .catch((error) => {
+        // Handle errors during profile data retrieval
+        console.error('Error fetching user profile:', error);
+        debugger;
+      });
+  }
+
+  // UNUSED: For old gauth api
   renderSignInButton() {
     const { callbacks } = this;
     console.log('[GoogleAuthClass:renderSignInButton]');
