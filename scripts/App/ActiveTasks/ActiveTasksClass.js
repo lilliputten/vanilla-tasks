@@ -12,7 +12,7 @@ const maxNormalDiffPeriod = 30 * 60 * 1000;
 const tickTimeout = CommonConstants.isDev ? 5000 : 1000;
 
 export class ActiveTasksClass {
-  /** @type {TCoreParams['appEvents']} */
+  /** @type {TCoreParams['events']} */
   events;
 
   /** Handlers exchange object
@@ -35,11 +35,11 @@ export class ActiveTasksClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { modules, layoutNode, appEvents } = params;
+    const { modules, layoutNode, events } = params;
 
     modules.activeTasks = this;
 
-    this.events = appEvents;
+    this.events = events;
 
     this.layoutNode = layoutNode;
 

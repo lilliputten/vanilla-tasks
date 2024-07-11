@@ -9,6 +9,7 @@ import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
 import { FirebaseClass } from './Firebase/FirebaseClass.js';
 import { GoogleAuthClass } from './GoogleAuth/GoogleAuthClass.js';
+import { AppEventsClass } from './AppEventsClass.js';
 
 export class AppClass {
   /** Handlers exchange object
@@ -57,7 +58,7 @@ export class AppClass {
     /** @type {TCoreParams} */
     const coreParams = {
       ...sharedParams,
-      appEvents: this.events,
+      events: this.events,
       modules: /** @type {TModules} */ (this.modules),
     };
 
@@ -89,6 +90,10 @@ export class AppClass {
      */
     this.events.emit('AppInited', coreParams);
 
+    this.appInited();
+  }
+
+  appInited() {
     this.initActiveProjects();
   }
 

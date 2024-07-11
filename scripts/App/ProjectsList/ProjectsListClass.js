@@ -14,7 +14,7 @@ import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 const useDragListItems = true;
 
 export class ProjectsListClass {
-  /** @type {TCoreParams['appEvents']} */
+  /** @type {TCoreParams['events']} */
   events;
 
   /** Handlers exchange object
@@ -57,9 +57,9 @@ export class ProjectsListClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode, appEvents } = params;
+    const { layoutNode, events } = params;
     this.layoutNode = layoutNode;
-    this.events = appEvents;
+    this.events = events;
 
     this.initDomNodes(params);
 

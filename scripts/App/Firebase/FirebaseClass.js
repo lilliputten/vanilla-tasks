@@ -54,7 +54,7 @@ const firebaseConfig = {
 };
 
 export class FirebaseClass {
-  /** @type {TCoreParams['appEvents']} */
+  /** @type {TCoreParams['events']} */
   events;
 
   /** Handlers exchange object
@@ -80,9 +80,9 @@ export class FirebaseClass {
   constructor(params) {
     // const { callbacks } = this;
 
-    const { modules, appEvents } = params;
+    const { modules, events } = params;
 
-    this.events = appEvents;
+    this.events = events;
 
     modules.firebase = this;
 

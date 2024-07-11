@@ -8,7 +8,7 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class MainMenuClass {
-  /** @type {TCoreParams['appEvents']} */
+  /** @type {TCoreParams['events']} */
   events;
 
   /** @type {TModules['googleAuth']} */
@@ -40,9 +40,9 @@ export class MainMenuClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { modules, appEvents } = params;
+    const { modules, events } = params;
 
-    this.events = appEvents;
+    this.events = events;
 
     modules.mainMenu = this;
 

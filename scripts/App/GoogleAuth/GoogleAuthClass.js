@@ -14,7 +14,7 @@ export class GoogleAuthClass {
    */
   callbacks = {};
 
-  /** @type {TCoreParams['appEvents']} */
+  /** @type {TCoreParams['events']} */
   events;
 
   /** @type {HTMLElement} */
@@ -44,11 +44,11 @@ export class GoogleAuthClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { modules, appEvents, layoutNode } = params;
+    const { modules, events, layoutNode } = params;
 
     modules.googleAuth = this;
 
-    this.events = appEvents;
+    this.events = events;
 
     this.layoutNode = layoutNode;
 

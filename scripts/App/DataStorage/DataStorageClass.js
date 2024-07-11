@@ -5,7 +5,7 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 export class DataStorageClass {
-  /** @type {TCoreParams['appEvents']} */
+  /** @type {TCoreParams['events']} */
   events;
 
   /** @type {string} */
@@ -28,11 +28,11 @@ export class DataStorageClass {
     const versionNode = document.getElementById('Version');
     this.version = versionNode.innerText;
 
-    const { appEvents, modules } = params;
+    const { events, modules } = params;
 
     modules.dataStorage = this;
 
-    this.events = appEvents;
+    this.events = events;
 
     // Load projects data...
     this.loadProjects();

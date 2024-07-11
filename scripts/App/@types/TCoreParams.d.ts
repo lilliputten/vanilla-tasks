@@ -1,4 +1,4 @@
 interface TCoreParams extends TSharedParams {
-  appEvents: SimpleEvents;
+  events: SimpleEvents;
   modules: TModules;
 }

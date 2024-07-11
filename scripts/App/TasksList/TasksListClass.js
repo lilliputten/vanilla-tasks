@@ -70,9 +70,9 @@ export class TasksListClass {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
-    const { layoutNode, appEvents } = params;
+    const { layoutNode, events } = params;
     this.layoutNode = layoutNode;
-    this.events = appEvents;
+    this.events = events;
     // this.dataStorage = dataStorage;
     // this.activeTasks = activeTasks;
 

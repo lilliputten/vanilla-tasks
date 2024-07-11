@@ -14,8 +14,8 @@ export class ImportDataClass {
    * @param {TCoreParams} params
    */
   constructor(params) {
-    const { appEvents } = params;
-    appEvents.add('AppInited', this.onAppInited.bind(this));
+    const { events } = params;
+    events.add('AppInited', this.onAppInited.bind(this));
   }
 
   /** @param {TCoreParams} coreParams */
