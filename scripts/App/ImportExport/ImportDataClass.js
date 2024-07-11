@@ -7,14 +7,21 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as ImportExportHelpers from './ImportExportHelpers.js';
 
 export class ImportDataClass {
-  /** @type {TAppParams['dataStorage']} */
+  /** @type {TModules['dataStorage']} */
   dataStorage;
 
   /** @constructor
-   * @param {TAppParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
-    const { dataStorage } = params;
+    const { appEvents } = params;
+    appEvents.add('AppInited', this.onAppInited.bind(this));
+  }
+
+  /** @param {TCoreParams} coreParams */
+  onAppInited(coreParams) {
+    const { modules } = coreParams;
+    const { dataStorage } = modules;
     this.dataStorage = dataStorage;
   }
 

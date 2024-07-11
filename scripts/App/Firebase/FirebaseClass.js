@@ -54,12 +54,6 @@ const firebaseConfig = {
 };
 
 export class FirebaseClass {
-  /** @type {TFirebaseParams['dataStorage']} */
-  dataStorage;
-
-  /** @type {TFirebaseParams['googleAuth']} */
-  googleAuth;
-
   /** @type {TCoreParams['appEvents']} */
   events;
 
@@ -81,24 +75,16 @@ export class FirebaseClass {
   userDataColRef;
 
   /** @constructor
-   * @param {TFirebaseParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     // const { callbacks } = this;
 
-    const {
-      modules,
-      appEvents,
-      dataStorage,
-      // googleAuth,
-    } = params;
+    const { modules, appEvents } = params;
 
     this.events = appEvents;
 
     modules.firebase = this;
-
-    this.dataStorage = dataStorage;
-    // this.googleAuth = googleAuth;
 
     // Init handler callbacks...
     // callbacks.onFirebaseToggle = this.onFirebaseToggle.bind(this);

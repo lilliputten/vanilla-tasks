@@ -8,10 +8,10 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class MainMenuClass {
-  /** @type {TMainMenuParams['dataStorage']} */
-  dataStorage;
+  /** @type {TCoreParams['appEvents']} */
+  events;
 
-  /** @type {TMainMenuParams['googleAuth']} */
+  /** @type {TModules['googleAuth']} */
   googleAuth;
 
   /* @type {ExportDataClass} */
@@ -35,17 +35,18 @@ export class MainMenuClass {
   installEvent;
 
   /** @constructor
-   * @param {TMainMenuParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     const { callbacks } = this;
 
-    const { modules, dataStorage, googleAuth } = params;
+    const { modules, appEvents } = params;
+
+    this.events = appEvents;
 
     modules.mainMenu = this;
 
-    this.dataStorage = dataStorage;
-    this.googleAuth = googleAuth;
+    // this.googleAuth = googleAuth;
 
     this.exportData = new ExportDataClass(params);
     this.importData = new ImportDataClass(params);

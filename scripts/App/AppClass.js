@@ -66,25 +66,17 @@ export class AppClass {
 
     this.initActiveProjects();
 
-    /** @type {TAppParams} */
-    const appParams = {
-      ...coreParams,
-      appEvents,
-      dataStorage,
-      activeTasks,
-    };
-
     // Auth...
-    const googleAuth = (this.googleAuth = new GoogleAuthClass(appParams));
+    this.googleAuth = new GoogleAuthClass(coreParams);
 
     // Main menu
-    this.mainMenu = new MainMenuClass({ ...appParams, googleAuth });
+    this.mainMenu = new MainMenuClass(coreParams);
 
     // Firebase
-    this.firebase = new FirebaseClass({ ...appParams, googleAuth });
+    this.firebase = new FirebaseClass(coreParams);
 
     // Processes list component
-    this.processList = new ProjectsListClass(appParams);
+    this.processList = new ProjectsListClass(coreParams);
 
     /* NOTE: SW temporaqrily disabled (for the demo time)
      * window.addEventListener('load', () => {
@@ -92,10 +84,12 @@ export class AppClass {
      * });
      */
 
-    console.log('[AppClass] initialization finished', {
-      modules,
-    });
-    appEvents.emit('AppInited');
+    /* // DEBUG: Check initialized modules
+     * console.log('[AppClass] initialization finished', {
+     *   modules,
+     * });
+     */
+    appEvents.emit('AppInited', coreParams);
   }
 
   initActiveProjects() {

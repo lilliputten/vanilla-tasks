@@ -14,16 +14,19 @@ import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 const useDragListItems = true;
 
 export class ProjectsListClass {
-  /** @type {TAppParams['dataStorage']} */
-  dataStorage;
-
-  /** @type {TAppParams['activeTasks']} */
-  activeTasks;
+  /** @type {TCoreParams['appEvents']} */
+  events;
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {TModules['dataStorage']} */
+  dataStorage;
+
+  /** @type {TModules['activeTasks']} */
+  activeTasks;
 
   /** @type {DragListItems} */
   dragListItems = undefined;
@@ -49,15 +52,14 @@ export class ProjectsListClass {
   // Core...
 
   /** @constructor
-   * @param {TAppParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode, dataStorage, activeTasks } = params;
+    const { layoutNode, appEvents } = params;
     this.layoutNode = layoutNode;
-    this.dataStorage = dataStorage;
-    this.activeTasks = activeTasks;
+    this.events = appEvents;
 
     this.initDomNodes(params);
 
@@ -72,15 +74,10 @@ export class ProjectsListClass {
     callbacks.onNewProjects = this.onNewProjects.bind(this);
     callbacks.onActiveTasksUpdated = this.onActiveTasksUpdated.bind(this);
 
-    activeTasks.events.add('activeTasksUpdated', callbacks.onActiveTasksUpdated);
-    // TODO activeTaskFinish
-
-    this.dataStorage.events.add('newProjects', callbacks.onNewProjects);
+    this.events.add('newProjects', callbacks.onNewProjects);
 
     this.tasksList = new TasksListClass(params);
     this.tasksList.setTasksChangedCallback(callbacks.onTasksChanged);
-
-    this.renderContent();
 
     if (useDragListItems) {
       this.dragListItems = new DragListItems({
@@ -89,6 +86,18 @@ export class ProjectsListClass {
         onDragFinish: callbacks.onDragFinish,
       });
     }
+
+    this.events.add('AppInited', this.onAppInited.bind(this));
+  }
+
+  /** @param {TCoreParams} coreParams */
+  onAppInited(coreParams) {
+    const { modules } = coreParams;
+    const { dataStorage, activeTasks } = modules;
+    this.dataStorage = dataStorage;
+    this.activeTasks = activeTasks;
+
+    this.renderContent();
   }
 
   renderContent() {
@@ -103,9 +112,7 @@ export class ProjectsListClass {
 
   // Init...
 
-  /**
-   * @param {TAppParams} params
-   */
+  /** @param {TCoreParams} params */
   initDomNodes(params) {
     const { layoutNode } = params;
 

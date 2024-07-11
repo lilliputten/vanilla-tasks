@@ -39,7 +39,7 @@ export class GoogleAuthClass {
   userPicture;
 
   /** @constructor
-   * @param {TAppParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     const { callbacks } = this;
