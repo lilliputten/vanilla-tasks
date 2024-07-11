@@ -40,7 +40,10 @@ export class MainMenuClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { dataStorage, googleAuth } = params;
+    const { modules, dataStorage, googleAuth } = params;
+
+    modules.mainMenu = this;
+
     this.dataStorage = dataStorage;
     this.googleAuth = googleAuth;
 
@@ -85,6 +88,7 @@ export class MainMenuClass {
 
   initPWAInstall() {
     const { callbacks } = this;
+    // // TODO!
     // const useInstall = true && !AppConstants.isLocal;
     // const hasInstallFeatures = 'BeforeInstallPromptEvent' in window;
     // if ([> !useInstall || <] !hasInstallFeatures) {
@@ -123,18 +127,20 @@ export class MainMenuClass {
 
   onUserDropdownMenuToggle() {
     const userDropdownMenu = document.getElementById('UserDropdownMenu');
-    console.log('[MainMenuClass:onUserDropdownMenuToggle]', {
-      userDropdownMenu,
-    });
+    /* console.log('[MainMenuClass:onUserDropdownMenuToggle]', {
+     *   userDropdownMenu,
+     * });
+     */
     this.closeAllDropdownMenus(['UserDropdownMenu']);
     userDropdownMenu.classList.toggle('Show');
   }
 
   onDataDropdownMenuToggle() {
     const dataDropdownMenu = document.getElementById('DataDropdownMenu');
-    console.log('[MainMenuClass:onDataDropdownMenuToggle]', {
-      dataDropdownMenu,
-    });
+    /* console.log('[MainMenuClass:onDataDropdownMenuToggle]', {
+     *   dataDropdownMenu,
+     * });
+     */
     this.closeAllDropdownMenus(['DataDropdownMenu']);
     dataDropdownMenu.classList.toggle('Show');
   }
@@ -143,7 +149,7 @@ export class MainMenuClass {
   onSignOut(event) {
     const { googleAuth } = this;
     event.preventDefault();
-    console.log('[MainMenuClass:onSignOut]');
+    // console.log('[MainMenuClass:onSignOut]');
     this.closeAllDropdownMenus();
     googleAuth.onSignOut();
   }

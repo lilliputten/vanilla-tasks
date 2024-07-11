@@ -5,9 +5,6 @@ import * as CommonConstants from '../../common/CommonConstants.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as AppHelpers from '../AppHelpers.js';
-// import * as AppConstants from '../AppConstants.js';
-
-import { SimpleEvents } from '../../common/SimpleEvents.js';
 
 /** If detected too large diff then ask if it should be added to the elapsed accumulator for the task */
 const maxNormalDiffPeriod = 30 * 60 * 1000;
@@ -15,8 +12,8 @@ const maxNormalDiffPeriod = 30 * 60 * 1000;
 const tickTimeout = CommonConstants.isDev ? 5000 : 1000;
 
 export class ActiveTasksClass {
-  /** @type {SimpleEvents} */
-  events = new SimpleEvents('ActiveTasks');
+  /** @type {TCoreParams['appEvents']} */
+  events;
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
@@ -33,12 +30,16 @@ export class ActiveTasksClass {
   tickHandler = undefined;
 
   /** @constructor
-   * @param {TSharedParams} sharedParams
+   * @param {TCoreParams} params
    */
-  constructor(sharedParams) {
+  constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode } = sharedParams;
+    const { modules, layoutNode, appEvents } = params;
+
+    modules.activeTasks = this;
+
+    this.events = appEvents;
 
     this.layoutNode = layoutNode;
 

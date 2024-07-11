@@ -14,6 +14,9 @@ export class GoogleAuthClass {
    */
   callbacks = {};
 
+  /** @type {TCoreParams['appEvents']} */
+  events;
+
   /** @type {HTMLElement} */
   layoutNode;
 
@@ -28,9 +31,6 @@ export class GoogleAuthClass {
   /** @type {TAuthResponse['credential']} */
   credential;
 
-  // [>* @type {TAuthResponse['clientId']} <]
-  // clientId;
-
   /** @type {TTokenInfoData['name']} */
   userName;
   /** @type {TTokenInfoData['email']} */
@@ -44,7 +44,12 @@ export class GoogleAuthClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode } = params;
+    const { modules, appEvents, layoutNode } = params;
+
+    modules.googleAuth = this;
+
+    this.events = appEvents;
+
     this.layoutNode = layoutNode;
 
     // Init handler callbacks...
@@ -69,16 +74,15 @@ export class GoogleAuthClass {
 
   updateUserState() {
     const {
-      // clientId,
       credential,
-      userButtonNode,
+      // userButtonNode,
       userNameNode,
       userIconNode,
       userName,
-      userEmail,
+      // userEmail,
       userPicture,
     } = this;
-    const isSigned = this.isSigned();
+    const isSignedIn = this.isSignedIn();
     /* // It's possible to access global google accounts data... (TODO?)
      * // @ts-ignore
      * const accounts = window.google.accounts;
@@ -89,51 +93,52 @@ export class GoogleAuthClass {
      * } = accounts;
      */
     console.log('[GoogleAuthClass:updateUserState]', {
-      isSigned,
-      // clientId,
+      isSignedIn,
       credential,
       // id,
       // oauth2,
       // accounts,
     });
     // Update cookie and document state...
-    // CommonHelpers.setCookie('clientId', isSigned ? clientId : '', keepSignedMaxAgeSecs);
-    CommonHelpers.setCookie('credential', isSigned ? credential : '', keepSignedMaxAgeSecs);
-    document.body.classList.toggle('Signed', isSigned);
+    CommonHelpers.setCookie('credential', credential || '', keepSignedMaxAgeSecs);
+    document.body.classList.toggle('Signed', isSignedIn);
     // Update user button...
     userIconNode.style.backgroundImage = `url("${userPicture || defaultUserIconImage}")`;
     userNameNode.innerHTML = CommonHelpers.quoteHtmlAttr(userName || 'Unknown user');
     // TODO: Invoke events onSignIn, onSignOut?
   }
 
-  isSigned() {
-    const {
-      // clientId,
-      credential,
-    } = this;
-    const isSigned = !!credential;
-    return isSigned;
+  isSignedIn() {
+    const { credential, userEmail } = this;
+    const isSignedIn = !!(credential && userEmail);
+    return isSignedIn;
   }
 
   // Actions...
 
   onSignOut() {
-    // this.clientId = undefined;
+    const isSigned = this.isSignedIn();
+    const { userName, userEmail, userPicture } = this;
     this.credential = undefined;
     this.userName = undefined;
     this.userEmail = undefined;
     this.userPicture = undefined;
     console.log('[GoogleAuthClass:onSignOut]');
     this.updateUserState();
+    if (isSigned) {
+      const userInfo = {
+        name: userName,
+        email: userEmail,
+        picture: userPicture,
+      };
+      this.events.emit('userSignedOut', userInfo);
+    }
   }
 
   onInit() {
-    // const clientId = CommonHelpers.getCookie('clientId');
     const credential = CommonHelpers.getCookie('credential');
-    // this.clientId = clientId && clientId !== 'undefined' ? clientId : undefined;
     this.credential = credential && credential !== 'undefined' ? credential : undefined;
     console.log('[GoogleAuthClass:onInit]', {
-      // clientId,
       credential,
     });
     this.updateUserState();
@@ -142,21 +147,15 @@ export class GoogleAuthClass {
 
   /** @param {TAuthResponse} response */
   onSignInSuccess(response) {
-    const {
-      error,
-      // clientId,
-      credential,
-    } = response;
+    const { error, credential } = response;
     console.log('[GoogleAuthClass:onSignInSuccess]', {
       error,
-      // clientId,
       credential,
       response,
     });
     if (error) {
       return this.onSignInFailure(error);
     }
-    // this.clientId = clientId;
     this.credential = credential;
     this.updateUserState();
     this.fetchUserDetails();
@@ -176,10 +175,7 @@ export class GoogleAuthClass {
   }
 
   fetchUserDetails() {
-    const {
-      credential,
-      // clientId,
-    } = this;
+    const { credential } = this;
     if (!credential) {
       return Promise.resolve();
     }
@@ -225,6 +221,13 @@ export class GoogleAuthClass {
           this.userEmail = email;
           this.userPicture = picture;
           this.updateUserState();
+          /** @type {TUserInfo} */
+          const userInfo = {
+            name,
+            email,
+            picture,
+          };
+          this.events.emit('userSignedIn', userInfo);
           return data;
         },
       )

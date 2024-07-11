@@ -4,11 +4,9 @@ import * as AppConstants from '../AppConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
-import { SimpleEvents } from '../../common/SimpleEvents.js';
-
 export class DataStorageClass {
-  /** @type {SimpleEvents} */
-  events = new SimpleEvents('DataStorage');
+  /** @type {TCoreParams['appEvents']} */
+  events;
 
   /** @type {string} */
   version;
@@ -23,12 +21,19 @@ export class DataStorageClass {
    */
   currentProjectId = undefined;
 
-  /** @constructor */
-  constructor() {
+  /** @constructor
+   * @param {TCoreParams} params
+   */
+  constructor(params) {
     const versionNode = document.getElementById('Version');
     this.version = versionNode.innerText;
 
-    // this.events = new SimpleEvents('DataStorage');
+    const { appEvents, modules } = params;
+
+    modules.dataStorage = this;
+
+    this.events = appEvents;
+
     // Load projects data...
     this.loadProjects();
 

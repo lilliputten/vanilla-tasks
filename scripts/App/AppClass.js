@@ -2,10 +2,12 @@
 
 import * as AppConstants from './AppConstants.js';
 // import { commonNotify } from '../common/CommonNotify.js';
+import { SimpleEvents } from '../common/SimpleEvents.js';
 import { DataStorageClass } from './DataStorage/DataStorageClass.js';
 import { ActiveTasksClass } from './ActiveTasks/ActiveTasksClass.js';
 import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
+import { FirebaseClass } from './Firebase/FirebaseClass.js';
 import { GoogleAuthClass } from './GoogleAuth/GoogleAuthClass.js';
 
 export class AppClass {
@@ -13,6 +15,9 @@ export class AppClass {
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {SimpleEvents} */
+  appEvents;
 
   /** @type {DataStorageClass} */
   dataStorage;
@@ -27,6 +32,11 @@ export class AppClass {
    */
   mainMenu;
 
+  /** Firebase
+   * @type {FirebaseClass}
+   */
+  firebase;
+
   /** @type {ActiveTasksClass} */
   activeTasks;
 
@@ -39,33 +49,53 @@ export class AppClass {
   constructor(sharedParams) {
     // const { callbacks } = this;
 
-    const dataStorage = (this.dataStorage = new DataStorageClass());
+    const appEvents = (this.appEvents = new SimpleEvents('App'));
 
-    const activeTasks = (this.activeTasks = new ActiveTasksClass(sharedParams));
+    /** @type {Partial<TModules>} */
+    const modules = {};
+
+    /** @type {TCoreParams} */
+    const coreParams = {
+      ...sharedParams,
+      appEvents,
+      modules: /** @type {TModules} */ (modules),
+    };
+    const dataStorage = (this.dataStorage = new DataStorageClass(coreParams));
+
+    const activeTasks = (this.activeTasks = new ActiveTasksClass(coreParams));
 
     this.initActiveProjects();
 
     /** @type {TAppParams} */
-    const params = {
-      ...sharedParams,
+    const appParams = {
+      ...coreParams,
+      appEvents,
       dataStorage,
       activeTasks,
     };
 
     // Auth...
-    const googleAuth = (this.googleAuth = new GoogleAuthClass(params));
+    const googleAuth = (this.googleAuth = new GoogleAuthClass(appParams));
 
     // Main menu
-    this.mainMenu = new MainMenuClass({ ...params, googleAuth });
+    this.mainMenu = new MainMenuClass({ ...appParams, googleAuth });
+
+    // Firebase
+    this.firebase = new FirebaseClass({ ...appParams, googleAuth });
 
     // Processes list component
-    this.processList = new ProjectsListClass(params);
+    this.processList = new ProjectsListClass(appParams);
 
     /* NOTE: SW temporaqrily disabled (for the demo time)
      * window.addEventListener('load', () => {
      *   this.registerSW();
      * });
      */
+
+    console.log('[AppClass] initialization finished', {
+      modules,
+    });
+    appEvents.emit('AppInited');
   }
 
   initActiveProjects() {
