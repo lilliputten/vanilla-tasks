@@ -17,28 +17,31 @@ export class AppClass {
   callbacks = {};
 
   /** @type {SimpleEvents} */
-  appEvents;
+  events;
 
-  /** @type {DataStorageClass} */
-  dataStorage;
+  /** @type {Partial<TModules>} */
+  modules = {};
 
+  // [>* @type {DataStorageClass} <]
+  // dataStorage;
+  //
   /** Authorization
    * @type {GoogleAuthClass}
    */
-  googleAuth;
+  // googleAuth;
 
   /** Main menu
    * @type {MainMenuClass}
    */
-  mainMenu;
-
+  // mainMenu;
+  //
   /** Firebase
    * @type {FirebaseClass}
    */
-  firebase;
-
-  /** @type {ActiveTasksClass} */
-  activeTasks;
+  // firebase;
+  //
+  // [>* @type {ActiveTasksClass} <]
+  // activeTasks;
 
   /** @type {ProjectsListClass} */
   processList;
@@ -49,31 +52,26 @@ export class AppClass {
   constructor(sharedParams) {
     // const { callbacks } = this;
 
-    const appEvents = (this.appEvents = new SimpleEvents('App'));
-
-    /** @type {Partial<TModules>} */
-    const modules = {};
+    this.events = new SimpleEvents('App');
 
     /** @type {TCoreParams} */
     const coreParams = {
       ...sharedParams,
-      appEvents,
-      modules: /** @type {TModules} */ (modules),
+      appEvents: this.events,
+      modules: /** @type {TModules} */ (this.modules),
     };
-    const dataStorage = (this.dataStorage = new DataStorageClass(coreParams));
 
-    const activeTasks = (this.activeTasks = new ActiveTasksClass(coreParams));
-
-    this.initActiveProjects();
+    new DataStorageClass(coreParams);
+    new ActiveTasksClass(coreParams);
 
     // Auth...
-    this.googleAuth = new GoogleAuthClass(coreParams);
+    new GoogleAuthClass(coreParams);
 
     // Main menu
-    this.mainMenu = new MainMenuClass(coreParams);
+    new MainMenuClass(coreParams);
 
     // Firebase
-    this.firebase = new FirebaseClass(coreParams);
+    new FirebaseClass(coreParams);
 
     // Processes list component
     this.processList = new ProjectsListClass(coreParams);
@@ -89,12 +87,14 @@ export class AppClass {
      *   modules,
      * });
      */
-    appEvents.emit('AppInited', coreParams);
+    this.events.emit('AppInited', coreParams);
+
+    this.initActiveProjects();
   }
 
   initActiveProjects() {
-    const { dataStorage, activeTasks } = this;
-    const { projects } = dataStorage;
+    const { dataStorage, activeTasks } = this.modules;
+    const projects = dataStorage.projects;
     /** @type {TActiveTask[]} */
     const activeTasksList = [];
     // Try to find all the active tasks...
