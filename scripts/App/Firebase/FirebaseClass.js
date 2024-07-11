@@ -93,8 +93,8 @@ export class FirebaseClass {
 
     // Tests...
     // this.getAllUsersData();
-    // this.getUserData('qunWzSKvKLwfxhnvkTH9');
-    this.hasUserData('test3');
+    // this.loadUserData('qunWzSKvKLwfxhnvkTH9');
+    // this.hasUserData('test3');
     // this.saveUserData('test2', { test: 'test2' });
   }
 
@@ -125,14 +125,17 @@ export class FirebaseClass {
   getUserDataCollection() {
     if (!this.userDataColRef) {
       const db = this.getDb();
-      /** @type {import('firebase/firestore').CollectionReference<TUserData, TUserData>} */
-      this.userDataColRef = collection(db, 'userData');
+      this.userDataColRef =
+        /** @type {import('firebase/firestore').CollectionReference<TUserData, TUserData>} */ (
+          collection(db, 'userData')
+        );
     }
     return this.userDataColRef;
   }
 
   /** Update or create new data record
    * @param {TUserDataKey} key
+   * @param {TUserData} userData
    * @return {Promise<boolean | void>}
    */
   saveUserData(key, userData) {
@@ -190,10 +193,10 @@ export class FirebaseClass {
    * @param {TUserDataKey} key
    * @return {Promise<TUserData | void>}
    */
-  getUserData(key) {
+  loadUserData(key) {
     const colRef = this.getUserDataCollection();
     const docRef = doc(colRef, key);
-    console.log('[FirebaseClass:getUserData]', {
+    console.log('[FirebaseClass:loadUserData]', {
       docRef,
       colRef,
     });
@@ -203,20 +206,19 @@ export class FirebaseClass {
           return undefined;
         }
         const data = docSnap.data();
-        console.log('[FirebaseClass:getUserData:getDoc]', {
+        console.log('[FirebaseClass:loadUserData:getDoc]', {
           data,
           docSnap,
           docRef,
           colRef,
         });
-        debugger;
         return data;
       })
       .catch(
         /** @param {Error} error */
         (error) => {
           // eslint-disable-next-line no-console
-          console.error('[FirebaseClass:getUserData:getDoc]', error);
+          console.error('[FirebaseClass:loadUserData:getDoc]', error);
           debugger; // eslint-disable-line no-debugger
         },
       );

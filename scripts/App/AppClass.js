@@ -74,6 +74,8 @@ export class AppClass {
     // Firebase
     new FirebaseClass(coreParams);
 
+    new AppEventsClass(coreParams);
+
     // Processes list component
     this.processList = new ProjectsListClass(coreParams);
 

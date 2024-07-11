@@ -112,11 +112,13 @@ export class DataStorageClass {
   }
 
   saveProjects() {
+    const { events, projects } = this;
     if (window.localStorage) {
       const { projectsStorageId } = AppConstants;
       const projectsJson = JSON.stringify(this.projects);
       window.localStorage.setItem(projectsStorageId, projectsJson);
     }
+    events.emit('updatedStorageProjects', projects);
   }
 
   loadCurrentProjectId() {

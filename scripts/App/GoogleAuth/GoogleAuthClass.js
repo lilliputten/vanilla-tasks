@@ -123,7 +123,7 @@ export class GoogleAuthClass {
     this.userName = undefined;
     this.userEmail = undefined;
     this.userPicture = undefined;
-    console.log('[GoogleAuthClass:onSignOut]');
+    // console.log('[GoogleAuthClass:onSignOut]');
     this.updateUserState();
     if (isSigned) {
       const userInfo = {

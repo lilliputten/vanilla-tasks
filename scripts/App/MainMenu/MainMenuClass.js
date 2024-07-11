@@ -11,6 +11,9 @@ export class MainMenuClass {
   /** @type {TCoreParams['events']} */
   events;
 
+  /** @type {TModules} */
+  modules;
+
   /** @type {TModules['googleAuth']} */
   googleAuth;
 
@@ -43,10 +46,9 @@ export class MainMenuClass {
     const { modules, events } = params;
 
     this.events = events;
+    this.modules = modules;
 
     modules.mainMenu = this;
-
-    // this.googleAuth = googleAuth;
 
     this.exportData = new ExportDataClass(params);
     this.importData = new ImportDataClass(params);
@@ -148,7 +150,7 @@ export class MainMenuClass {
 
   /** @param {MouseEvent} event */
   onSignOut(event) {
-    const { googleAuth } = this;
+    const { googleAuth } = this.modules;
     event.preventDefault();
     // console.log('[MainMenuClass:onSignOut]');
     this.closeAllDropdownMenus();
