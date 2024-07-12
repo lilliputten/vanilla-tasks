@@ -1,5 +1,5 @@
 /** @desc Update build date/time tag file with current timestamp
- *  @changed 2024.02.21, 17:18
+ *  @changed 2024.07.12, 23:02
  */
 /* eslint-disable no-console */
 
@@ -21,7 +21,7 @@ const scriptsPath = path.resolve(__dirname);
 const rootPath = path.resolve(path.dirname(scriptsPath));
 // const prjPath = path.resolve(path.dirname(scriptsPath));
 const prjPath = process.cwd();
-const srcPath = path.resolve(prjPath, 'src');
+const srcPath = path.resolve(prjPath, 'scripts');
 const staticPath = path.resolve(prjPath, 'static');
 
 // TODO: Add local config
