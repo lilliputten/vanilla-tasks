@@ -14,16 +14,22 @@ import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 const useDragListItems = true;
 
 export class ProjectsListClass {
-  /** @type {TAppParams['dataStorage']} */
-  dataStorage;
+  /** @type {TModules} */
+  modules;
 
-  /** @type {TAppParams['activeTasks']} */
-  activeTasks;
+  /** @type {TCoreParams['events']} */
+  events;
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {TModules['dataStorage']} */
+  dataStorage;
+
+  /** @type {TModules['activeTasks']} */
+  activeTasks;
 
   /** @type {DragListItems} */
   dragListItems = undefined;
@@ -49,15 +55,15 @@ export class ProjectsListClass {
   // Core...
 
   /** @constructor
-   * @param {TAppParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode, dataStorage, activeTasks } = params;
+    const { layoutNode, events, modules } = params;
     this.layoutNode = layoutNode;
-    this.dataStorage = dataStorage;
-    this.activeTasks = activeTasks;
+    this.events = events;
+    this.modules = modules;
 
     this.initDomNodes(params);
 
@@ -72,15 +78,11 @@ export class ProjectsListClass {
     callbacks.onNewProjects = this.onNewProjects.bind(this);
     callbacks.onActiveTasksUpdated = this.onActiveTasksUpdated.bind(this);
 
-    activeTasks.events.add('activeTasksUpdated', callbacks.onActiveTasksUpdated);
-    // TODO activeTaskFinish
-
-    this.dataStorage.events.add('newProjects', callbacks.onNewProjects);
+    this.events.add('newProjects', callbacks.onNewProjects);
+    this.events.add('activeTasksUpdated', callbacks.onActiveTasksUpdated);
 
     this.tasksList = new TasksListClass(params);
     this.tasksList.setTasksChangedCallback(callbacks.onTasksChanged);
-
-    this.renderContent();
 
     if (useDragListItems) {
       this.dragListItems = new DragListItems({
@@ -89,6 +91,23 @@ export class ProjectsListClass {
         onDragFinish: callbacks.onDragFinish,
       });
     }
+
+    this.events.add('AppInited', this.onAppInited.bind(this));
+    this.events.add('DataCompletelyUpdated', this.onDataCompletelyUpdated.bind(this));
+  }
+
+  /** @param {TCoreParams} coreParams */
+  onAppInited(coreParams) {
+    const { modules } = coreParams;
+    const { dataStorage, activeTasks } = modules;
+    this.dataStorage = dataStorage;
+    this.activeTasks = activeTasks;
+
+    this.renderContent();
+  }
+
+  onDataCompletelyUpdated() {
+    this.renderContent();
   }
 
   renderContent() {
@@ -103,9 +122,7 @@ export class ProjectsListClass {
 
   // Init...
 
-  /**
-   * @param {TAppParams} params
-   */
+  /** @param {TCoreParams} params */
   initDomNodes(params) {
     const { layoutNode } = params;
 
@@ -359,6 +376,7 @@ export class ProjectsListClass {
   /** @param {TActiveTask[]} _activeTasksList */
   onActiveTasksUpdated(_activeTasksList) {
     const { activeTasks, dataStorage, tasksList } = this;
+    console.log('[ProjectsListClass:onActiveTasksUpdated]');
     // const { currentProjectId } = dataStorage;
     /** @type {TProjectId[]} */
     const activeProjectIds = activeTasks.getActiveTaskProjects();

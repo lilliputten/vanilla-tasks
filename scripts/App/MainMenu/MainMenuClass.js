@@ -8,10 +8,13 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class MainMenuClass {
-  /** @type {TMainMenuParams['dataStorage']} */
-  dataStorage;
+  /** @type {TModules} modules */
+  modules;
 
-  /** @type {TMainMenuParams['googleAuth']} */
+  /** @type {TCoreParams['events']} */
+  events;
+
+  /** @type {TModules['googleAuth']} */
   googleAuth;
 
   /* @type {ExportDataClass} */
@@ -35,20 +38,24 @@ export class MainMenuClass {
   installEvent;
 
   /** @constructor
-   * @param {TMainMenuParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     const { callbacks } = this;
 
-    const { dataStorage, googleAuth } = params;
-    this.dataStorage = dataStorage;
-    this.googleAuth = googleAuth;
+    const { modules, events } = params;
+
+    this.events = events;
+    this.modules = modules;
+
+    modules.mainMenu = this;
 
     this.exportData = new ExportDataClass(params);
     this.importData = new ImportDataClass(params);
 
     // Init handler callbacks...
     callbacks.onMainMenuToggle = this.onMainMenuToggle.bind(this);
+    callbacks.onDataClear = this.onDataClear.bind(this);
     callbacks.onDataExport = this.onDataExport.bind(this);
     callbacks.onDataImport = this.onDataImport.bind(this);
     callbacks.onInstallButtonClick = this.onInstallButtonClick.bind(this);
@@ -85,6 +92,7 @@ export class MainMenuClass {
 
   initPWAInstall() {
     const { callbacks } = this;
+    // // TODO!
     // const useInstall = true && !AppConstants.isLocal;
     // const hasInstallFeatures = 'BeforeInstallPromptEvent' in window;
     // if ([> !useInstall || <] !hasInstallFeatures) {
@@ -123,27 +131,29 @@ export class MainMenuClass {
 
   onUserDropdownMenuToggle() {
     const userDropdownMenu = document.getElementById('UserDropdownMenu');
-    console.log('[MainMenuClass:onUserDropdownMenuToggle]', {
-      userDropdownMenu,
-    });
+    /* console.log('[MainMenuClass:onUserDropdownMenuToggle]', {
+     *   userDropdownMenu,
+     * });
+     */
     this.closeAllDropdownMenus(['UserDropdownMenu']);
     userDropdownMenu.classList.toggle('Show');
   }
 
   onDataDropdownMenuToggle() {
     const dataDropdownMenu = document.getElementById('DataDropdownMenu');
-    console.log('[MainMenuClass:onDataDropdownMenuToggle]', {
-      dataDropdownMenu,
-    });
+    /* console.log('[MainMenuClass:onDataDropdownMenuToggle]', {
+     *   dataDropdownMenu,
+     * });
+     */
     this.closeAllDropdownMenus(['DataDropdownMenu']);
     dataDropdownMenu.classList.toggle('Show');
   }
 
   /** @param {MouseEvent} event */
   onSignOut(event) {
-    const { googleAuth } = this;
+    const { googleAuth } = this.modules;
     event.preventDefault();
-    console.log('[MainMenuClass:onSignOut]');
+    // console.log('[MainMenuClass:onSignOut]');
     this.closeAllDropdownMenus();
     googleAuth.onSignOut();
   }
@@ -183,6 +193,13 @@ export class MainMenuClass {
     if (result.outcome === 'accepted') {
       this.onInstallDone();
     }
+  }
+
+  onDataClear() {
+    this.closeAllDropdownMenus();
+    const { modules } = this;
+    const { dataStorage } = modules;
+    dataStorage.clearAllData();
   }
 
   onDataExport() {

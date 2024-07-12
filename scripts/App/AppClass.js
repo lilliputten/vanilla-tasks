@@ -2,11 +2,14 @@
 
 import * as AppConstants from './AppConstants.js';
 // import { commonNotify } from '../common/CommonNotify.js';
+import { SimpleEvents } from '../common/SimpleEvents.js';
 import { DataStorageClass } from './DataStorage/DataStorageClass.js';
 import { ActiveTasksClass } from './ActiveTasks/ActiveTasksClass.js';
 import { ProjectsListClass } from './ProjectsList/ProjectsListClass.js';
 import { MainMenuClass } from './MainMenu/MainMenuClass.js';
+import { FirebaseClass } from './Firebase/FirebaseClass.js';
 import { GoogleAuthClass } from './GoogleAuth/GoogleAuthClass.js';
+import { AppEventsClass } from './AppEventsClass.js';
 
 export class AppClass {
   /** Handlers exchange object
@@ -14,21 +17,32 @@ export class AppClass {
    */
   callbacks = {};
 
-  /** @type {DataStorageClass} */
-  dataStorage;
+  /** @type {SimpleEvents} */
+  events;
 
+  /** @type {Partial<TModules>} */
+  modules = {};
+
+  // [>* @type {DataStorageClass} <]
+  // dataStorage;
+  //
   /** Authorization
    * @type {GoogleAuthClass}
    */
-  googleAuth;
+  // googleAuth;
 
   /** Main menu
    * @type {MainMenuClass}
    */
-  mainMenu;
-
-  /** @type {ActiveTasksClass} */
-  activeTasks;
+  // mainMenu;
+  //
+  /** Firebase
+   * @type {FirebaseClass}
+   */
+  // firebase;
+  //
+  // [>* @type {ActiveTasksClass} <]
+  // activeTasks;
 
   /** @type {ProjectsListClass} */
   processList;
@@ -39,56 +53,50 @@ export class AppClass {
   constructor(sharedParams) {
     // const { callbacks } = this;
 
-    const dataStorage = (this.dataStorage = new DataStorageClass());
+    this.events = new SimpleEvents('App');
 
-    const activeTasks = (this.activeTasks = new ActiveTasksClass(sharedParams));
-
-    this.initActiveProjects();
-
-    /** @type {TAppParams} */
-    const params = {
+    /** @type {TCoreParams} */
+    const coreParams = {
       ...sharedParams,
-      dataStorage,
-      activeTasks,
+      events: this.events,
+      modules: /** @type {TModules} */ (this.modules),
     };
 
+    new DataStorageClass(coreParams);
+    new ActiveTasksClass(coreParams);
+
     // Auth...
-    const googleAuth = (this.googleAuth = new GoogleAuthClass(params));
+    new GoogleAuthClass(coreParams);
 
     // Main menu
-    this.mainMenu = new MainMenuClass({ ...params, googleAuth });
+    new MainMenuClass(coreParams);
+
+    // Firebase
+    new FirebaseClass(coreParams);
+
+    new AppEventsClass(coreParams);
 
     // Processes list component
-    this.processList = new ProjectsListClass(params);
+    this.processList = new ProjectsListClass(coreParams);
 
     /* NOTE: SW temporaqrily disabled (for the demo time)
      * window.addEventListener('load', () => {
      *   this.registerSW();
      * });
      */
+
+    /* // DEBUG: Check initialized modules
+     * console.log('[AppClass] initialization finished', {
+     *   modules,
+     * });
+     */
+    this.events.emit('AppInited', coreParams);
+
+    this.appInited();
   }
 
-  initActiveProjects() {
-    const { dataStorage, activeTasks } = this;
-    const { projects } = dataStorage;
-    /** @type {TActiveTask[]} */
-    const activeTasksList = [];
-    // Try to find all the active tasks...
-    projects.forEach(({ id: projectId, tasks }) => {
-      tasks.forEach((task) => {
-        const { id: taskId, status } = task;
-        if (status === 'active') {
-          /** @type {TActiveTask} */
-          const activeTask = {
-            projectId,
-            taskId,
-            task,
-          };
-          activeTasksList.push(activeTask);
-        }
-      });
-    });
-    return activeTasks.initTasks(activeTasksList);
+  appInited() {
+    // this.initActiveProjects();
   }
 
   // Register the Service Worker

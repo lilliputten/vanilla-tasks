@@ -20,10 +20,10 @@ export class TasksListClass {
    */
   callbacks = {};
 
-  /** @type {TAppParams['dataStorage']} */
+  /** @type {TModules['dataStorage']} */
   dataStorage;
 
-  /** @type {TAppParams['activeTasks']} */
+  /** @type {TModules['activeTasks']} */
   activeTasks;
 
   /** @type {DragListItems} */
@@ -64,16 +64,17 @@ export class TasksListClass {
   // Core...
 
   /** @constructor
-   * @param {TAppParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
-    const { layoutNode, dataStorage, activeTasks } = params;
+    const { layoutNode, events } = params;
     this.layoutNode = layoutNode;
-    this.dataStorage = dataStorage;
-    this.activeTasks = activeTasks;
+    this.events = events;
+    // this.dataStorage = dataStorage;
+    // this.activeTasks = activeTasks;
 
     this.initDomNodes();
 
@@ -86,9 +87,9 @@ export class TasksListClass {
     callbacks.onAddTaskAction = this.onAddTaskAction.bind(this);
     callbacks.onActiveTaskUpdated = this.onActiveTaskUpdated.bind(this);
 
-    activeTasks.events.add('activeTaskTick', callbacks.onActiveTaskUpdated);
-    activeTasks.events.add('activeTaskStart', callbacks.onActiveTaskUpdated);
-    activeTasks.events.add('activeTaskFinish', callbacks.onActiveTaskUpdated);
+    this.events.add('activeTaskTick', callbacks.onActiveTaskUpdated);
+    this.events.add('activeTaskStart', callbacks.onActiveTaskUpdated);
+    this.events.add('activeTaskFinish', callbacks.onActiveTaskUpdated);
 
     // Init toolbar handlers...
     AppHelpers.updateActionHandlers(this.toolbarNode, this.callbacks);
@@ -100,9 +101,19 @@ export class TasksListClass {
         onDragFinish: callbacks.onDragFinish,
       });
     }
+
+    this.events.add('AppInited', this.onAppInited.bind(this));
   }
 
   // Init...
+
+  /** @param {TCoreParams} coreParams */
+  onAppInited(coreParams) {
+    const { modules } = coreParams;
+    const { dataStorage, activeTasks } = modules;
+    this.dataStorage = dataStorage;
+    this.activeTasks = activeTasks;
+  }
 
   /** @param {TTasksChangedCallback} cb */
   setTasksChangedCallback(cb) {
@@ -401,6 +412,7 @@ export class TasksListClass {
     if (timeNode) {
       timeNode.innerHTML = elapsedStr;
     }
+    this.updateStatus();
   }
 
   // Render...

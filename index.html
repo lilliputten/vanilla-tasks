@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
-@changed 2024.07.10, 16:31
-Version: 0.0.11
-Last changes timestamp: 2024.07.10 22:26 +0500
+@changed 2024.07.12, 22:59
+Version: 0.0.12
+Last changes timestamp: 2024.07.12 23:02 +0500
 -->
 <html lang="en">
   <head>
@@ -115,7 +115,7 @@ Last changes timestamp: 2024.07.10 22:26 +0500
               title="Export and download tasks data as a local JSON file"
             >
               <span class="fa fa-download"></span>
-              Download data
+              Export data
             </button>
             <button
               class="ActionButton ThemePrimary"
@@ -123,7 +123,15 @@ Last changes timestamp: 2024.07.10 22:26 +0500
               title="Upload and import tasks data from a local JSON file"
             >
               <span class="fa fa-upload"></span>
-              Upload data
+              Import data
+            </button>
+            <button
+              class="ActionButton ThemePrimary"
+              click-action-id="onDataClear"
+              title="Clear all data"
+            >
+              <span class="fa fa-trash"></span>
+              Clear all data
             </button>
           </div>
         </div>
@@ -263,7 +271,7 @@ Last changes timestamp: 2024.07.10 22:26 +0500
         <div class="PageAttributes Small Info">
           <span class="Version" id="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.11 / 2024.07.10 22:26 +0500
+            v.0.0.12 / 2024.07.12 23:02 +0500
           </span>
         </div>
         <ul class="SocialList">

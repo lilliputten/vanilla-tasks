@@ -9,10 +9,16 @@ const keepSignedMaxAgeSecs = 48 * 60 * 60; // 2d
 const defaultUserIconImage = '/images/icons/user-empty.png';
 
 export class GoogleAuthClass {
+  /** @type {TModules} */
+  modules;
+
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
   callbacks = {};
+
+  /** @type {TCoreParams['events']} */
+  events;
 
   /** @type {HTMLElement} */
   layoutNode;
@@ -28,9 +34,6 @@ export class GoogleAuthClass {
   /** @type {TAuthResponse['credential']} */
   credential;
 
-  // [>* @type {TAuthResponse['clientId']} <]
-  // clientId;
-
   /** @type {TTokenInfoData['name']} */
   userName;
   /** @type {TTokenInfoData['email']} */
@@ -38,13 +41,22 @@ export class GoogleAuthClass {
   /** @type {TTokenInfoData['picture']} */
   userPicture;
 
+  settingData = false;
+
   /** @constructor
-   * @param {TAppParams} params
+   * @param {TCoreParams} params
    */
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode } = params;
+    const { modules, events, layoutNode } = params;
+
+    this.modules = modules;
+
+    modules.googleAuth = this;
+
+    this.events = events;
+
     this.layoutNode = layoutNode;
 
     // Init handler callbacks...
@@ -69,16 +81,15 @@ export class GoogleAuthClass {
 
   updateUserState() {
     const {
-      // clientId,
       credential,
-      userButtonNode,
+      // userButtonNode,
       userNameNode,
       userIconNode,
       userName,
-      userEmail,
+      // userEmail,
       userPicture,
     } = this;
-    const isSigned = this.isSigned();
+    const isSignedIn = this.isSignedIn();
     /* // It's possible to access global google accounts data... (TODO?)
      * // @ts-ignore
      * const accounts = window.google.accounts;
@@ -89,77 +100,75 @@ export class GoogleAuthClass {
      * } = accounts;
      */
     console.log('[GoogleAuthClass:updateUserState]', {
-      isSigned,
-      // clientId,
+      isSignedIn,
       credential,
       // id,
       // oauth2,
       // accounts,
     });
     // Update cookie and document state...
-    // CommonHelpers.setCookie('clientId', isSigned ? clientId : '', keepSignedMaxAgeSecs);
-    CommonHelpers.setCookie('credential', isSigned ? credential : '', keepSignedMaxAgeSecs);
-    document.body.classList.toggle('Signed', isSigned);
+    CommonHelpers.setCookie('credential', credential || '', keepSignedMaxAgeSecs);
+    document.body.classList.toggle('Signed', isSignedIn);
     // Update user button...
     userIconNode.style.backgroundImage = `url("${userPicture || defaultUserIconImage}")`;
     userNameNode.innerHTML = CommonHelpers.quoteHtmlAttr(userName || 'Unknown user');
     // TODO: Invoke events onSignIn, onSignOut?
   }
 
-  isSigned() {
-    const {
-      // clientId,
-      credential,
-    } = this;
-    const isSigned = !!credential;
-    return isSigned;
+  isSignedIn() {
+    const { credential, userEmail } = this;
+    const isSignedIn = !!(credential && userEmail);
+    return isSignedIn;
   }
 
   // Actions...
 
   onSignOut() {
-    // this.clientId = undefined;
+    const isSigned = this.isSignedIn();
+    const { userName, userEmail, userPicture } = this;
     this.credential = undefined;
     this.userName = undefined;
     this.userEmail = undefined;
     this.userPicture = undefined;
-    console.log('[GoogleAuthClass:onSignOut]');
+    // console.log('[GoogleAuthClass:onSignOut]');
     this.updateUserState();
+    if (isSigned) {
+      const userInfo = {
+        name: userName,
+        email: userEmail,
+        picture: userPicture,
+      };
+      return this.onUserSignedOut(userInfo);
+    }
   }
 
   onInit() {
-    // const clientId = CommonHelpers.getCookie('clientId');
     const credential = CommonHelpers.getCookie('credential');
-    // this.clientId = clientId && clientId !== 'undefined' ? clientId : undefined;
     this.credential = credential && credential !== 'undefined' ? credential : undefined;
     console.log('[GoogleAuthClass:onInit]', {
-      // clientId,
       credential,
     });
-    this.updateUserState();
-    this.fetchUserDetails();
+    this.fetchUserDetails().finally(() => {
+      this.updateUserState();
+      this.events.emit('AuthInited');
+    });
   }
 
   /** @param {TAuthResponse} response */
   onSignInSuccess(response) {
-    const {
-      error,
-      // clientId,
-      credential,
-    } = response;
+    const { error, credential } = response;
     console.log('[GoogleAuthClass:onSignInSuccess]', {
       error,
-      // clientId,
       credential,
       response,
     });
     if (error) {
       return this.onSignInFailure(error);
     }
-    // this.clientId = clientId;
     this.credential = credential;
-    this.updateUserState();
-    this.fetchUserDetails();
+    this.fetchUserDetails().finally(() => {
+      this.updateUserState();
+    });
   }
 
   /* @param {Error | { error: string }} error */
@@ -175,11 +184,58 @@ export class GoogleAuthClass {
     this.onSignOut();
   }
 
+  /** @param {TUserInfo} userData */
+  onUserSignedIn(userData) {
+    const { modules } = this;
+    const { dataStorage, googleAuth, firebase } = modules;
+    const { email } = userData;
+    console.log('[GoogleAuthClass:onUserSignedIn] start', {
+      email,
+      userData,
+      dataStorage,
+      googleAuth,
+      firebase,
+    });
+    return firebase.loadUserData(email).then((data) => {
+      console.log('[GoogleAuthClass:onUserSignedIn] loadUserData', {
+        email,
+        data,
+      });
+      if (data) {
+        const { projects, currentProjectId, version, updated } = data;
+        console.log('[GoogleAuthClass:onUserSignedIn] loadUserData has data', {
+          email,
+          data,
+          version,
+          updated,
+        });
+        // TODO: Check local and remote data, offer to merge or override (keep remote or local)?
+        this.settingData = true;
+        dataStorage.setNewProjects(projects, { omitEvents: true });
+        dataStorage.setNewCurrentProjectId(currentProjectId, { omitEvents: true });
+        // this.events.emit('userSignedIn', userInfo);
+        this.settingData = false;
+      }
+    });
+  }
+
+  /** @param {TUserInfo} data */
+  onUserSignedOut(data) {
+    const { modules } = this;
+    const { dataStorage, googleAuth, firebase } = modules;
+    console.log('[GoogleAuthClass:onUserSignedOut]', {
+      data,
+      dataStorage,
+      googleAuth,
+      firebase,
+    });
+    dataStorage.clearAllData();
+    // TODO: Clear data? Ask user to clear or keep the current data
+    // this.events.emit('userSignedOut', userInfo);
+  }
+
   fetchUserDetails() {
-    const {
-      credential,
-      // clientId,
-    } = this;
+    const { credential } = this;
     if (!credential) {
       return Promise.resolve();
     }
@@ -225,7 +281,17 @@ export class GoogleAuthClass {
           this.userEmail = email;
           this.userPicture = picture;
           this.updateUserState();
-          return data;
+          const isSigned = this.isSignedIn();
+          if (isSigned) {
+            /** @type {TUserInfo} */
+            const userInfo = {
+              name,
+              email,
+              picture,
+            };
+            return this.onUserSignedIn(userInfo);
+          }
+          // return data;
         },
       )
       .catch((error) => {

@@ -4,11 +4,12 @@ import * as AppConstants from '../AppConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
-import { SimpleEvents } from '../../common/SimpleEvents.js';
-
 export class DataStorageClass {
-  /** @type {SimpleEvents} */
-  events = new SimpleEvents('DataStorage');
+  /** @type {TModules} */
+  modules;
+
+  /** @type {TCoreParams['events']} */
+  events;
 
   /** @type {string} */
   version;
@@ -23,12 +24,20 @@ export class DataStorageClass {
    */
   currentProjectId = undefined;
 
-  /** @constructor */
-  constructor() {
+  /** @constructor
+   * @param {TCoreParams} params
+   */
+  constructor(params) {
     const versionNode = document.getElementById('Version');
     this.version = versionNode.innerText;
 
-    // this.events = new SimpleEvents('DataStorage');
+    const { events, modules } = params;
+
+    modules.dataStorage = this;
+
+    this.modules = modules;
+    this.events = events;
+
     // Load projects data...
     this.loadProjects();
 
@@ -72,6 +81,16 @@ export class DataStorageClass {
 
   // Save & load data...
 
+  clearAllData() {
+    const { modules, events } = this;
+    const { activeTasks } = modules;
+    this.projects = [];
+    this.currentProjectId = undefined;
+    activeTasks.clearActivity();
+    this.saveProjects();
+    events.emit('DataCompletelyUpdated');
+  }
+
   selectFirstProject() {
     // Set default project
     const { projects } = this;
@@ -106,11 +125,60 @@ export class DataStorageClass {
     }
   }
 
-  saveProjects() {
+  /**
+   * @param {TProject} project
+   */
+  updateProject(project) {
+    const { projects } = this;
+    const projectIdx = projects.findIndex(({ id }) => id === project.id);
+    if (projectIdx === -1) {
+      projects.push(project);
+    } else {
+      projects[projectIdx] = project;
+    }
+    this.saveProjects();
+  }
+
+  /**
+   * @param {TProjectId} projectId
+   * @param {TTask} task
+   */
+  updateTask(projectId, task) {
+    const { projects } = this;
+    const project = projects.find(({ id }) => id === projectId);
+    if (!project) {
+      const error = new Error(`Not found project for id "${projectId}"`);
+      // eslint-disable-next-line no-console
+      console.error('[DataStorageClass:updateTask]', error.message, {
+        error,
+        projectId,
+        projects,
+      });
+      debugger; // eslint-disable-line no-debugger
+    }
+    const { tasks } = project;
+    const taskIdx = tasks.findIndex(({ id }) => id === task.id);
+    if (taskIdx === -1) {
+      tasks.push(task);
+    } else {
+      tasks[taskIdx] = task;
+    }
+    this.saveProjects();
+  }
+
+  /* @param {TSaveProjectsOptions} [saveOpts] */
+  saveProjects(saveOpts = {}) {
+    const { events, projects } = this;
     if (window.localStorage) {
       const { projectsStorageId } = AppConstants;
       const projectsJson = JSON.stringify(this.projects);
       window.localStorage.setItem(projectsStorageId, projectsJson);
+    }
+    console.log('[DataStorageClass:saveProjects]', {
+      projects,
+    });
+    if (!saveOpts.omitEvents) {
+      events.emit('updatedProjectsData', projects);
     }
   }
 
@@ -127,22 +195,45 @@ export class DataStorageClass {
     }
   }
 
-  saveCurrentProjectId() {
+  /* @param {TSaveProjectsOptions} [saveOpts] */
+  saveCurrentProjectId(saveOpts = {}) {
+    const { events, currentProjectId } = this;
     if (window.localStorage) {
       const { currentProjectIdStorageId } = AppConstants;
       window.localStorage.setItem(currentProjectIdStorageId, this.currentProjectId);
+    }
+    if (!saveOpts.omitEvents) {
+      events.emit('updatedCurrentProjectId', currentProjectId);
     }
   }
 
   // Actions...
 
-  /** @param {TProject[]} projects */
-  setNewProjects(projects) {
+  /**
+   * @param {TProject[]} projects
+   * @param {TSaveProjectsOptions} [saveOpts]
+   */
+  setNewProjects(projects, saveOpts = {}) {
     this.projects = projects;
     this.initCurrentProjectId();
-    this.saveProjects();
-    this.saveCurrentProjectId();
-    this.events.emit('newProjects', { projects });
+    // NOTE: Prevent events loop
+    this.saveProjects(saveOpts);
+    this.saveCurrentProjectId(saveOpts);
+    this.events.emit('newProjects', projects);
+  }
+
+  /**
+   * @param {TProjectId} currentProjectId
+   * @param {TSaveProjectsOptions} [saveOpts]
+   */
+  setNewCurrentProjectId(currentProjectId, saveOpts = {}) {
+    this.currentProjectId = currentProjectId;
+    if (!this.currentProjectId) {
+      this.selectFirstProject();
+    }
+    // NOTE: Prevent events loop
+    this.saveCurrentProjectId(saveOpts);
+    this.events.emit('newCurrentProjectId', currentProjectId);
   }
 
   /** @param {TProject[]} projects */
