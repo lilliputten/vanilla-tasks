@@ -96,30 +96,7 @@ export class AppClass {
   }
 
   appInited() {
-    this.initActiveProjects();
-  }
-
-  initActiveProjects() {
-    const { dataStorage, activeTasks } = this.modules;
-    const projects = dataStorage.projects;
-    /** @type {TActiveTask[]} */
-    const activeTasksList = [];
-    // Try to find all the active tasks...
-    projects.forEach(({ id: projectId, tasks }) => {
-      tasks.forEach((task) => {
-        const { id: taskId, status } = task;
-        if (status === 'active') {
-          /** @type {TActiveTask} */
-          const activeTask = {
-            projectId,
-            taskId,
-            task,
-          };
-          activeTasksList.push(activeTask);
-        }
-      });
-    });
-    return activeTasks.initTasks(activeTasksList);
+    // this.initActiveProjects();
   }
 
   // Register the Service Worker

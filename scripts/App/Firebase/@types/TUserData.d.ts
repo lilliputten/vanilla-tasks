@@ -7,4 +7,5 @@ interface TUserData {
   version: string;
   updated: TTimestamp;
   projects: TProject[];
+  currentProjectId?: TProjectId;
 }

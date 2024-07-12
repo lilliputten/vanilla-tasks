@@ -1,0 +1,3 @@
+interface TSaveProjectsOptions {
+  omitEvents?: boolean;
+}

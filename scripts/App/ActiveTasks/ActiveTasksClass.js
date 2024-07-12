@@ -1,7 +1,7 @@
 // @ts-check
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
-import * as CommonConstants from '../../common/CommonConstants.js';
+// import * as CommonConstants from '../../common/CommonConstants.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as AppHelpers from '../AppHelpers.js';
@@ -9,9 +9,12 @@ import * as AppHelpers from '../AppHelpers.js';
 /** If detected too large diff then ask if it should be added to the elapsed accumulator for the task */
 const maxNormalDiffPeriod = 30 * 60 * 1000;
 
-const tickTimeout = CommonConstants.isDev ? 5000 : 1000;
+const tickTimeout = 5000; // CommonConstants.isDev ? 5000 : 10000;
 
 export class ActiveTasksClass {
+  /** @type {TModules} */
+  modules;
+
   /** @type {TCoreParams['events']} */
   events;
 
@@ -36,6 +39,8 @@ export class ActiveTasksClass {
     const { callbacks } = this;
 
     const { modules, layoutNode, events } = params;
+
+    this.modules = modules;
 
     modules.activeTasks = this;
 
@@ -63,6 +68,10 @@ export class ActiveTasksClass {
 
   /** @param {TActiveTask} activeTask */
   activeTaskTick(activeTask) {
+    // const { modules } = this;
+    // const { dataStorage } = modules;
+    // const { projects } = dataStorage;
+    // const task1 = projects[0].tasks[1];
     const { task } = activeTask;
     const { measured } = task;
     const now = Date.now();
@@ -77,7 +86,9 @@ export class ActiveTasksClass {
    * @param {TActiveTaskStartOpts} opts
    * */
   activeTaskStart(activeTask, opts = {}) {
-    const { task } = activeTask;
+    const { modules } = this;
+    const { dataStorage } = modules;
+    const { projectId, task } = activeTask;
     const { measured } = task;
     const now = Date.now();
     // let resultPromise = Promise.resolve(undefined);
@@ -115,10 +126,26 @@ export class ActiveTasksClass {
               task.elapsed += diff;
             })
             .catch(() => {
+              /*
+               * const { projects } = dataStorage;
+               * const task1 = projects[0].tasks[1];
+               * console.log('[ActiveTasksClass:activeTaskStart]', {
+               *   activeTask,
+               *   savedActiveTask,
+               *   theSameActiveTask: activeTask === savedActiveTask,
+               *   task,
+               *   task1,
+               *   'task.measured': task.measured,
+               *   'task1.measured': task1.measured,
+               *   isTheSame: task === task1,
+               *   now,
+               * });
+               */
               task.measured = now;
             })
             .finally(() => {
-              this.events.emit('activeTasksUpdated', this.activeTasksList);
+              dataStorage.updateTask(projectId, task);
+              // this.events.emit('activeTasksUpdated', this.activeTasksList);
               this.events.emit('activeTaskStart', activeTask);
             });
         };
@@ -135,8 +162,19 @@ export class ActiveTasksClass {
     return resultCb;
   }
 
+  clearActivity() {
+    if (this.activeTasksList) {
+      this.activeTasksList = [];
+    }
+    if (this.tickHandler) {
+      clearInterval(this.tickHandler);
+      this.tickHandler = undefined;
+    }
+  }
+
   /** @param {TActiveTask[]} activeTasks */
   initTasks(activeTasks) {
+    this.clearActivity();
     const initPromises = activeTasks.map((activeTask) => {
       return this.addTask(activeTask, { onInit: true, dontUpdate: true });
     });
@@ -150,7 +188,7 @@ export class ActiveTasksClass {
     const { task } = activeTask;
     // Do final time tick...
     this.activeTaskTick(activeTask);
-    task.measured = undefined;
+    delete task.measured;
     task.status = 'completed';
     this.events.emit('activeTaskFinish', activeTask);
   }

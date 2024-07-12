@@ -1,3 +1,5 @@
+// @ts-check
+
 export class AppEventsClass {
   /** @type {TCoreParams['events']} */
   events;
@@ -10,13 +12,15 @@ export class AppEventsClass {
    */
   callbacks = {};
 
-  settingData = false;
+  allInited = false;
+
+  // settingData = false;
 
   /** @constructor
    * @param {TCoreParams} params
    */
   constructor(params) {
-    const { callbacks } = this;
+    // const { callbacks } = this;
 
     const { modules, events } = params;
 
@@ -24,84 +28,78 @@ export class AppEventsClass {
     this.modules = modules;
 
     events.add('AppInited', this.onAppInited.bind(this));
-    events.add('userSignedIn', this.onUserSignedIn.bind(this));
-    events.add('userSignedOut', this.onUserSignedOut.bind(this));
-    events.add('updatedStorageProjects', this.onUpdatedStorageProjects.bind(this));
+    // events.add('userSignedIn', this.onUserSignedIn.bind(this));
+    // events.add('userSignedOut', this.onUserSignedOut.bind(this));
+    events.add('updatedProjectsData', this.onUpdatedProjects.bind(this));
+    events.add('updatedCurrentProjectId', this.onUpdatedProjects.bind(this));
+
+    events.add('AuthInited', this.onAuthInited.bind(this));
+    events.add('newProjects', this.onSetNewData.bind(this));
   }
 
-  /** @param {TCoreParams} coreParams */
-  onAppInited(coreParams) {
-    const { modules } = coreParams;
-    const { events } = this;
-    // DEBUG
-    console.log('[AppEventsClass:onAppInited]', {
-      modules,
-      events,
+  /** @param {TCoreParams} _coreParams */
+  onAppInited(_coreParams) {
+    /* // DEBUG
+     * const { modules } = coreParams;
+     * const { events } = this;
+     * console.log('[AppEventsClass:onAppInited]', {
+     *   modules,
+     *   events,
+     * });
+     */
+  }
+
+  onSetNewData() {
+    if (this.allInited) {
+      this.initActiveTasks();
+    }
+  }
+
+  onAuthInited() {
+    this.allInited = true;
+    this.initActiveTasks();
+  }
+
+  initActiveTasks() {
+    console.log('[AppEventsClass:initActiveTasks]');
+    const { dataStorage, activeTasks } = this.modules;
+    const projects = dataStorage.projects;
+    /** @type {TActiveTask[]} */
+    const activeTasksList = [];
+    // Try to find all the active tasks...
+    projects.forEach(({ id: projectId, tasks }) => {
+      tasks.forEach((task) => {
+        const { id: taskId, status } = task;
+        if (status === 'active') {
+          /** @type {TActiveTask} */
+          const activeTask = {
+            projectId,
+            taskId,
+            task,
+          };
+          activeTasksList.push(activeTask);
+        }
+      });
     });
+    return activeTasks.initTasks(activeTasksList);
   }
 
   // Event handlers...
 
-  /** @param {TUserInfo} data */
-  onUserSignedIn(userData) {
+  /* @param {TProject[]} projects */
+  onUpdatedProjects() {
     const { modules } = this;
     const { dataStorage, googleAuth, firebase } = modules;
-    const { email } = userData;
-    console.log('[AppEventsClass:onUserSignedIn] start', {
-      email,
-      userData,
-      dataStorage,
-      googleAuth,
-      firebase,
-    });
-    firebase.loadUserData(email).then((data) => {
-      console.log('[AppEventsClass:onUserSignedIn] loadUserData', {
-        email,
-        data,
-      });
-      if (data) {
-        const { projects, version, updated } = data;
-        console.log('[AppEventsClass:onUserSignedIn] loadUserData has data', {
-          email,
-          data,
-          version,
-          updated,
-        });
-        // TODO: Check local and remote data, offer to merge or override (keep remote or local)?
-        this.settingData = true;
-        dataStorage.setNewProjects(projects);
-        // TODO: Check if active tasks updated?
-        this.settingData = false;
-      }
-    });
-  }
-
-  /** @param {TUserInfo} data */
-  onUserSignedOut(data) {
-    const { modules } = this;
-    const { dataStorage, googleAuth, firebase } = modules;
-    console.log('[AppEventsClass:onUserSignedOut]', {
-      data,
-      dataStorage,
-      googleAuth,
-      firebase,
-    });
-    debugger;
-    // TODO: Clear data? Ask user to clear or keep the current data
-  }
-
-  /** @param {TProject[]} projects */
-  onUpdatedStorageProjects(projects) {
-    const { modules } = this;
-    if (this.settingData) {
-      // Ignore update data evenets while updatting data...
+    const { projects, currentProjectId } = dataStorage;
+    if (googleAuth.settingData) {
+      // Ignore update data events while updatting data...
       return;
     }
-    const { dataStorage, googleAuth, firebase } = modules;
     const isSignedIn = googleAuth.isSignedIn();
-    console.log('[AppEventsClass:onUpdatedStorageProjects]', {
+    console.log('[AppEventsClass:onUpdatedProjects]', {
       isSignedIn,
       projects,
+      currentProjectId,
       dataStorage,
       googleAuth,
       firebase,
@@ -116,12 +114,12 @@ export class AppEventsClass {
         version,
         updated,
         projects,
+        currentProjectId,
       };
-      console.log('[AppEventsClass:onUpdatedStorageProjects] signed', {
+      console.log('[AppEventsClass:onUpdatedProjects] signed', {
         updated,
         version,
       });
-      debugger;
       firebase.saveUserData(email, userData);
     }
   }

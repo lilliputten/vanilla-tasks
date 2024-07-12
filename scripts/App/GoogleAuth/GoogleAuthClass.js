@@ -9,6 +9,9 @@ const keepSignedMaxAgeSecs = 48 * 60 * 60; // 2d
 const defaultUserIconImage = '/images/icons/user-empty.png';
 
 export class GoogleAuthClass {
+  /** @type {TModules} */
+  modules;
+
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
@@ -38,6 +41,8 @@ export class GoogleAuthClass {
   /** @type {TTokenInfoData['picture']} */
   userPicture;
 
+  settingData = false;
+
   /** @constructor
    * @param {TCoreParams} params
    */
@@ -45,6 +50,8 @@ export class GoogleAuthClass {
     const { callbacks } = this;
 
     const { modules, events, layoutNode } = params;
+
+    this.modules = modules;
 
     modules.googleAuth = this;
 
@@ -131,7 +138,7 @@ export class GoogleAuthClass {
         email: userEmail,
         picture: userPicture,
       };
-      this.events.emit('userSignedOut', userInfo);
+      return this.onUserSignedOut(userInfo);
     }
   }
 
@@ -141,8 +148,10 @@ export class GoogleAuthClass {
     console.log('[GoogleAuthClass:onInit]', {
       credential,
     });
-    this.updateUserState();
-    this.fetchUserDetails();
+    this.fetchUserDetails().finally(() => {
+      this.updateUserState();
+      this.events.emit('AuthInited');
+    });
   }
 
   /** @param {TAuthResponse} response */
@@ -157,8 +166,9 @@ export class GoogleAuthClass {
       return this.onSignInFailure(error);
     }
     this.credential = credential;
-    this.updateUserState();
-    this.fetchUserDetails();
+    this.fetchUserDetails().finally(() => {
+      this.updateUserState();
+    });
   }
 
   /* @param {Error | { error: string }} error */
@@ -172,6 +182,56 @@ export class GoogleAuthClass {
     debugger; // eslint-disable-line no-debugger
     commonNotify.showError('Sign-In error ' + message);
     this.onSignOut();
+  }
+
+  /** @param {TUserInfo} userData */
+  onUserSignedIn(userData) {
+    const { modules } = this;
+    const { dataStorage, googleAuth, firebase } = modules;
+    const { email } = userData;
+    console.log('[GoogleAuthClass:onUserSignedIn] start', {
+      email,
+      userData,
+      dataStorage,
+      googleAuth,
+      firebase,
+    });
+    return firebase.loadUserData(email).then((data) => {
+      console.log('[GoogleAuthClass:onUserSignedIn] loadUserData', {
+        email,
+        data,
+      });
+      if (data) {
+        const { projects, currentProjectId, version, updated } = data;
+        console.log('[GoogleAuthClass:onUserSignedIn] loadUserData has data', {
+          email,
+          data,
+          version,
+          updated,
+        });
+        // TODO: Check local and remote data, offer to merge or override (keep remote or local)?
+        this.settingData = true;
+        dataStorage.setNewProjects(projects, { omitEvents: true });
+        dataStorage.setNewCurrentProjectId(currentProjectId, { omitEvents: true });
+        // this.events.emit('userSignedIn', userInfo);
+        this.settingData = false;
+      }
+    });
+  }
+
+  /** @param {TUserInfo} data */
+  onUserSignedOut(data) {
+    const { modules } = this;
+    const { dataStorage, googleAuth, firebase } = modules;
+    console.log('[GoogleAuthClass:onUserSignedOut]', {
+      data,
+      dataStorage,
+      googleAuth,
+      firebase,
+    });
+    debugger;
+    // TODO: Clear data? Ask user to clear or keep the current data
+    // this.events.emit('userSignedOut', userInfo);
   }
 
   fetchUserDetails() {
@@ -229,9 +289,9 @@ export class GoogleAuthClass {
               email,
               picture,
             };
-            this.events.emit('userSignedIn', userInfo);
+            return this.onUserSignedIn(userInfo);
           }
-          return data;
+          // return data;
         },
       )
       .catch((error) => {
