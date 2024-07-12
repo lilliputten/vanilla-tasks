@@ -5,6 +5,9 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 export class DataStorageClass {
+  /** @type {TModules} */
+  modules;
+
   /** @type {TCoreParams['events']} */
   events;
 
@@ -32,6 +35,7 @@ export class DataStorageClass {
 
     modules.dataStorage = this;
 
+    this.modules = modules;
     this.events = events;
 
     // Load projects data...
@@ -76,6 +80,16 @@ export class DataStorageClass {
   }
 
   // Save & load data...
+
+  clearAllData() {
+    const { modules, events } = this;
+    const { activeTasks } = modules;
+    this.projects = [];
+    this.currentProjectId = undefined;
+    activeTasks.clearActivity();
+    this.saveProjects();
+    events.emit('DataCompletelyUpdated');
+  }
 
   selectFirstProject() {
     // Set default project

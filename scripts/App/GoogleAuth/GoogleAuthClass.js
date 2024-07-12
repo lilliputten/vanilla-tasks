@@ -229,7 +229,7 @@ export class GoogleAuthClass {
       googleAuth,
       firebase,
     });
-    debugger;
+    dataStorage.clearAllData();
     // TODO: Clear data? Ask user to clear or keep the current data
     // this.events.emit('userSignedOut', userInfo);
   }

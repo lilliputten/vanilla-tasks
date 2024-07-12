@@ -178,7 +178,6 @@ export class FirebaseClass {
    */
   hasUserData(key) {
     if (!key) {
-      debugger;
       return Promise.resolve(false);
     }
     const colRef = this.getUserDataCollection();
@@ -203,7 +202,6 @@ export class FirebaseClass {
    */
   loadUserData(key) {
     if (!key) {
-      debugger;
       return Promise.resolve(undefined);
     }
     const colRef = this.getUserDataCollection();

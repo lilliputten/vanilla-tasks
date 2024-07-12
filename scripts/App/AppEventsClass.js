@@ -110,11 +110,11 @@ export class AppEventsClass {
       const updated = Date.now();
       /** @type {TUserData} */
       const userData = {
-        email,
+        email: email || '',
         version,
         updated,
         projects,
-        currentProjectId,
+        currentProjectId: currentProjectId || '',
       };
       console.log('[AppEventsClass:onUpdatedProjects] signed', {
         updated,

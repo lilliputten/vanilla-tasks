@@ -8,11 +8,11 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as AppHelpers from '../AppHelpers.js';
 
 export class MainMenuClass {
+  /** @type {TModules} modules */
+  modules;
+
   /** @type {TCoreParams['events']} */
   events;
-
-  /** @type {TModules} */
-  modules;
 
   /** @type {TModules['googleAuth']} */
   googleAuth;
@@ -196,8 +196,10 @@ export class MainMenuClass {
   }
 
   onDataClear() {
-    console.log('[MainMenuClass:onDataClear]');
-    debugger;
+    this.closeAllDropdownMenus();
+    const { modules } = this;
+    const { dataStorage } = modules;
+    dataStorage.clearAllData();
   }
 
   onDataExport() {

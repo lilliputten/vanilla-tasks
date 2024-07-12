@@ -14,6 +14,9 @@ import * as ProjectsListHelpers from './ProjectsListHelpers.js';
 const useDragListItems = true;
 
 export class ProjectsListClass {
+  /** @type {TModules} */
+  modules;
+
   /** @type {TCoreParams['events']} */
   events;
 
@@ -57,9 +60,10 @@ export class ProjectsListClass {
   constructor(params) {
     const { callbacks } = this;
 
-    const { layoutNode, events } = params;
+    const { layoutNode, events, modules } = params;
     this.layoutNode = layoutNode;
     this.events = events;
+    this.modules = modules;
 
     this.initDomNodes(params);
 
@@ -89,6 +93,7 @@ export class ProjectsListClass {
     }
 
     this.events.add('AppInited', this.onAppInited.bind(this));
+    this.events.add('DataCompletelyUpdated', this.onDataCompletelyUpdated.bind(this));
   }
 
   /** @param {TCoreParams} coreParams */
@@ -98,6 +103,10 @@ export class ProjectsListClass {
     this.dataStorage = dataStorage;
     this.activeTasks = activeTasks;
 
+    this.renderContent();
+  }
+
+  onDataCompletelyUpdated() {
     this.renderContent();
   }
 
