@@ -55,6 +55,7 @@ export class MainMenuClass {
 
     // Init handler callbacks...
     callbacks.onMainMenuToggle = this.onMainMenuToggle.bind(this);
+    callbacks.onDataClear = this.onDataClear.bind(this);
     callbacks.onDataExport = this.onDataExport.bind(this);
     callbacks.onDataImport = this.onDataImport.bind(this);
     callbacks.onInstallButtonClick = this.onInstallButtonClick.bind(this);
@@ -192,6 +193,11 @@ export class MainMenuClass {
     if (result.outcome === 'accepted') {
       this.onInstallDone();
     }
+  }
+
+  onDataClear() {
+    console.log('[MainMenuClass:onDataClear]');
+    debugger;
   }
 
   onDataExport() {

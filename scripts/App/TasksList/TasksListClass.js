@@ -412,6 +412,7 @@ export class TasksListClass {
     if (timeNode) {
       timeNode.innerHTML = elapsedStr;
     }
+    this.updateStatus();
   }
 
   // Render...

@@ -221,13 +221,16 @@ export class GoogleAuthClass {
           this.userEmail = email;
           this.userPicture = picture;
           this.updateUserState();
-          /** @type {TUserInfo} */
-          const userInfo = {
-            name,
-            email,
-            picture,
-          };
-          this.events.emit('userSignedIn', userInfo);
+          const isSigned = this.isSignedIn();
+          if (isSigned) {
+            /** @type {TUserInfo} */
+            const userInfo = {
+              name,
+              email,
+              picture,
+            };
+            this.events.emit('userSignedIn', userInfo);
+          }
           return data;
         },
       )

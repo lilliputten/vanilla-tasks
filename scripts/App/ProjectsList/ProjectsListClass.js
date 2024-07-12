@@ -75,6 +75,7 @@ export class ProjectsListClass {
     callbacks.onActiveTasksUpdated = this.onActiveTasksUpdated.bind(this);
 
     this.events.add('newProjects', callbacks.onNewProjects);
+    this.events.add('activeTasksUpdated', callbacks.onActiveTasksUpdated);
 
     this.tasksList = new TasksListClass(params);
     this.tasksList.setTasksChangedCallback(callbacks.onTasksChanged);
@@ -366,6 +367,7 @@ export class ProjectsListClass {
   /** @param {TActiveTask[]} _activeTasksList */
   onActiveTasksUpdated(_activeTasksList) {
     const { activeTasks, dataStorage, tasksList } = this;
+    console.log('[ProjectsListClass:onActiveTasksUpdated]');
     // const { currentProjectId } = dataStorage;
     /** @type {TProjectId[]} */
     const activeProjectIds = activeTasks.getActiveTaskProjects();

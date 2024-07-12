@@ -139,6 +139,10 @@ export class FirebaseClass {
    * @return {Promise<boolean | void>}
    */
   saveUserData(key, userData) {
+    console.log('[FirebaseClass:saveUserData] start', {
+      key,
+      userData,
+    });
     const colRef = this.getUserDataCollection();
     const docRef = doc(colRef, key);
     // TODO: To check if record exists with `hasUserData` and then update with `updateDoc` or create new with `setDoc`?
@@ -173,6 +177,10 @@ export class FirebaseClass {
    * @return {Promise<boolean | void>}
    */
   hasUserData(key) {
+    if (!key) {
+      debugger;
+      return Promise.resolve(false);
+    }
     const colRef = this.getUserDataCollection();
     const docRef = doc(colRef, key);
     return getDoc(docRef)
@@ -194,6 +202,10 @@ export class FirebaseClass {
    * @return {Promise<TUserData | void>}
    */
   loadUserData(key) {
+    if (!key) {
+      debugger;
+      return Promise.resolve(undefined);
+    }
     const colRef = this.getUserDataCollection();
     const docRef = doc(colRef, key);
     console.log('[FirebaseClass:loadUserData]', {

@@ -114,8 +114,11 @@ export class ActiveTasksClass {
               // Add the time if the answer was 'yes'...
               task.elapsed += diff;
             })
-            .catch(CommonHelpers.NOOP)
+            .catch(() => {
+              task.measured = now;
+            })
             .finally(() => {
+              this.events.emit('activeTasksUpdated', this.activeTasksList);
               this.events.emit('activeTaskStart', activeTask);
             });
         };
