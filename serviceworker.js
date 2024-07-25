@@ -1,10 +1,10 @@
 /* eslint-env worker */
 /// <reference path="scripts/@types/shared/serviceworker.d.ts"/>
 // @ts-check
-// @changed 2024.07.25, 18:18
+// @changed 2024.07.25, 18:37
 
 const changed = `
-@changed 2024.07.25, 18:18
+@changed 2024.07.25, 18:37
 `
   .trim()
   .replace('@changed ', '');
@@ -65,8 +65,8 @@ function fetchAppInfo() {
     headers: new Headers({
       'Content-Type': 'application/json',
       // 'Cache-Control': 'no-cache',
+      // pragma: 'no-cache',
     }),
-    // body: payload
   });
   console.log('[serviceworker:fetchAppInfo] start', {
     appInfoUrl,
@@ -79,7 +79,7 @@ function fetchAppInfo() {
    * let currentRes;
    */
   const fetchOpts = {
-    // cache: 'no-cache',
+    cache: 'no-cache',
   };
   fetchingAppInfoNow = Promise.all([
     // prettier-ignore

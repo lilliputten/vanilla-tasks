@@ -6,7 +6,7 @@
 # Vanilla Tasks Tracker
 
 - Version: 0.0.13
-- Last changes timestamp: 2024.07.25 15:20 +0000
+- Last changes timestamp: 2024.07.25 15:39 +0000
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
 
