@@ -87,7 +87,7 @@ export class AppClass {
       event,
     });
     if (kind === 'versionUpdated') {
-      commonNotify.showInfo(
+      commonNotify.showWarn(
         `The application version has been updated (to ${versionStamp}). It's highly recommended to reload the page.`,
       );
     }

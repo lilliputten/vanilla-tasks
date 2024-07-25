@@ -1,10 +1,10 @@
 /* eslint-env worker */
 /// <reference path="scripts/@types/shared/serviceworker.d.ts"/>
 // @ts-check
-// @changed 2024.07.25, 16:55
+// @changed 2024.07.25, 18:18
 
 const changed = `
-@changed 2024.07.25, 16:55
+@changed 2024.07.25, 18:18
 `
   .trim()
   .replace('@changed ', '');
@@ -20,11 +20,9 @@ const staticCacheName = 'vanilla-tasks';
 /** @type {string | undefined} */
 let currentVersionStamp = undefined;
 
-// @ts-ignore: Wrong typings for BroadcastChannel
 const swChannel = new BroadcastChannel('app');
 
 if (swChannel) {
-  // @ts-ignore: Wrong typings for BroadcastChannel
   swChannel.onmessage =
     /** @param {MessageEvent} event */
     (event) => {
@@ -39,7 +37,6 @@ if (swChannel) {
         fetchAppInfo();
       }
     };
-  // @ts-ignore: Wrong typings for BroadcastChannel
   swChannel.postMessage({ kind: 'swInit' });
 }
 
@@ -66,10 +63,8 @@ function fetchAppInfo() {
   const req = new Request(appInfoUrl, {
     method: 'GET',
     headers: new Headers({
-      // "Authorization": token,
       'Content-Type': 'application/json',
-      // 'Cache-Control': 'max-age=10000',
-      'Cache-Control': 'no-cache',
+      // 'Cache-Control': 'no-cache',
     }),
     // body: payload
   });
@@ -80,67 +75,82 @@ function fetchAppInfo() {
     currentVersionStamp,
     caches,
   });
-  /** @type {Response} */
-  let currentRes;
+  /* [>* @type {Response} <]
+   * let currentRes;
+   */
+  const fetchOpts = {
+    // cache: 'no-cache',
+  };
   fetchingAppInfoNow = Promise.all([
     // prettier-ignore
-    caches.match(req),
-    fetch(req, { cache: 'no-cache' }),
+    fetch(req, fetchOpts),
+    // caches.match(req),
   ])
-    .then(([cacheRes, fetchRes]) => {
-      console.log('[serviceworker:fetchAppInfo] then', {
-        cacheRes,
+    .then(
+      ([
+        // prettier-ignore
         fetchRes,
-        req,
-        caches,
-      });
-      currentRes = fetchRes;
-      return Promise.all([cacheRes?.json(), fetchRes.clone().json()]);
-    })
+        // cacheRes,
+      ]) => {
+        console.log('[serviceworker:fetchAppInfo] then', {
+          fetchRes,
+          // cacheRes,
+          req,
+          caches,
+        });
+        // currentRes = fetchRes;
+        return Promise.all([
+          // prettier-ignore
+          fetchRes.clone().json(),
+          // cacheRes?.json(),
+        ]);
+      },
+    )
     .then(
       /** @param {TAppInfo[]} appInfos */
       (appInfos) => {
-        const [cacheData, fetchData] = appInfos;
+        const [
+          fetchData,
+          // cacheData,
+        ] = appInfos;
         const versionStamp = getVersionStamp(fetchData);
-        const cacheStamp = getVersionStamp(cacheData);
-        const hasCacheUpdated = !!cacheStamp && cacheStamp !== versionStamp;
+        // const cacheStamp = getVersionStamp(cacheData);
+        // const hasCacheUpdated = !!cacheStamp && cacheStamp !== versionStamp;
         const isNewVersion = !!currentVersionStamp && currentVersionStamp !== versionStamp;
         const isVersionUpdated = !currentVersionStamp || currentVersionStamp !== versionStamp;
-        const hasOutdated = !cacheStamp || hasCacheUpdated;
+        // const hasOutdated = !cacheStamp || hasCacheUpdated;
         console.log('[serviceworker:fetchAppInfo] done', {
           isNewVersion,
           isVersionUpdated,
-          hasOutdated,
+          // hasOutdated,
           versionStamp,
           currentVersionStamp,
-          cacheStamp,
-          cacheData,
+          // cacheStamp,
+          // cacheData,
           fetchData,
           // swCache,
           caches,
         });
-        debugger;
         if (isVersionUpdated) {
-          // TODO: Invalidate cache
-          debugger;
-          // @ts-ignore: Wrong typings for BroadcastChannel
+          // Invalidate cache
           if (isNewVersion && swChannel) {
             swChannel.postMessage({ kind: 'versionUpdated', versionStamp });
           }
           caches.delete(staticCacheName);
           currentVersionStamp = versionStamp;
         }
-        // TODO: Invalidate cache if ti's initialized and has another version stamp
-        if (hasOutdated) {
-          caches.open(staticCacheName).then((cache) => {
-            console.log('[serviceworker:fetchAppInfo] cache', {
-              cache,
-              versionStamp,
-            });
-            debugger;
-            cache.put(req, currentRes);
-          });
-        }
+        /* // Invalidate cache if ti's initialized and has another version stamp
+         * if (hasOutdated) {
+         *   caches.open(staticCacheName).then((cache) => {
+         *     console.log('[serviceworker:fetchAppInfo] cache', {
+         *       cache,
+         *       versionStamp,
+         *     });
+         *     debugger;
+         *     cache.put(req, currentRes);
+         *   });
+         * }
+         */
         return fetchData;
       },
     )
@@ -171,24 +181,12 @@ function swInstall(event) {
   );
 }
 
-/* [>* @param {ActivateEvent} event <]
- * function swActivate(event) {
- *   // eslint-disable-next-line no-console
- *   console.log('[serviceworker:swActivate]', {
- *     event,
- *     changed,
- *     currentVersionStamp,
- *   });
- *   debugger;
- * }
- */
-
 /** @param {FetchEvent} event */
 function swFetch(event) {
   const { request } = event;
   const { url } = request;
   // eslint-disable-next-line no-console
-  console.log('[serviceworker:swFetch]', url);
+  // console.log('[serviceworker:swFetch]', url);
   event.respondWith(
     caches.match(request).then((res) => {
       if (res) {
@@ -210,7 +208,6 @@ function swFetch(event) {
 function swInit() {
   self.addEventListener('install', /** @type {TGenericEventHandler} */ (swInstall));
   self.addEventListener('fetch', /** @type {TGenericEventHandler} */ (swFetch));
-  // self.addEventListener('activate', [>* @type {TGenericEventHandler} <] (swActivate));
 }
 
 console.log('[serviceworker] start', changed, {
