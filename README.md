@@ -1,28 +1,29 @@
 <!--
 @since 2024.06.30, 12:00
-@changed 2024.07.09, 16:48
+@changed 2024.07.25, 19:09
 -->
 
 # Vanilla Tasks Tracker
 
 - Version: 0.0.13
-- Last changes timestamp: 2024.07.25 15:39 +0000
+- Last changes timestamp: 2024.07.25 15:40 +0000
 
 The small application aimed to demonstrate native js and css abilities in browser environment.
 
 ## Features
 
-- Inter-session data storing (in the `localStorage`).
+- Inter-session data storing: using the `localStorage` and firebase cloud database (for authorized users, see below).
+- User authorization (using Google OAUTH).
+- Caching service worker with abilities to automatically flush the cache on version change and installation of the PWA application.
+- Time tracking functionality (even when the apllication is not active).
 - Adaptive layout, adaptive main menu.
+- Data import/export from/to a local json file.
+- Minimal UI: Popup dialogs, toasts.
+- Change the order of the project/task items by drag-and-drop (with support for mobile devices).
 - ES6 JavaScript code.
 - ES6 browser modules.
 - Internal TypeScript support (via jsdoc tags).
-- Changing the order of project/task items by dragging (with mobile support).
-- Change the order of the project/task items by drag-and-drop (with support for mobile devices).
-- Data import/export from/to a local json file.
-- Basic PWA funcitonality (cache, ability to install on a mobile desktop)
-- Time tracking functionality.
-- Minimal UI: Popup dialogs, toasts.
+
 
 ## Resources
 
