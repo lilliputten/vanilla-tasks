@@ -64,9 +64,9 @@ function fetchAppInfo() {
     method: 'GET',
     headers: new Headers({
       'Content-Type': 'application/json',
-      // 'Cache-Control': 'no-cache',
+      'Cache-Control': 'no-cache',
+      pragma: 'no-cache',
     }),
-    // body: payload
   });
   console.log('[serviceworker:fetchAppInfo] start', {
     appInfoUrl,
@@ -79,7 +79,7 @@ function fetchAppInfo() {
    * let currentRes;
    */
   const fetchOpts = {
-    // cache: 'no-cache',
+    cache: 'no-cache',
   };
   fetchingAppInfoNow = Promise.all([
     // prettier-ignore
