@@ -161,7 +161,7 @@ export class MainMenuClass {
   /** @param {BeforeInstallPromptEvent} event */
   onBeforeInstallPromptEvent(event) {
     event.preventDefault();
-    // console.log('[MainMenuClass:onBeforeInstallPromptEvent]');
+    console.log('[MainMenuClass:onBeforeInstallPromptEvent]');
     // commonNotify.showSuccess('Before install prompt event (beforeinstallprompt) has been called');
     this.installEvent = event;
     if (this.installButton) {
@@ -171,7 +171,7 @@ export class MainMenuClass {
   }
 
   onInstallDone() {
-    // console.log('[MainMenuClass:onInstallDone]');
+    console.log('[MainMenuClass:onInstallDone]');
     if (this.installButton) {
       this.installButton.disabled = true;
     }

@@ -2,11 +2,24 @@
 
 import { commonNotify } from '../../common/CommonNotify.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
+// import * as CommonConstants from '../../common/CommonConstants.js';
+import * as AppConstants from '../AppConstants.js';
 
-/** Time to keep user signed (via cookie, secs) */
-const keepSignedMaxAgeSecs = 48 * 60 * 60; // 2d
+function loadAuthScript() {
+  return CommonHelpers.addScript(AppConstants.authScriptUrl).catch((error) => {
+    const message = CommonHelpers.getAuthErrorMessage(error);
+    // eslint-disable-next-line no-console
+    console.error('[GoogleAuthClass:loadAuthScript]', message, {
+      error,
+    });
+    debugger; // eslint-disable-line no-debugger
+    commonNotify.showError('Google auth script loading error: ' + message);
+  });
+}
 
-const defaultUserIconImage = '/images/icons/user-empty.png';
+if (AppConstants.useGoogleAuth) {
+  loadAuthScript();
+}
 
 export class GoogleAuthClass {
   /** @type {TModules} */
@@ -69,7 +82,9 @@ export class GoogleAuthClass {
     window.onSignInSuccess = callbacks.onSignInSuccess;
     window.onSignInFailure = callbacks.onSignInFailure;
 
-    window.addEventListener('load', callbacks.onInit);
+    if (AppConstants.useGoogleAuth) {
+      window.addEventListener('load', callbacks.onInit);
+    }
 
     // Prepare user button nodes...
     this.userButtonNode = /** @type {HTMLButtonElement} */ (document.getElementById('UserButton'));
@@ -107,10 +122,10 @@ export class GoogleAuthClass {
       // accounts,
     });
     // Update cookie and document state...
-    CommonHelpers.setCookie('credential', credential || '', keepSignedMaxAgeSecs);
+    CommonHelpers.setCookie('credential', credential || '', AppConstants.keepSignedMaxAgeSecs);
     document.body.classList.toggle('Signed', isSignedIn);
     // Update user button...
-    userIconNode.style.backgroundImage = `url("${userPicture || defaultUserIconImage}")`;
+    userIconNode.style.backgroundImage = `url("${userPicture || AppConstants.defaultUserIconImage}")`;
     userNameNode.innerHTML = CommonHelpers.quoteHtmlAttr(userName || 'Unknown user');
     // TODO: Invoke events onSignIn, onSignOut?
   }

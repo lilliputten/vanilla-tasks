@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
 @changed 2024.07.12, 22:59
-Version: 0.0.12
-Last changes timestamp: 2024.07.12 23:02 +0500
+Version: 0.0.13
+Last changes timestamp: 2024.07.25 13:59 +0000
 -->
 <html lang="en">
   <head>
@@ -87,17 +87,6 @@ Last changes timestamp: 2024.07.12 23:02 +0500
       <!--
       -->
       <div class="MainMenu" id="MainMenu">
-        <!-- TODO: PWA installtation button, Issue #17
-        <button
-          class="ActionButton ThemePrimary hidden"
-          click-action-id="onInstallButtonClick"
-          id="PWAInstallButton"
-          title="Install the application locally as a mobile progressive web application"
-        >
-          <span class="fa fa-share"></span>
-          Install PWA
-        </button>
-        -->
         <div class="Dropdown">
           <button
             id="DataMenuButton"
@@ -135,6 +124,16 @@ Last changes timestamp: 2024.07.12 23:02 +0500
             </button>
           </div>
         </div>
+        <!-- NOTE: PWA installtation button, Issue #17 -->
+        <button
+          class="ActionButton ThemePrimary hidden"
+          click-action-id="onInstallButtonClick"
+          id="PWAInstallButton"
+          title="Install the application locally as a mobile progressive web application"
+        >
+          <span class="fa fa-bolt"></span>
+          Install PWA
+        </button>
         <div class="Dropdown">
           <button
             id="UserButton"
@@ -271,7 +270,7 @@ Last changes timestamp: 2024.07.12 23:02 +0500
         <div class="PageAttributes Small Info">
           <span class="Version" id="Version">
             <!-- NOTE: The value is substituting automatically -->
-            v.0.0.12 / 2024.07.12 23:02 +0500
+            v.0.0.13 / 2024.07.25 13:59 +0000
           </span>
         </div>
         <ul class="SocialList">
@@ -309,30 +308,8 @@ Last changes timestamp: 2024.07.12 23:02 +0500
         window.onSignInSuccess && window.onSignInSuccess(p);
       }
     </script>
+    <!-- // NOTE: This script is loading dynamically in `scripts/App/GoogleAuth/GoogleAuthClass.js` (`loadAuthScript`)
     <script src="https://accounts.google.com/gsi/client"></script>
-    <!-- Firebase setup -->
-    <script type="module">
-      // // TODO: Move to the app internals
-      // // Import the functions you need from the SDKs you need
-      // import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
-      // import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js';
-      // // TODO: Add SDKs for Firebase products that you want to use
-      // // https://firebase.google.com/docs/web/setup#available-libraries
-      // // Your web app's Firebase configuration
-      // // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-      // const firebaseConfig = {
-      //   apiKey: 'AIzaSyBqboA2DsYCJJrjFYlKjdJXwQMd3vWavko',
-      //   authDomain: 'vanilla-tasks.lilliputten.com',
-      //   // authDomain: 'vanilla-tasks.firebaseapp.com',
-      //   projectId: 'vanilla-tasks',
-      //   storageBucket: 'vanilla-tasks.appspot.com',
-      //   messagingSenderId: '620506919435',
-      //   appId: '1:620506919435:web:8999b04eb3f77d12c9cd0e',
-      //   measurementId: 'G-NQHTMVJ1VJ',
-      // };
-      // // Initialize Firebase
-      // const app = initializeApp(firebaseConfig);
-      // const analytics = getAnalytics(app);
-    </script>
+    -->
   </body>
 </html>
