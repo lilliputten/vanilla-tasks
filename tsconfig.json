@@ -23,5 +23,5 @@
   },
   "typeRoots": ["scripts/types/**/*"],
   "include": ["scripts/**/*.ts", "scripts/**/*.js"],
-  "exclude": ["node_modules", ".git", ".vscode", "docs", "tests", "bw_matchbox.egg-info", "**/*_"]
+  "exclude": ["node_modules", ".git", ".vscode", "docs", "tests", "**/*_"]
 }

@@ -35,7 +35,7 @@ The actual version is deployed to:
 
 An extra information is available on:
 
-- https://lilliputten.com/projects/2024/vanilla-tasks-manager
+- https://lilliputten.com/projects/2024/vanilla-tasks-manager/
 
 ## Used technologies
 
